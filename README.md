@@ -1,2 +1,3 @@
-# theremin
-Virtual instrument played with gestures.
+# Theremin
+
+Virtual instrument played with hands via webcam.
