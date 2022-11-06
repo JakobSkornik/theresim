@@ -1,5 +1,4 @@
 import dynamic from 'next/dynamic'
-import { useEffect, useState } from 'react'
 import p5Types from 'p5'
 const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
   ssr: false,
@@ -8,16 +7,16 @@ const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
 import { CanvasProps } from '../types/CanvasProps'
 
 const Canvas = (props: CanvasProps) => {
-  const [width, setWidth] = useState(props.width)
-  const [height, setHeight] = useState(props.height)
+  let font: p5Types.Font | null = null
 
-  useEffect(() => {
-    setWidth(props.width)
-    setHeight(props.height)
-  }, [props.height])
+  const preload = (p5: p5Types) => {
+    font = p5.loadFont('font.ttf')
+  }
 
   const setup = (p5: p5Types, canvasParentRef: HTMLDivElement) => {
-    p5.createCanvas(width, height).parent(canvasParentRef)
+    p5.createCanvas(props.width, props.height).parent(canvasParentRef)
+    if (!font) font = p5.loadFont('font.ttf')
+    p5.textFont(font)
   }
 
   const draw = (p5: p5Types) => {
@@ -25,8 +24,12 @@ const Canvas = (props: CanvasProps) => {
     props.scene(p5, props.hands)
   }
 
+  const onResize = (p5: p5Types) => {
+    p5.resizeCanvas(props.width, props.height)
+  }
+
   // @ts-ignore
-  return <Sketch setup={setup} draw={draw} />
+  return <Sketch preload={preload} setup={setup} draw={draw} windowResized={onResize}/>
 }
 
 export default Canvas

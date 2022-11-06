@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { MouseEvent } from 'react'
+import { useRouter } from 'next/router'
 
 const sx = {
   container: {
@@ -10,23 +11,55 @@ const sx = {
   },
   button: {
     marginLeft: '15px',
+    boxShadow: '8px 8px gray',
   },
 }
 
 const Navbar = () => {
+  const router = useRouter()
+
+  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    router.push(e.currentTarget.value)
+  }
+
   return (
     <div style={sx.container}>
-      <button type="button" className="nes-btn is-primary" style={sx.button}>
+      <button
+        value="/freehand"
+        type="button"
+        className="nes-btn is-primary"
+        style={sx.button}
+        onClick={handleClick}
+      >
         Freehands
       </button>
-      <button type="button" className="nes-btn is-success" style={sx.button}>
-        Azimuth
+      <button
+        value="/coordinates"
+        type="button"
+        className="nes-btn is-success"
+        style={sx.button}
+        onClick={handleClick}
+      >
+        Coordinates
       </button>
-      <button type="button" className="nes-btn is-warning" style={sx.button}>
-        TODO
+      <button
+        value="/detection"
+        type="button"
+        className="nes-btn is-warning"
+        style={sx.button}
+        onClick={handleClick}
+      >
+        Detection
       </button>
-      <button type="button" className="nes-btn is-error" style={sx.button}>
-        TODO
+      <button
+        value="/control"
+        type="button"
+        className="nes-btn is-error"
+        style={sx.button}
+        onClick={handleClick}
+      >
+        Control
       </button>
       <button type="button" className="nes-btn is-primary" style={sx.button}>
         TODO

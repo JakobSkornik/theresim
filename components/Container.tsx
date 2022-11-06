@@ -1,4 +1,5 @@
 import React from 'react'
+import { ContainerProps } from '../types/ContainerProps'
 
 const sx = {
   title: {
@@ -11,11 +12,12 @@ const sx = {
   },
   container: {
     marginTop: '0',
+    boxShadow: '8px 8px gray',
   },
   children: {},
 }
 
-const Container = (props: any) => {
+const Container = (props: ContainerProps) => {
   return (
     <div className="nes-container" style={{ ...props.style, ...sx.container }}>
       <div style={sx.title}>

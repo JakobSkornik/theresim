@@ -9,7 +9,7 @@ const Canvas = dynamic(() => import('./Canvas'), { ssr: false })
 
 const sx = {
   container: {
-    height: 'calc(100% - 85px)',
+    height: 'calc(100% - 95px)',
     width: '100%',
   },
   canvasDiv: {
@@ -23,33 +23,39 @@ const P5Container = (props: P5ContainerProps) => {
   const parentRef = useRef<HTMLDivElement>(null)
   let handsContext = useHandsContext()
 
-  const [width, setWidth] = useState(0)
-  const [height, setHeight] = useState(0)
+  const [dims, setDims] = useState({ width: 0, height: 0 })
 
   useEffect(() => {
-    if (handsContext) {
+    setDims({
+      width: parentRef.current!.offsetWidth,
+      height: parentRef.current!.offsetHeight,
+    })
+
+    if (props.mediapipe && handsContext) {
       initialize(handsContext, videoElement)
     }
-  }, [])
 
-  useEffect(() => {
-    setWidth(parentRef.current!.offsetWidth)
-    setHeight(parentRef.current!.offsetHeight)
+    window.addEventListener('resize', () => {
+      setDims({
+        width: parentRef.current!.offsetWidth,
+        height: parentRef.current!.offsetHeight,
+      })
+    })
   }, [])
 
   return (
-    <Container id="freehandCanvas" title="Freehand" style={sx.container}>
+    <Container title={props.title} style={sx.container}>
       <div ref={parentRef} style={sx.canvasDiv}>
-        {height > 0 && width > 0 && (
+        {dims.height > 0 && dims.width > 0 && (
           <Canvas
-            height={height}
-            width={width}
+            height={dims.height}
+            width={dims.width}
             scene={props.scene}
             hands={handsContext!}
           />
         )}
       </div>
-      <video ref={videoElement} hidden />
+      {props.mediapipe && <video ref={videoElement} hidden />}
     </Container>
   )
 }

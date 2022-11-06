@@ -4,7 +4,7 @@ import { RefObject } from 'react'
 
 import { HandsContextType } from '../../types'
 
-export default function initialize(handContext: HandsContextType, ref: RefObject<HTMLVideoElement>) {  
+export default async function initialize(handContext: HandsContextType, ref: RefObject<HTMLVideoElement>) {  
   var videoElement = ref.current!
   const hands = new Hands({
     locateFile: (file) => {
@@ -41,11 +41,11 @@ export default function initialize(handContext: HandsContextType, ref: RefObject
     width: 0,
     height: 0,
   })
-  camera.start()
+  await camera.start()
 }
 
 // This method mirrors x coords, due to webcam flipping
-async function flipHorizontally(hand: Landmark[]) {
+function flipHorizontally(hand: Landmark[]) {
   for (const idx in hand) {
     hand[idx].x = 1 - hand[idx].x
   }
