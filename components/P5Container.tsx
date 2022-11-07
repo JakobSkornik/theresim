@@ -44,7 +44,7 @@ const P5Container = (props: P5ContainerProps) => {
         height: parentRef.current!.offsetHeight,
       })
     })
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container title={props.title} style={sx.container} icon={props.icon}>
