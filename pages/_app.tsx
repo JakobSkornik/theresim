@@ -24,7 +24,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <div style={sx.main}>
       <HandsProvider>
-        <Container title="Theremin" style={sx.container} icon="/theremin.png">
+        <Container title="Theremin" style={sx.container} icon="theremin.png">
           <Navbar />
           <Component {...pageProps} />
         </Container>

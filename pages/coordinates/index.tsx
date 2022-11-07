@@ -27,7 +27,7 @@ const Coordinates = () => {
           title={'Left Hand'}
           mediapipe={true}
           scene={handScene}
-          icon="/controller.svg"
+          icon="controller.svg"
         />
       </div>
       <div style={sx.rightCol}>
@@ -35,7 +35,7 @@ const Coordinates = () => {
           title={'Coordinates'}
           mediapipe={false}
           scene={chartScene}
-          icon="/chart.svg"
+          icon="chart.svg"
         />
       </div>
     </div>

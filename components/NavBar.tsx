@@ -1,15 +1,17 @@
 import React, { MouseEvent, useState } from 'react'
 import { useRouter } from 'next/router'
 
-import { blue, green, red, yellow } from '../modules/const'
+import { mountain, peachy, pink, purple, rosy } from '../modules/const'
 import Button from './Button'
 
 const sx = {
   container: {
     width: '100%',
     height: '60px',
+    paddingBottom: '8px',
+    overflowX: 'auto' as 'auto',
     display: 'flex',
-    margin: '5px 0 15px 0',
+    margin: '5px 0 5px 0',
     justifyContent: 'center',
   },
 }
@@ -31,26 +33,47 @@ const Navbar = () => {
         value="/freehand"
         onClick={handleClick}
         style={{
-          backgroundColor: '/freehand' == active ? yellow : yellow + '60',
+          backgroundColor: '/freehand' == active ? rosy : rosy + '70',
+          boxShadow: `8px 8px ${'/freehand' == active ? '#596275' : 'black'}`,
         }}
       ></Button>
       <Button
         text="Coordinates"
         value="/coordinates"
         onClick={handleClick}
-        style={{ backgroundColor: '/coordinates' == active ? red : red + '60' }}
+        style={{
+          backgroundColor: '/coordinates' == active ? peachy : peachy + '70',
+          boxShadow: `8px 8px ${
+            '/coordinates' == active ? '#596275' : 'black'
+          }`,
+        }}
       ></Button>
       <Button
         text="Detection"
         value="/detection"
         onClick={handleClick}
-        style={{ backgroundColor: '/detection' == active ? blue : blue + '60' }}
+        style={{
+          backgroundColor: '/detection' == active ? pink : pink + '70',
+          boxShadow: `8px 8px ${'/detection' == active ? '#596275' : 'black'}`,
+        }}
       ></Button>
       <Button
         text="Control"
         value="/control"
         onClick={handleClick}
-        style={{ backgroundColor: '/control' == active ? green : green + '60' }}
+        style={{
+          backgroundColor: '/control' == active ? purple : purple + '70',
+          boxShadow: `8px 8px ${'/control' == active ? '#596275' : 'black'}`,
+        }}
+      ></Button>
+      <Button
+        text="Keyboard"
+        value="/keyboard"
+        onClick={handleClick}
+        style={{
+          backgroundColor: '/keyboard' == active ? mountain : mountain + '70',
+          boxShadow: `8px 8px ${'/keyboard' == active ? '#596275' : 'black'}`,
+        }}
       ></Button>
     </div>
   )

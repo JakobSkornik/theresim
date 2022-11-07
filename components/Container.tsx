@@ -38,7 +38,7 @@ const Container = (props: ContainerProps) => {
         <span>
           {props.icon && (
             <Image
-              src={props.icon}
+              src={`/icons/${props.icon}`}
               alt="TitleBarIcon"
               width={30}
               height={30}

@@ -1,7 +1,15 @@
 import { Landmark } from '@mediapipe/hands'
 import p5Types from 'p5'
 
-import { BLACK, jointIdx, BROWN, YELLOW, BLUE, RED } from '../../modules/const'
+import {
+  BLACK,
+  jointIdx,
+  BROWN,
+  YELLOW,
+  BLUE,
+  RED,
+  GREEN,
+} from '../../modules/const'
 import {
   avg,
   clamp,
@@ -27,7 +35,7 @@ const scene = (p5: p5Types, hands: HandsContextType) => {
 const drawAxes = (p5: p5Types, left: Landmark[], right: Landmark[]) => {
   const leftHeight = p5.height / 4
   const rightHeight = (p5.height / 4) * 2
-  const threshold = 0.53
+  const threshold = 0.55
 
   const l = getAvgCoordinates(left)
   const r = getAvgCoordinates(right)
@@ -63,9 +71,9 @@ const drawAxes = (p5: p5Types, left: Landmark[], right: Landmark[]) => {
 }
 
 const drawHands = (p5: p5Types, left: Landmark[], right: Landmark[]) => {
-  const threshold = 0.53
+  const threshold = 0.55
   const x = 300
-  const y = p5.height - 210
+  const y = p5.height - 212
   const w = 630
   const h = 200
 
@@ -84,35 +92,39 @@ const drawHands = (p5: p5Types, left: Landmark[], right: Landmark[]) => {
   if (left.length) {
     const z = getAverageZ(left)
     let lColor = z > threshold ? BLUE() : BLUE(50)
+
+    if (z > threshold) {
+      p5.stroke(BLACK())
+      p5.strokeWeight(3)
+      p5.fill(GREEN())
+      p5.rect(x, y, w / 2, h, 10, 0, 0, 10)
+    }
+
     drawLandmarks(p5, jointIdx('palm'), lColor, left, x, y, w, h)
     drawLandmarks(p5, jointIdx('thumb'), lColor, left, x, y, w, h)
     drawLandmarks(p5, jointIdx('index'), lColor, left, x, y, w, h)
     drawLandmarks(p5, jointIdx('middle'), lColor, left, x, y, w, h)
     drawLandmarks(p5, jointIdx('ring'), lColor, left, x, y, w, h)
     drawLandmarks(p5, jointIdx('pinky'), lColor, left, x, y, w, h)
-
-    if (z > threshold) {
-      p5.noStroke()
-      p5.fill(BLACK(40))
-      p5.rect(x, y, w / 2, h, 10, 0, 0, 10)
-    }
   }
 
   if (right.length) {
     const z = getAverageZ(right)
     let lColor = z > threshold ? RED() : RED(50)
+
+    if (z > threshold) {
+      p5.stroke(BLACK())
+      p5.strokeWeight(3)
+      p5.fill(GREEN())
+      p5.rect(x + w / 2, y, w / 2, h, 0, 10, 10, 0)
+    }
+
     drawLandmarks(p5, jointIdx('palm'), lColor, right, x, y, w, h)
     drawLandmarks(p5, jointIdx('thumb'), lColor, right, x, y, w, h)
     drawLandmarks(p5, jointIdx('index'), lColor, right, x, y, w, h)
     drawLandmarks(p5, jointIdx('middle'), lColor, right, x, y, w, h)
     drawLandmarks(p5, jointIdx('ring'), lColor, right, x, y, w, h)
     drawLandmarks(p5, jointIdx('pinky'), lColor, right, x, y, w, h)
-
-    if (z > threshold) {
-      p5.noStroke()
-      p5.fill(BLACK(30))
-      p5.rect(x + w / 2, y, w / 2, h, 0, 10, 10, 0)
-    }
   }
 }
 export default scene

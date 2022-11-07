@@ -15,7 +15,7 @@ const scene = (p5: p5Types, hands: HandsContextType) => {
 const drawRightPanel = (p5: p5Types, left: Landmark[], right: Landmark[]) => {
   const x_offset = 20
   const vertScale = p5.height - 120
-  const threshold = 0.53
+  const threshold = 0.55
   const lz = getAverageZ(left)
   const rz = getAverageZ(right)
 
@@ -30,7 +30,7 @@ const drawRightPanel = (p5: p5Types, left: Landmark[], right: Landmark[]) => {
   p5.textSize(20)
   p5.fill(BLACK())
   p5.text('0', x_offset + 0, p5.height - 75)
-  p5.text('0.53', x_offset + 0, (p5.height - 50) / 2)
+  p5.text('0.55', x_offset + 0, (p5.height - 80) / 2)
   p5.text('1', x_offset + 0, 30)
   p5.strokeWeight(2)
   p5.stroke(0)

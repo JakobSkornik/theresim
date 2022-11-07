@@ -27,7 +27,7 @@ const Detection = () => {
           title={'Hands'}
           mediapipe={true}
           scene={handScene}
-          icon="/controller.svg"
+          icon="controller.svg"
         />
       </div>
       <div style={sx.rightCol}>
@@ -35,7 +35,7 @@ const Detection = () => {
           title={'Z-Coordinate'}
           mediapipe={false}
           scene={chartScene}
-          icon="/chart.svg"
+          icon="chart.svg"
         />
       </div>
     </div>

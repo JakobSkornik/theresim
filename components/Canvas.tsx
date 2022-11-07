@@ -1,10 +1,11 @@
+// @ts-nocheck
 import dynamic from 'next/dynamic'
 import p5Types from 'p5'
-import { BG } from '../modules/const'
 const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
   ssr: false,
 })
 
+import { BG } from '../modules/const'
 import { CanvasProps } from '../types'
 
 const Canvas = (props: CanvasProps) => {
@@ -29,8 +30,19 @@ const Canvas = (props: CanvasProps) => {
     p5.resizeCanvas(props.width, props.height)
   }
 
-  // @ts-ignore
-  return <Sketch preload={preload} setup={setup} draw={draw} windowResized={onResize}/>
+  const onClick = (p5: p5Types) => {
+    if (props.onClick) props.onClick(p5)
+  }
+
+  return (
+    <Sketch
+      preload={preload}
+      setup={setup}
+      mouseClicked={onClick}
+      draw={draw}
+      windowResized={onResize}
+    />
+  )
 }
 
 export default Canvas

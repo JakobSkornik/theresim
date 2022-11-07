@@ -4,6 +4,7 @@ import { HandsContextType } from './HandsContextType'
 export type P5ContainerProps = {
   title: string
   mediapipe: boolean
-  scene: (p5: p5Types, hands: HandsContextType) => void
   icon?: string
+  scene: (p5: p5Types, hands: HandsContextType) => void
+  onClick?: (p5: p5Types) => void
 }

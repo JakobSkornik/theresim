@@ -37,6 +37,8 @@ const P5Container = (props: P5ContainerProps) => {
     }
 
     window.addEventListener('resize', () => {
+      if (!parentRef.current) return
+      
       setDims({
         width: parentRef.current!.offsetWidth,
         height: parentRef.current!.offsetHeight,
@@ -52,6 +54,7 @@ const P5Container = (props: P5ContainerProps) => {
             height={dims.height - 50}
             width={dims.width}
             scene={props.scene}
+            onClick={props.onClick}
             hands={handsContext!}
           />
         )}

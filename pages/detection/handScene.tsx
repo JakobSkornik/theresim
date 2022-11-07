@@ -6,6 +6,7 @@ import {
   drawFPS,
   drawLandmarks,
   drawLegend,
+  drawNoHandsWarning,
   getAverageZ,
 } from '../../modules/p5'
 import { HandsContextType } from '../../types'
@@ -14,10 +15,11 @@ const scene = (p5: p5Types, hands: HandsContextType) => {
   drawHands(p5, hands.leftHand, hands.rightHand)
   drawLegend(p5)
   drawFPS(p5)
+  drawNoHandsWarning(p5, hands, 'detection')
 }
 
 const drawHands = (p5: p5Types, left: Landmark[], right: Landmark[]) => {
-  const threshold = 0.53
+  const threshold = 0.55
 
   p5.fill(BLACK(5))
   p5.stroke(BLACK(30))
