@@ -1,9 +1,9 @@
 import { Landmark } from '@mediapipe/hands'
 import p5Types from 'p5'
-import { BLACK, BLUE, GREEN, RED } from '../../modules/const'
-import { avg, getAvgCoordinates, queue } from '../../modules/p5'
+import { BLACK, BLUE, GREEN, RED } from '../../const'
+import { avg, getAvgCoordinates, queue } from '..'
 
-import { HandsContextType } from '../../types'
+import { HandsContextType } from '../../../types'
 
 let x = [0.01]
 let y = [0.01]

@@ -42,7 +42,7 @@ export const drawLandmarks = (
   }
 }
 export const getAverageZ = (hand: Landmark[]) => {
-  if (!hand.length) {
+  if (!hand || !hand.length) {
     return 0.01
   }
 
@@ -200,7 +200,7 @@ export const drawNoHandsWarning = (p5: p5Types, hands: HandsContextType, view: s
 }
 
 export const getAvgCoordinates = (hand: Landmark[]) => {
-  if (!hand.length) {
+  if (!hand || !hand.length) {
     return null
   }
   let y = 0

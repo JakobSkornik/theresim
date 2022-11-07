@@ -1,5 +1,5 @@
 import P5Container from '../../components/P5Container'
-import scene, { onClick } from './scene'
+import scene, { onClick } from '../../modules/p5/keyboard/scene'
 
 const Keyboard = () => {
   return (

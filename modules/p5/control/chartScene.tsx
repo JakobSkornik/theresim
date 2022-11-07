@@ -1,9 +1,9 @@
 import { Landmark } from '@mediapipe/hands'
 import p5Types from 'p5'
 
-import { BLACK, BLUE, RED } from '../../modules/const'
-import { getAvgCoordinates } from '../../modules/p5'
-import { HandsContextType } from '../../types'
+import { BLACK, BLUE, RED } from '../../const'
+import { getAvgCoordinates } from '..'
+import { HandsContextType } from '../../../types'
 
 const scene = (p5: p5Types, hands: HandsContextType) => {
   drawRightPanel(p5, hands.leftHand, hands.rightHand)

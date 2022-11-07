@@ -10,9 +10,9 @@ import {
   RED,
   WHITE,
   YELLOW,
-} from '../../modules/const'
-import { KeyLocation } from '../../types/KeyLocation'
-import { ScaleKeys } from '../../types/ScaleKeys'
+} from '../../const'
+import { KeyLocation } from '../../../types/KeyLocation'
+import { ScaleKeys } from '../../../types/ScaleKeys'
 
 let major = true
 let selected: number | null = null

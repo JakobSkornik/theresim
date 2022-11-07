@@ -1,6 +1,6 @@
 import P5Container from '../../components/P5Container'
-import handScene from './handScene'
-import chartScene from './chartScene'
+import handScene from '../../modules/p5/coordinates/handScene'
+import chartScene from '../../modules/p5/coordinates/chartScene'
 
 const sx = {
   grid: {

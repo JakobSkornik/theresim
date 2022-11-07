@@ -1,6 +1,7 @@
 import P5Container from '../../components/P5Container'
-import handScene from './handScene'
-import chartScene from './chartScene'
+import handScene from '../../modules/p5/control/handScene'
+import chartScene from '../../modules/p5/control/chartScene'
+import { Props } from '../../types'
 
 const sx = {
   grid: {
@@ -19,7 +20,7 @@ const sx = {
   },
 }
 
-const Control = () => {
+const Control = (props: Props) => {
   return (
     <div style={sx.grid}>
       <div style={sx.leftCol}>

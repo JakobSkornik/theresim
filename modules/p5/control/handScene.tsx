@@ -9,7 +9,7 @@ import {
   BLUE,
   RED,
   GREEN,
-} from '../../modules/const'
+} from '../../../modules/const'
 import {
   avg,
   clamp,
@@ -19,8 +19,8 @@ import {
   getAverageZ,
   getAvgCoordinates,
   queue,
-} from '../../modules/p5'
-import { HandsContextType } from '../../types'
+} from '../../../modules/p5'
+import { HandsContextType } from '../../../types'
 
 let leftX = [0.5]
 let rightX = [0.5]

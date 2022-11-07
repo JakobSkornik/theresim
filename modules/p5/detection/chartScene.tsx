@@ -1,9 +1,9 @@
 import { Landmark } from '@mediapipe/hands'
 import p5Types from 'p5'
-import { BLACK, BLUE, GRAY, RED } from '../../modules/const'
-import { avg, getAverageZ, queue } from '../../modules/p5'
+import { BLACK, BLUE, GRAY, RED } from '../../../modules/const'
+import { avg, getAverageZ, queue } from '../../../modules/p5'
 
-import { HandsContextType } from '../../types'
+import { HandsContextType } from '../../../types'
 
 const leftZ = [0.01]
 const rightZ = [0.01]

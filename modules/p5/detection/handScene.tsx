@@ -1,15 +1,15 @@
 import { Landmark } from '@mediapipe/hands'
 import p5Types from 'p5'
 
-import { BLACK, jointIdx, GRAY, BLUE, RED } from '../../modules/const'
+import { BLACK, jointIdx, GRAY, BLUE, RED } from '../../const'
 import {
   drawFPS,
   drawLandmarks,
   drawLegend,
   drawNoHandsWarning,
   getAverageZ,
-} from '../../modules/p5'
-import { HandsContextType } from '../../types'
+} from '..'
+import { HandsContextType } from '../../../types'
 
 const scene = (p5: p5Types, hands: HandsContextType) => {
   drawHands(p5, hands.leftHand, hands.rightHand)
