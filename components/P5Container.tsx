@@ -2,15 +2,16 @@ import dynamic from 'next/dynamic'
 import { createRef, useEffect, useRef, useState } from 'react'
 
 import Container from '../components/Container'
-import { useHandsContext } from '../context'
 import initialize from '../modules/mediapipe'
-import { P5ContainerProps } from '../types/P5ContainerProps'
+import { useHandsContext } from '../context'
+import { P5ContainerProps } from '../types'
 const Canvas = dynamic(() => import('./Canvas'), { ssr: false })
 
 const sx = {
   container: {
-    height: 'calc(100% - 95px)',
-    width: '100%',
+    height: 'calc(100% - 140px)',
+    width: 'calc(100% - 20px)',
+    marginLeft: '10px',
   },
   canvasDiv: {
     height: '100%',
@@ -44,11 +45,11 @@ const P5Container = (props: P5ContainerProps) => {
   }, [])
 
   return (
-    <Container title={props.title} style={sx.container}>
+    <Container title={props.title} style={sx.container} icon={props.icon}>
       <div ref={parentRef} style={sx.canvasDiv}>
         {dims.height > 0 && dims.width > 0 && (
           <Canvas
-            height={dims.height}
+            height={dims.height - 50}
             width={dims.width}
             scene={props.scene}
             hands={handsContext!}

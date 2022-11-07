@@ -1,10 +1,11 @@
 import dynamic from 'next/dynamic'
 import p5Types from 'p5'
+import { BG } from '../modules/const'
 const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
   ssr: false,
 })
 
-import { CanvasProps } from '../types/CanvasProps'
+import { CanvasProps } from '../types'
 
 const Canvas = (props: CanvasProps) => {
   let font: p5Types.Font | null = null
@@ -20,7 +21,7 @@ const Canvas = (props: CanvasProps) => {
   }
 
   const draw = (p5: p5Types) => {
-    p5.background(255)
+    p5.background(BG())
     props.scene(p5, props.hands)
   }
 

@@ -1,6 +1,6 @@
 import { Landmark } from '@mediapipe/hands'
 import p5Types from 'p5'
-import { BLACK, BLUE, GREEN, RED, SHADOW } from '../../modules/const'
+import { BLACK, BLUE, GREEN, RED } from '../../modules/const'
 import { avg, getAvgCoordinates, queue } from '../../modules/p5'
 
 import { HandsContextType } from '../../types'
@@ -14,6 +14,8 @@ const scene = (p5: p5Types, hands: HandsContextType) => {
 }
 
 const drawRightPanel = (p5: p5Types, hand: Landmark[]) => {
+  const x_offset = 10
+
   let l = getAvgCoordinates(hand)
   const vertScale = p5.height - 120
   if (!l) l = [0.01, 0.01, 0.01]
@@ -24,29 +26,30 @@ const drawRightPanel = (p5: p5Types, hand: Landmark[]) => {
   const avgY = avg(y)
   const avgZ = avg(z)
 
+  p5.textSize(20)
   p5.fill(BLACK())
-  p5.text('0', 0, p5.height - 75)
-  p5.text('1', 0, 30)
+  p5.text('0', x_offset, p5.height - 75)
+  p5.text('1', x_offset, 30)
   p5.strokeWeight(2)
   p5.stroke(0)
-  p5.line(20, 25, 20, p5.height - 82)
-  p5.line(20, p5.height - 82, 360, p5.height - 82)
-  
+  p5.line(x_offset + 20, 25, x_offset + 20, p5.height - 82)
+  p5.line(x_offset + 20, p5.height - 82, x_offset + 360, p5.height - 82)
+
   p5.noStroke()
-  p5.fill(SHADOW(30))
-  p5.rect(20, 25, 340, p5.height - 107)
+  p5.fill(BLACK(30))
+  p5.rect(x_offset + 20, 25, x_offset + 340, p5.height - 107)
 
-  bar(p5, 40, avgX * vertScale, RED())
+  bar(p5, x_offset + 40, avgX * vertScale, RED())
   p5.fill(BLACK())
-  p5.text(`X: ${avgX.toFixed(2)}`, 40, p5.height - 40)
+  p5.text(`X: ${avgX.toFixed(2)}`, x_offset + 55, p5.height - 40)
 
-  bar(p5, 150, avgY * vertScale, GREEN())
+  bar(p5, x_offset + 150, avgY * vertScale, GREEN())
   p5.fill(BLACK())
-  p5.text(`Y: ${avgY.toFixed(2)}`, 150, p5.height - 40)
+  p5.text(`Y: ${avgY.toFixed(2)}`, x_offset + 165, p5.height - 40)
 
-  bar(p5, 260, avgZ * vertScale, BLUE())
+  bar(p5, x_offset + 260, avgZ * vertScale, BLUE())
   p5.fill(BLACK())
-  p5.text(`Z: ${avgZ.toFixed(2)}`, 260, p5.height - 40)
+  p5.text(`Z: ${avgZ.toFixed(2)}`, x_offset + 275, p5.height - 40)
 }
 
 const bar = (p5: p5Types, x: number, y: number, color: number[]) => {
@@ -54,7 +57,7 @@ const bar = (p5: p5Types, x: number, y: number, color: number[]) => {
   const maxH = p5.height - 80
 
   p5.noStroke()
-  p5.fill(SHADOW())
+  p5.fill(BLACK())
   p5.rect(x + 4, maxH - y + 4, w, y)
   p5.fill(color)
   p5.rect(x, maxH - y, w, y)

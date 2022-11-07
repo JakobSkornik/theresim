@@ -1,7 +1,8 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react'
 
 export type ContainerProps = {
-    children: ReactNode;
-    style: {[Key: string]: string} | null
-    title: string
+  title: string
+  children: ReactNode
+  icon?: string
+  style?: { [Key: string]: string }
 }

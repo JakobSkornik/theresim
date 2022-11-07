@@ -1,7 +1,7 @@
 import { Landmark } from '@mediapipe/hands'
 import p5Types from 'p5'
 
-import { BLACK, LIGHTGREEN, ORANGE, SHADOW } from '../const'
+import { BLACK, BLUE, RED, YELLOW } from '../const'
 
 export const drawLandmarks = (
   p5: p5Types,
@@ -32,7 +32,7 @@ export const drawLandmarks = (
       y <= height + offsetY
     ) {
       p5.stroke(158)
-      p5.fill(SHADOW())
+      p5.fill(BLACK())
       p5.rect(x + 4, y + 4, 10)
       p5.stroke(color)
       p5.fill(color)
@@ -55,29 +55,52 @@ export const getAverageZ = (hand: Landmark[]) => {
 }
 
 export const drawLegend = (p5: p5Types) => {
-  p5.strokeWeight(0)
-  p5.fill(SHADOW())
-  const x = 0
-  const y = p5.height - 210
-  p5.rect(x + 8, y + 8, 320, 200)
-  p5.fill(235)
-  p5.rect(x, y, 320, 200)
+  const x = 10
+  const y = p5.height - 150
 
-  p5.fill(SHADOW())
-  p5.rect(x + 14, y + 44, 40, 40)
-  p5.fill(ORANGE())
-  p5.rect(x + 10, y + 40, 40, 40)
+  p5.noStroke()
   p5.fill(BLACK())
-  p5.textSize(20)
-  p5.text('- RIGHT HAND', x + 70, y + 70)
+  p5.rect(x + 8, y + 8, 220, 140, 10)
+  p5.stroke(BLACK())
+  p5.strokeWeight(3)
+  p5.fill(YELLOW())
+  p5.rect(x, y, 220, 140, 10)
 
-  p5.fill(SHADOW())
-  p5.rect(x + 14, y + 124, 40, 40)
-  p5.fill(LIGHTGREEN())
-  p5.rect(x + 10, y + 120, 40, 40)
+  p5.noStroke()
   p5.fill(BLACK())
+  p5.rect(x + 14, y + 24, 40, 40)
+  p5.fill(RED())
+  p5.rect(x + 10, y + 20, 40, 40)
+  p5.fill(BLACK())
+  p5.textSize(28)
+  p5.text('- Right', x + 70, y + 50)
+
+  p5.fill(BLACK())
+  p5.rect(x + 14, y + 84, 40, 40)
+  p5.fill(BLUE())
+  p5.rect(x + 10, y + 80, 40, 40)
+  p5.fill(BLACK())
+  p5.textSize(28)
+  p5.text('- Left', x + 70, y + 110)
+}
+
+export const drawFPS = (p5: p5Types, y_offset: number = 60) => {
+  const x = p5.width - 110
+  const y = p5.height - y_offset
+
+  p5.noStroke()
+  p5.fill(BLACK())
+  p5.rect(x + 8, y + 8, 100, 50, 10)
+
+  p5.stroke(BLACK())
+  p5.strokeWeight(3)
+  p5.fill(YELLOW())
+  p5.rect(x, y, 100, 50, 10)
+
+  p5.fill(BLACK())
+  p5.noStroke()
   p5.textSize(20)
-  p5.text('- LEFT HAND', x + 70, y + 150)
+  p5.text(`${p5.frameRate().toFixed(0)} FPS`, x + 10, y + 33)
 }
 
 export const getAvgCoordinates = (hand: Landmark[]) => {

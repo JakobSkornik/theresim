@@ -1,69 +1,57 @@
-import React, { MouseEvent } from 'react'
+import React, { MouseEvent, useState } from 'react'
 import { useRouter } from 'next/router'
+
+import { blue, green, red, yellow } from '../modules/const'
+import Button from './Button'
 
 const sx = {
   container: {
     width: '100%',
     height: '60px',
     display: 'flex',
-    margin: '5px 0 40px 0',
+    margin: '5px 0 15px 0',
     justifyContent: 'center',
-  },
-  button: {
-    marginLeft: '15px',
-    boxShadow: '8px 8px gray',
   },
 }
 
 const Navbar = () => {
   const router = useRouter()
+  const [active, setActive] = useState(router.route)
 
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
+    setActive(e.currentTarget.value)
     router.push(e.currentTarget.value)
   }
 
   return (
     <div style={sx.container}>
-      <button
+      <Button
+        text="Freehands"
         value="/freehand"
-        type="button"
-        className="nes-btn is-primary"
-        style={sx.button}
         onClick={handleClick}
-      >
-        Freehands
-      </button>
-      <button
+        style={{
+          backgroundColor: '/freehand' == active ? yellow : yellow + '60',
+        }}
+      ></Button>
+      <Button
+        text="Coordinates"
         value="/coordinates"
-        type="button"
-        className="nes-btn is-success"
-        style={sx.button}
         onClick={handleClick}
-      >
-        Coordinates
-      </button>
-      <button
+        style={{ backgroundColor: '/coordinates' == active ? red : red + '60' }}
+      ></Button>
+      <Button
+        text="Detection"
         value="/detection"
-        type="button"
-        className="nes-btn is-warning"
-        style={sx.button}
         onClick={handleClick}
-      >
-        Detection
-      </button>
-      <button
+        style={{ backgroundColor: '/detection' == active ? blue : blue + '60' }}
+      ></Button>
+      <Button
+        text="Control"
         value="/control"
-        type="button"
-        className="nes-btn is-error"
-        style={sx.button}
         onClick={handleClick}
-      >
-        Control
-      </button>
-      <button type="button" className="nes-btn is-primary" style={sx.button}>
-        TODO
-      </button>
+        style={{ backgroundColor: '/control' == active ? green : green + '60' }}
+      ></Button>
     </div>
   )
 }

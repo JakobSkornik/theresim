@@ -23,10 +23,20 @@ const Control = () => {
   return (
     <div style={sx.grid}>
       <div style={sx.leftCol}>
-        <P5Container title={'Frequency'} mediapipe={true} scene={handScene} />
+        <P5Container
+          title={'Frequency'}
+          mediapipe={true}
+          scene={handScene}
+          icon="/controller.svg"
+        />
       </div>
       <div style={sx.rightCol}>
-        <P5Container title={'Amplitude'} mediapipe={false} scene={chartScene} />
+        <P5Container
+          title={'Amplitude'}
+          mediapipe={false}
+          scene={chartScene}
+          icon="/chart.svg"
+        />
       </div>
     </div>
   )

@@ -10,11 +10,11 @@ const sx = {
     justifyContent: 'space-between',
   },
   leftCol: {
-    width: 'calc(100% - 460px)',
+    width: 'calc(100% - 360px)',
     height: '100%',
   },
   rightCol: {
-    width: '450px',
+    width: '350px',
     height: '100%',
   },
 }
@@ -23,10 +23,20 @@ const Detection = () => {
   return (
     <div style={sx.grid}>
       <div style={sx.leftCol}>
-        <P5Container title={'Hands'} mediapipe={true} scene={handScene} />
+        <P5Container
+          title={'Hands'}
+          mediapipe={true}
+          scene={handScene}
+          icon="/controller.svg"
+        />
       </div>
       <div style={sx.rightCol}>
-        <P5Container title={'Z-Coordinate'} mediapipe={false} scene={chartScene} />
+        <P5Container
+          title={'Z-Coordinate'}
+          mediapipe={false}
+          scene={chartScene}
+          icon="/chart.svg"
+        />
       </div>
     </div>
   )

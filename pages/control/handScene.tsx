@@ -1,18 +1,11 @@
 import { Landmark } from '@mediapipe/hands'
 import p5Types from 'p5'
 
-import {
-  BLACK,
-  jointIdx,
-  GRAY,
-  GREEN,
-  LIGHTGREEN,
-  ORANGE,
-  SHADOW,
-} from '../../modules/const'
+import { BLACK, jointIdx, BROWN, YELLOW, BLUE, RED } from '../../modules/const'
 import {
   avg,
   clamp,
+  drawFPS,
   drawLandmarks,
   drawLegend,
   getAverageZ,
@@ -28,6 +21,7 @@ const scene = (p5: p5Types, hands: HandsContextType) => {
   drawAxes(p5, hands.leftHand, hands.rightHand)
   drawHands(p5, hands.leftHand, hands.rightHand)
   drawLegend(p5)
+  drawFPS(p5)
 }
 
 const drawAxes = (p5: p5Types, left: Landmark[], right: Landmark[]) => {
@@ -51,44 +45,45 @@ const drawAxes = (p5: p5Types, left: Landmark[], right: Landmark[]) => {
   let rx = avg(rightX)
 
   p5.noStroke()
-  p5.fill(SHADOW())
-  p5.rect(lx * p5.width + 4, leftHeight - 16, 30, 60)
-  p5.rect(rx * p5.width + 4, rightHeight - 16, 30, 60)
-  p5.rect(14, leftHeight + 4, p5.width - 20, 20)
-  p5.rect(14, rightHeight + 4, p5.width - 20, 20)
+  p5.fill(BLACK())
+  p5.rect(lx * p5.width + 4, leftHeight - 16, 30, 60, 10)
+  p5.rect(rx * p5.width + 4, rightHeight - 16, 30, 60, 10)
+  p5.rect(14, leftHeight + 4, p5.width - 20, 20, 10)
+  p5.rect(14, rightHeight + 4, p5.width - 20, 20, 10)
 
-  p5.fill(GRAY())
-  p5.rect(10, leftHeight, p5.width - 20, 20)
-  p5.rect(10, rightHeight, p5.width - 20, 20)
+  p5.fill(BROWN())
+  p5.rect(10, leftHeight, p5.width - 20, 20, 10)
+  p5.rect(10, rightHeight, p5.width - 20, 20, 10)
 
-  p5.fill(LIGHTGREEN(alphaL))
-  p5.rect(lx * p5.width, leftHeight - 20, 30, 60)
-  
-  p5.fill(ORANGE(alphaR))
-  p5.rect(rx * p5.width, rightHeight - 20, 30, 60)
+  p5.fill(BLUE(alphaL))
+  p5.rect(lx * p5.width, leftHeight - 20, 30, 60, 10)
+
+  p5.fill(RED(alphaR))
+  p5.rect(rx * p5.width, rightHeight - 20, 30, 60, 10)
 }
 
 const drawHands = (p5: p5Types, left: Landmark[], right: Landmark[]) => {
   const threshold = 0.53
-  const x = 350
+  const x = 300
   const y = p5.height - 210
-  const w = 580
+  const w = 630
   const h = 200
 
-  p5.strokeWeight(0)
-  p5.fill(SHADOW())
-  p5.rect(x + 8, y + 8, w, h)
+  p5.stroke(BLACK())
+  p5.strokeWeight(3)
+  p5.fill(BLACK())
+  p5.rect(x + 8, y + 8, w, h, 10)
 
-  p5.fill(235)
-  p5.rect(x, y, w / 2, h)
-  p5.rect(x + w / 2, y, w / 2, h)
+  p5.fill(YELLOW())
+  p5.rect(x, y, w / 2, h, 10, 0, 0, 10)
+  p5.rect(x + w / 2, y, w / 2, h, 0, 10, 10, 0)
 
   p5.fill(BLACK(5))
   p5.stroke(BLACK(30))
 
   if (left.length) {
     const z = getAverageZ(left)
-    let lColor = z > threshold ? LIGHTGREEN() : LIGHTGREEN(50)
+    let lColor = z > threshold ? BLUE() : BLUE(50)
     drawLandmarks(p5, jointIdx('palm'), lColor, left, x, y, w, h)
     drawLandmarks(p5, jointIdx('thumb'), lColor, left, x, y, w, h)
     drawLandmarks(p5, jointIdx('index'), lColor, left, x, y, w, h)
@@ -98,14 +93,14 @@ const drawHands = (p5: p5Types, left: Landmark[], right: Landmark[]) => {
 
     if (z > threshold) {
       p5.noStroke()
-      p5.fill(SHADOW(40))
-      p5.rect(x, y, w / 2, h)
+      p5.fill(BLACK(40))
+      p5.rect(x, y, w / 2, h, 10, 0, 0, 10)
     }
   }
 
   if (right.length) {
     const z = getAverageZ(right)
-    let lColor = z > threshold ? ORANGE() : ORANGE(50)
+    let lColor = z > threshold ? RED() : RED(50)
     drawLandmarks(p5, jointIdx('palm'), lColor, right, x, y, w, h)
     drawLandmarks(p5, jointIdx('thumb'), lColor, right, x, y, w, h)
     drawLandmarks(p5, jointIdx('index'), lColor, right, x, y, w, h)
@@ -115,8 +110,8 @@ const drawHands = (p5: p5Types, left: Landmark[], right: Landmark[]) => {
 
     if (z > threshold) {
       p5.noStroke()
-      p5.fill(SHADOW(30))
-      p5.rect(x + w / 2, y, w / 2, h)
+      p5.fill(BLACK(30))
+      p5.rect(x + w / 2, y, w / 2, h, 0, 10, 10, 0)
     }
   }
 }
