@@ -116,6 +116,88 @@ export const getChromaticIdx = (idx: number, white: boolean) => {
   }
 }
 
+export const getNotesInChord = (chord: number, type: string) => {
+  let third = 4
+  let fifth = 7
+  if (type !== 'maj') third = 3
+  if (type == 'dim') fifth = 6
+  let offsets = [chord, (chord + third) % 12, (chord + fifth) % 12]
+  let wKeys = []
+  let bKeys = []
+  for (let i = 0; i < 3; i++) {
+    let current = offsets[i] % 12
+    console.log(scale, current)
+    if (scale[current].color == 'white') {
+      wKeys.push(scale[current].idx)
+    } else {
+      bKeys.push(scale[current].idx)
+    }
+  }
+  return {
+    wKeys: wKeys,
+    bKeys: bKeys,
+  } as ScaleKeys
+}
+
+export const getOrderedChordsInScale = (start: number, major: boolean) => {
+  const offsets = major ? [2, 2, 1, 2, 2, 2, 1] : [2, 1, 2, 2, 1, 2, 2]
+  const result = []
+  let current = start
+  for (let i = 0; i < offsets.length; i++) {
+    result.push(scale[current].key)
+    current = (current + offsets[i]) % scale.length
+  }
+  return processScale(result, major)
+}
+
+export const processScale = (scale: string[], major: boolean) => {
+  scale = [...scale]
+  while (!allUnique(scale)) {
+    if (major && scale[0].charAt(1) == '#') {
+      const lastKey = scale[0].charAt(0)
+      scale[0] = getNextChar(scale[0].charAt(0)) + 'b'
+      scale[scale.length - 1] = lastKey + '#'
+    }
+    for (let i = scale.length - 1; i >= 0; i--) {
+      if (duplicate(scale[i].charAt(0), scale)) {
+        scale[i] = getNextChar(scale[i].charAt(0)) + 'b'
+      }
+    }
+  }
+  const minorChords = major ? [1, 2, 5] : [0, 3, 4]
+  const dimChord = major ? 6 : 1
+  scale[dimChord] = scale[dimChord] + 'dim'
+  for (let i = 0; i < 3; i++) {
+    scale[minorChords[i]] = scale[minorChords[i]] + 'm'
+  }
+  return scale
+}
+
+const allUnique = (scale: string[]) => {
+  for (let i = 0; i < scale.length; i++) {
+    if (duplicate(scale[i].charAt(0), scale)) {
+      return false
+    }
+  }
+  return true
+}
+
+const duplicate = (key: string, str: string[]) => {
+  let cnt = 0
+  for (let i = 0; i < str.length; i++) {
+    if (key == str[i].charAt(0)) {
+      cnt++
+    }
+  }
+  if (cnt > 1) return true
+  return false
+}
+
+const getNextChar = (char: string) => {
+  if (char == 'G') return 'A'
+  return String.fromCharCode(char.charCodeAt(0) + 1)
+}
+
 export const getNotesInScale = (start: number, major: boolean) => {
   const offsets = major ? [2, 2, 1, 2, 2, 2, 1] : [2, 1, 2, 2, 1, 2, 2]
   let wKeys = []

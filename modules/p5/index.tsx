@@ -11,8 +11,8 @@ export const drawLandmarks = (
   hand: Landmark[],
   offsetX: number = 0,
   offsetY: number = 0,
-  width: number | null = null,
-  height: number | null = null,
+  width?: number,
+  height?: number,
 ) => {
   if (!width) {
     width = p5.width
@@ -114,10 +114,14 @@ let y_dir = true
 let currentView = 'none'
 
 const getRandomInt = (max: number) => {
-  return Math.floor(Math.random() * max) + 1;
+  return Math.floor(Math.random() * max) + 1
 }
 
-export const drawNoHandsWarning = (p5: p5Types, hands: HandsContextType, view: string) => {
+export const drawNoHandsWarning = (
+  p5: p5Types,
+  hands: HandsContextType,
+  view: string,
+) => {
   if (view != currentView) {
     inAnim = false
     step = 0
@@ -138,7 +142,7 @@ export const drawNoHandsWarning = (p5: p5Types, hands: HandsContextType, view: s
   if (!inAnim) inAnim = true
   step++
   if (step < waitLen) return
-
+  p5.background(RED(40))
   const w = 500
   const h = 200
 
