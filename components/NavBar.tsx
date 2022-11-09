@@ -17,7 +17,7 @@ const sx = {
     width: '100%',
     height: '60px',
     paddingBottom: '8px',
-    overflowX: 'scroll' as 'scroll',
+    overflowX: 'hidden' as 'hidden',
     display: 'flex',
     margin: '5px 0 5px 0',
     justifyContent: 'left',

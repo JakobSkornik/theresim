@@ -89,7 +89,11 @@ export const drawLegend = (p5: p5Types) => {
   p5.text('- Left', x + 70, y + 110)
 }
 
-export const drawFPS = (p5: p5Types, y_offset: number = 60, x_offset: number = 0) => {
+export const drawFPS = (
+  p5: p5Types,
+  y_offset: number = 60,
+  x_offset: number = 0,
+) => {
   const x = p5.width - 110 - x_offset
   const y = p5.height - y_offset
 
@@ -126,26 +130,31 @@ export const drawNoHandsWarning = (
   hands: HandsContextType,
   view: string,
 ) => {
-  if (view != currentView) {
-    inAnim = false
-    step = 0
-    lastX = 0
-    lastY = 0
-    currentView = view
-  }
-
-  if (hands.leftHand.length || hands.rightHand.length) {
-    if (inAnim) {
+  let text = 'No webcam detected. Please check your webcam status.'
+  if (hands.camReady) {
+    text = 'No hands detected. Please raise your hands in front of the camera.'
+    if (view != currentView) {
       inAnim = false
       step = 0
       lastX = 0
       lastY = 0
+      currentView = view
     }
-    return
+
+    if (hands.leftHand.length || hands.rightHand.length) {
+      if (inAnim) {
+        inAnim = false
+        step = 0
+        lastX = 0
+        lastY = 0
+      }
+      return
+    }
+    if (!inAnim) inAnim = true
+    step++
+    if (step < waitLen) return
   }
-  if (!inAnim) inAnim = true
-  step++
-  if (step < waitLen) return
+
   p5.background(RED(40))
   const w = 500
   const h = 200
@@ -197,13 +206,7 @@ export const drawNoHandsWarning = (
   p5.textSize(20)
   p5.fill(BLACK())
   p5.noStroke()
-  p5.text(
-    'No hands detected. Please raise your hands in front of the camera.',
-    x + 120,
-    y + 80,
-    400,
-    100,
-  )
+  p5.text(text, x + 120, y + 80, 400, 100)
 
   lastX = x
   lastY = y

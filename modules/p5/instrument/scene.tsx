@@ -1,12 +1,9 @@
-import { Landmark } from '@mediapipe/hands'
 import p5Types from 'p5'
 import { drawFPS } from '..'
 
-import { HandsContextType } from '../../../types'
 import { KeyLocation } from '../../../types/KeyLocation'
 import { ScaleKeys } from '../../../types/ScaleKeys'
 import {
-  BG,
   BLACK,
   CURACAO,
   getChromaticIdx,
@@ -17,17 +14,16 @@ import {
   PENCIL,
   RED,
   WHITE,
-  YELLOW,
 } from '../../const'
 
 let selected: number | null = 0
 let selectedChord: number | null = null
-let selectedScale: ScaleKeys | null = null
+let selectedScale: ScaleKeys | null = getNotesInScale(0, true)
 let keyLocations: KeyLocation[] = []
 let chordLocations: KeyLocation[] = []
 let noteNames: string[] = []
 
-const scene = (p5: p5Types, hands: HandsContextType) => {
+const scene = (p5: p5Types) => {
   drawFPS(p5)
   drawKeyboard(p5, 30, 10)
   drawChords(p5)

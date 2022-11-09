@@ -24,7 +24,7 @@ const P5Container = (props: P5ContainerProps) => {
   const handsContext = useHandsContext()
   const videoElement = createRef<HTMLVideoElement>()
   const parentRef = useRef<HTMLDivElement>(null)
-  
+
   useResizeObserver(parentRef, (entry) => {
     if (!parentRef.current) return
 
@@ -42,7 +42,9 @@ const P5Container = (props: P5ContainerProps) => {
     if (!parentRef.current) return
 
     if (props.mediapipe && handsContext) {
-      initialize(handsContext, videoElement)
+      initialize(handsContext, videoElement).then((res) => {
+        if (res) handsContext.updateCamReady(true)
+      })
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 

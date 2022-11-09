@@ -39,9 +39,9 @@ const sx = {
     paddingLeft: '10px',
     paddingRight: '10px',
     position: 'fixed' as 'fixed',
-    left: 'calc(50vw - 75px)',
+    left: 'calc(50vw - 100px)',
     height: '60px',
-    width: '150px',
+    width: '200px',
     backdropFilter: 'blur(3px)',
     border: '1px solid white',
     borderFilter: 'blur(3px)',
@@ -95,6 +95,11 @@ function AppWrapper(props: Props) {
   const onToggleInfo = () => {
     setInfo(!infoOpen)
   }
+
+  const onRequestWebcamPermission = () => {
+    navigator.mediaDevices.getUserMedia({video:true}).then(()=>{});
+  }
+
   return (
     <Container title="Theremin" style={sx.container} icon="theremin.png">
       <Navbar />
@@ -134,6 +139,16 @@ function AppWrapper(props: Props) {
           <Button
             style={sx.btn}
             text=""
+            value="webcam"
+            onClick={onRequestWebcamPermission}
+            icon="webcam.svg"
+            iconSize={40}
+          />
+        )}
+        {ctrlPanel && (
+          <Button
+            style={sx.btn}
+            text=""
             value="info"
             onClick={onToggleInfo}
             icon="info.svg"
@@ -153,6 +168,7 @@ function AppWrapper(props: Props) {
 
 export default function App({ Component, pageProps }: AppProps) {
   const [fullscreen, toggleFullscreen] = useState(false)
+  const [camReady, setCamReady] = useState(false)
   const [rightHand, setRightHand] = useState<Landmark[]>([])
   const [leftHand, setLeftHand] = useState<Landmark[]>([])
 
@@ -173,10 +189,12 @@ export default function App({ Component, pageProps }: AppProps) {
       <HandsProvider
         value={
           {
-            rightHand,
-            leftHand,
-            updateRightHand,
-            updateLeftHand,
+            camReady: camReady,
+            updateCamReady: setCamReady,
+            rightHand: rightHand,
+            leftHand: leftHand,
+            updateRightHand: updateRightHand,
+            updateLeftHand: updateLeftHand,
           } as HandsContextType
         }
       >
