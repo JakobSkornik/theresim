@@ -61,7 +61,7 @@ const sx = {
 
 function AppWrapper(props: Props) {
   const router = useRouter()
-  const { toggleFullscreen } = useFullScreenContext()
+  const { fullscreen, toggleFullscreen } = useFullScreenContext()
 
   const [ctrlPanel, setCtrlPanel] = useState(true)
   const [infoOpen, setInfo] = useState(false)
@@ -126,7 +126,7 @@ function AppWrapper(props: Props) {
             text=""
             value="fullscreen"
             onClick={onToggleFullscreen}
-            icon="expand.svg"
+            icon={fullscreen ? "close.svg":"expand.svg" }
             iconSize={40}
           />
         )}
