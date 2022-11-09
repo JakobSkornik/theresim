@@ -2,11 +2,26 @@ import P5Container from '../../components/P5Container'
 import handScene from '../../modules/p5/control/handScene'
 import chartScene from '../../modules/p5/control/chartScene'
 import { Props } from '../../types'
+import { useFullScreenContext } from '../../context'
 
 const sx = {
-  grid: {
-    width: '100%',
-    height: '100%',
+  fullscreen: {
+    position: 'absolute' as 'absolute',
+    top: '1px',
+    left: '0',
+    height: 'calc(100vh - 10px)',
+    width: 'calc(100vw - 20px)',
+    transition: 'all 0.5s ease-in-out',
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  windowed: {
+    position: 'absolute' as 'absolute',
+    top: '130px',
+    left: '10px',
+    height: 'calc(100vh - 155px)',
+    width: 'calc(100vw - 45px)',
+    transition: 'all 0.5s ease-in-out',
     display: 'flex',
     justifyContent: 'space-between',
   },
@@ -20,9 +35,11 @@ const sx = {
   },
 }
 
-const Control = (props: Props) => {
+const Control = () => {
+  const { fullscreen } = useFullScreenContext()
+
   return (
-    <div style={sx.grid}>
+    <div style={fullscreen ? sx.fullscreen : sx.windowed}>
       <div style={sx.leftCol}>
         <P5Container
           title={'Frequency'}

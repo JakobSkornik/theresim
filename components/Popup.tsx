@@ -1,6 +1,4 @@
-import Image from 'next/image'
-
-import { red, tintedWhite, yellow } from '../modules/const'
+import { blue, tintedWhite } from '../modules/const'
 import { PopupProps } from '../types/PopupProps'
 import Button from './Button'
 
@@ -8,7 +6,7 @@ const sx = {
   container: {
     position: 'fixed' as 'fixed',
     top: '75px',
-    left: 'calc(100vw - 430px)',
+    left: 'calc(100vw - 423px)',
     width: '400px',
     backgroundColor: tintedWhite,
     boxShadow: '8px 8px black',
@@ -21,7 +19,7 @@ const sx = {
   title: {
     height: '45px',
     width: '100%',
-    backgroundColor: yellow,
+    backgroundColor: blue,
     color: 'black',
     borderTopLeftRadius: '5px',
     borderTopRightRadius: '5px',

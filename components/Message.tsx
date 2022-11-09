@@ -7,16 +7,17 @@ import { MessageProps } from '../types'
 const sx = {
   container: {
     position: 'fixed' as 'fixed',
-    top: '75px',
-    left: 'calc(100vw - 380px)',
+    top: 'calc(100vh - 275px)',
+    left: 'calc(50vw - 150px)',
     width: '300px',
+    height: '175px',
     backgroundColor: tintedWhite,
     boxShadow: '8px 8px black',
     borderRadius: '10px',
     border: '3px solid black',
     marginTop: '0',
-    transition: 'opacity 1s',
-    pointerEvents: 'none' as 'none'
+    transition: 'opacity 0.5s',
+    pointerEvents: 'none' as 'none',
   },
   title: {
     height: '45px',
@@ -30,15 +31,14 @@ const sx = {
     display: 'flex',
     justifyContent: 'space-between',
   },
-  titleText: {
-    marginLeft: '10px',
-  },
   text: {
     fontSize: '20px',
-    marginTop: '0px',
-    marginLeft: '10px',
+    whiteSpace: 'pre-wrap' as 'pre-wrap',
   },
   icon: {
+    position: 'fixed' as 'fixed',
+    top: 'calc(100vh - 165px)',
+    left: 'calc(50vw - 45px)',
     margin: '5px 10px 10px 20px',
     filter: 'drop-shadow(4px 4px rgba(0, 0, 0, 1))',
   },
@@ -49,21 +49,21 @@ const Message = (props: MessageProps) => {
     <div style={{ ...props.style, ...sx.container }}>
       <div style={sx.title}>
         <span>
-          <h1 style={sx.titleText}>Info</h1>
+          <h1>Info</h1>
         </span>
-        {props.icon && (
-          <span>
-            <Image
-              src={`/icons/${props.icon}`}
-              alt="MsgIcon"
-              width={props.iconSize ?? 30}
-              height={props.iconSize ?? 30}
-              style={sx.icon}
-            />
-          </span>
-        )}
       </div>
       <span style={sx.text}>{props.text}</span>
+      {props.icon && (
+        <span>
+          <Image
+            src={`/icons/${props.icon}`}
+            alt="MsgIcon"
+            width={props.iconSize ?? 30}
+            height={props.iconSize ?? 30}
+            style={sx.icon}
+          />
+        </span>
+      )}
     </div>
   )
 }

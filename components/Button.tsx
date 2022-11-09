@@ -5,8 +5,6 @@ import { ButtonProps } from '../types'
 
 const sx = {
   button: {
-    padding: '3px 10px 10px 10px',
-    marginLeft: '15px',
     fontSize: '30px',
     borderRadius: '10px',
     border: '3px solid black',
@@ -14,7 +12,6 @@ const sx = {
     outline: 'none',
   },
   icon: {
-    margin: '5px 10px 10px 20px',
     filter: 'drop-shadow(4px 4px rgba(0, 0, 0, 1))',
   },
 }

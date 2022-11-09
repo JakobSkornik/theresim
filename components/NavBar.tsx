@@ -1,7 +1,15 @@
 import React, { MouseEvent, useState } from 'react'
 import { useRouter } from 'next/router'
 
-import { darkBlue, geranimo, mountain, peachy, pink, purple, rosy } from '../modules/const'
+import {
+  darkBlue,
+  geranimo,
+  mountain,
+  peachy,
+  pink,
+  purple,
+  rosy,
+} from '../modules/const'
 import Button from './Button'
 
 const sx = {
@@ -13,6 +21,10 @@ const sx = {
     display: 'flex',
     margin: '5px 0 5px 0',
     justifyContent: 'left',
+  },
+  btn: {
+    padding: '3px 10px 10px 10px',
+    marginLeft: '15px',
   },
 }
 
@@ -33,8 +45,12 @@ const Navbar = () => {
         value="/freehand"
         onClick={handleClick}
         style={{
-          backgroundColor: '/freehand' == active ? rosy : rosy + '70',
-          boxShadow: `8px 8px ${'/freehand' == active ? '#596275' : 'black'}`,
+          ...sx.btn,
+          ...{
+            marginLeft: '7px',
+            backgroundColor: '/freehand' == active ? rosy : rosy + '70',
+            boxShadow: `8px 8px ${'/freehand' == active ? '#596275' : 'black'}`,
+          },
         }}
       ></Button>
       <Button
@@ -42,10 +58,13 @@ const Navbar = () => {
         value="/coordinates"
         onClick={handleClick}
         style={{
-          backgroundColor: '/coordinates' == active ? peachy : peachy + '70',
-          boxShadow: `8px 8px ${
-            '/coordinates' == active ? '#596275' : 'black'
-          }`,
+          ...sx.btn,
+          ...{
+            backgroundColor: '/coordinates' == active ? peachy : peachy + '70',
+            boxShadow: `8px 8px ${
+              '/coordinates' == active ? '#596275' : 'black'
+            }`,
+          },
         }}
       ></Button>
       <Button
@@ -53,8 +72,13 @@ const Navbar = () => {
         value="/detection"
         onClick={handleClick}
         style={{
-          backgroundColor: '/detection' == active ? pink : pink + '70',
-          boxShadow: `8px 8px ${'/detection' == active ? '#596275' : 'black'}`,
+          ...sx.btn,
+          ...{
+            backgroundColor: '/detection' == active ? pink : pink + '70',
+            boxShadow: `8px 8px ${
+              '/detection' == active ? '#596275' : 'black'
+            }`,
+          },
         }}
       ></Button>
       <Button
@@ -62,8 +86,11 @@ const Navbar = () => {
         value="/control"
         onClick={handleClick}
         style={{
-          backgroundColor: '/control' == active ? purple : purple + '70',
-          boxShadow: `8px 8px ${'/control' == active ? '#596275' : 'black'}`,
+          ...sx.btn,
+          ...{
+            backgroundColor: '/control' == active ? purple : purple + '70',
+            boxShadow: `8px 8px ${'/control' == active ? '#596275' : 'black'}`,
+          },
         }}
       ></Button>
       <Button
@@ -71,8 +98,11 @@ const Navbar = () => {
         value="/keyboard"
         onClick={handleClick}
         style={{
-          backgroundColor: '/keyboard' == active ? mountain : mountain + '70',
-          boxShadow: `8px 8px ${'/keyboard' == active ? '#596275' : 'black'}`,
+          ...sx.btn,
+          ...{
+            backgroundColor: '/keyboard' == active ? mountain : mountain + '70',
+            boxShadow: `8px 8px ${'/keyboard' == active ? '#596275' : 'black'}`,
+          },
         }}
       ></Button>
       <Button
@@ -80,8 +110,14 @@ const Navbar = () => {
         value="/instrument"
         onClick={handleClick}
         style={{
-          backgroundColor: '/instrument' == active ? darkBlue : darkBlue + '70',
-          boxShadow: `8px 8px ${'/instrument' == active ? '#596275' : 'black'}`,
+          ...sx.btn,
+          ...{
+            backgroundColor:
+              '/instrument' == active ? darkBlue : darkBlue + '70',
+            boxShadow: `8px 8px ${
+              '/instrument' == active ? '#596275' : 'black'
+            }`,
+          },
         }}
       ></Button>
       <Button
@@ -89,8 +125,11 @@ const Navbar = () => {
         value="/demo"
         onClick={handleClick}
         style={{
-          backgroundColor: '/demo' == active ? geranimo : geranimo + '70',
-          boxShadow: `8px 8px ${'/demo' == active ? '#596275' : 'black'}`,
+          ...sx.btn,
+          ...{
+            backgroundColor: '/demo' == active ? geranimo : geranimo + '70',
+            boxShadow: `8px 8px ${'/demo' == active ? '#596275' : 'black'}`,
+          },
         }}
       ></Button>
     </div>

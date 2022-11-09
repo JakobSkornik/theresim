@@ -5,6 +5,7 @@ export type P5ContainerProps = {
   title: string
   mediapipe: boolean
   icon?: string
+  style?: { [Key: string]: string }
   scene: (p5: p5Types, hands: HandsContextType) => void
   onClick?: (p5: p5Types) => void
 }

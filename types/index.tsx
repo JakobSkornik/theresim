@@ -1,6 +1,7 @@
 import { ButtonProps } from './ButtonProps'
 import { CanvasProps } from './CanvasProps'
 import { ContainerProps } from './ContainerProps'
+import { FullscreenContextType } from './FullscreenContextType'
 import { HandsContextType } from './HandsContextType'
 import { KeyLocation } from './KeyLocation'
 import { MessageProps } from './MessageProps'
@@ -12,6 +13,7 @@ import { ScaleKeys } from './ScaleKeys'
 export type { ButtonProps }
 export type { CanvasProps }
 export type { ContainerProps }
+export type { FullscreenContextType }
 export type { HandsContextType }
 export type { KeyLocation }
 export type { MessageProps }

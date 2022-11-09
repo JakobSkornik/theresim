@@ -27,6 +27,9 @@ const Canvas = (props: CanvasProps) => {
   }
 
   const onResize = (p5: p5Types) => {
+    if (p5.width == props.width && p5.height == props.height) {
+      return
+    }
     p5.resizeCanvas(props.width, props.height)
   }
 

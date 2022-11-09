@@ -129,7 +129,6 @@ export const getNotesInChord = (chord: number, type: string) => {
   let bKeys = []
   for (let i = 0; i < 3; i++) {
     let current = offsets[i] % 12
-    console.log(scale, current)
     if (scale[current].color == 'white') {
       wKeys.push(scale[current].idx)
     } else {

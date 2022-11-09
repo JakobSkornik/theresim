@@ -158,8 +158,10 @@ export const drawNoHandsWarning = (
     lastY = getRandomInt(maxY - 1)
   }
 
-  if (lastX == 0 || lastX == maxX) x_dir = !x_dir
-  if (lastY == 0 || lastY == maxY) y_dir = !y_dir
+  if (lastX <= 0) x_dir = true
+  if (lastX >= maxX) x_dir = false
+  if (lastY <= 0) y_dir = true
+  if (lastY >= maxY) y_dir = false
 
   const x = x_dir ? lastX + 1 : lastX - 1
   const y = y_dir ? lastY + 1 : lastY - 1

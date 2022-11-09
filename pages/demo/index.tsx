@@ -1,5 +1,6 @@
 import p5Types from 'p5'
 import P5Container from '../../components/P5Container'
+import { useFullScreenContext } from '../../context'
 import { BG, BLACK, RED } from '../../modules/const'
 
 const scene = (p5: p5Types) => {
@@ -70,9 +71,31 @@ const draw404 = (p5: p5Types) => {
   lastY = y
 }
 
+const sx = {
+  fullscreen: {
+    position: 'absolute' as 'absolute',
+    top: '1px',
+    left: '0',
+    height: 'calc(100vh - 10px)',
+    width: 'calc(100vw - 20px)',
+    transition: 'all 0.5s ease-in-out',
+  },
+  windowed: {
+    position: 'absolute' as 'absolute',
+    top: '130px',
+    left: '10px',
+    height: 'calc(100vh - 155px)',
+    width: 'calc(100vw - 45px)',
+    transition: 'all 0.5s ease-in-out',
+  },
+}
+
 const Demo = () => {
+  const { fullscreen } = useFullScreenContext()
+
   return (
     <P5Container
+      style={fullscreen ? sx.fullscreen : sx.windowed}
       title={'Demo'}
       mediapipe={false}
       scene={scene}
