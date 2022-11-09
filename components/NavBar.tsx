@@ -1,7 +1,7 @@
 import React, { MouseEvent, useState } from 'react'
 import { useRouter } from 'next/router'
 
-import { mountain, peachy, pink, purple, rosy } from '../modules/const'
+import { darkBlue, geranimo, mountain, peachy, pink, purple, rosy } from '../modules/const'
 import Button from './Button'
 
 const sx = {
@@ -9,10 +9,10 @@ const sx = {
     width: '100%',
     height: '60px',
     paddingBottom: '8px',
-    overflowX: 'auto' as 'auto',
+    overflowX: 'scroll' as 'scroll',
     display: 'flex',
     margin: '5px 0 5px 0',
-    justifyContent: 'center',
+    justifyContent: 'left',
   },
 }
 
@@ -67,12 +67,30 @@ const Navbar = () => {
         }}
       ></Button>
       <Button
-        text="Keyboard"
+        text="Piano"
         value="/keyboard"
         onClick={handleClick}
         style={{
           backgroundColor: '/keyboard' == active ? mountain : mountain + '70',
           boxShadow: `8px 8px ${'/keyboard' == active ? '#596275' : 'black'}`,
+        }}
+      ></Button>
+      <Button
+        text="Instrument"
+        value="/instrument"
+        onClick={handleClick}
+        style={{
+          backgroundColor: '/instrument' == active ? darkBlue : darkBlue + '70',
+          boxShadow: `8px 8px ${'/instrument' == active ? '#596275' : 'black'}`,
+        }}
+      ></Button>
+      <Button
+        text="Demo"
+        value="/demo"
+        onClick={handleClick}
+        style={{
+          backgroundColor: '/demo' == active ? geranimo : geranimo + '70',
+          boxShadow: `8px 8px ${'/demo' == active ? '#596275' : 'black'}`,
         }}
       ></Button>
     </div>

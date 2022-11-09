@@ -1,6 +1,7 @@
+import Image from 'next/image'
 import React from 'react'
 
-import { ButtonProps } from '../types/ButtonProps'
+import { ButtonProps } from '../types'
 
 const sx = {
   button: {
@@ -12,6 +13,10 @@ const sx = {
     color: 'black',
     outline: 'none',
   },
+  icon: {
+    margin: '5px 10px 10px 20px',
+    filter: 'drop-shadow(4px 4px rgba(0, 0, 0, 1))',
+  },
 }
 
 const Button = (props: ButtonProps) => {
@@ -22,7 +27,18 @@ const Button = (props: ButtonProps) => {
       style={{ ...sx.button, ...props.style }}
       onClick={props.onClick}
     >
-      {props.text}
+      {props.icon && (
+        <span>
+          <Image
+            src={`/icons/${props.icon}`}
+            alt="BtnIcon"
+            width={props.iconSize ?? 30}
+            height={props.iconSize ?? 30}
+            style={sx.icon}
+          />
+        </span>
+      )}
+      <span>{props.text}</span>
     </button>
   )
 }

@@ -1,7 +1,7 @@
 import { Landmark } from '@mediapipe/hands'
 import p5Types from 'p5'
 
-import { BLACK, jointIdx, GRAY, BLUE, RED } from '../../const'
+import { BLACK, lmIdx, GRAY, BLUE, RED } from '../../const'
 import {
   drawFPS,
   drawLandmarks,
@@ -26,21 +26,21 @@ const drawHands = (p5: p5Types, left: Landmark[], right: Landmark[]) => {
   p5.strokeWeight(1)
   if (left.length) {
     let color = getAverageZ(left) > threshold ? BLUE() : GRAY()
-    drawLandmarks(p5, jointIdx('palm'), color, left)
-    drawLandmarks(p5, jointIdx('thumb'), color, left)
-    drawLandmarks(p5, jointIdx('index'), color, left)
-    drawLandmarks(p5, jointIdx('middle'), color, left)
-    drawLandmarks(p5, jointIdx('ring'), color, left)
-    drawLandmarks(p5, jointIdx('pinky'), color, left)
+    drawLandmarks(p5, lmIdx('palm'), color, left)
+    drawLandmarks(p5, lmIdx('thumb'), color, left)
+    drawLandmarks(p5, lmIdx('index'), color, left)
+    drawLandmarks(p5, lmIdx('middle'), color, left)
+    drawLandmarks(p5, lmIdx('ring'), color, left)
+    drawLandmarks(p5, lmIdx('pinky'), color, left)
   }
   if (right.length) {
     let color = getAverageZ(right) > threshold ? RED() : GRAY()
-    drawLandmarks(p5, jointIdx('palm'), color, right)
-    drawLandmarks(p5, jointIdx('thumb'), color, right)
-    drawLandmarks(p5, jointIdx('index'), color, right)
-    drawLandmarks(p5, jointIdx('middle'), color, right)
-    drawLandmarks(p5, jointIdx('ring'), color, right)
-    drawLandmarks(p5, jointIdx('pinky'), color, right)
+    drawLandmarks(p5, lmIdx('palm'), color, right)
+    drawLandmarks(p5, lmIdx('thumb'), color, right)
+    drawLandmarks(p5, lmIdx('index'), color, right)
+    drawLandmarks(p5, lmIdx('middle'), color, right)
+    drawLandmarks(p5, lmIdx('ring'), color, right)
+    drawLandmarks(p5, lmIdx('pinky'), color, right)
   }
 }
 

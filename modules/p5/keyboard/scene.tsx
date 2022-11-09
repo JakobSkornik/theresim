@@ -15,6 +15,7 @@ import {
 } from '../../const'
 import { KeyLocation } from '../../../types/KeyLocation'
 import { ScaleKeys } from '../../../types/ScaleKeys'
+import { drawFPS } from '..'
 
 let major = true
 let showChords = false
@@ -34,6 +35,17 @@ const scene = (p5: p5Types) => {
   drawChordSwitch(p5)
   drawChords(p5)
   drawScaleLegend(p5)
+  drawFPS(p5)
+}
+
+export const onClick = (p5: p5Types) => {
+  const x = p5.mouseX
+  const y = p5.mouseY
+
+  if (checkMajorBtnPress(x, y)) return
+  if (checkChordBtnPress(x, y)) return
+  checkChordSelectPress(x, y)
+  checkPianoKeyPress(x, y)
 }
 
 const drawScaleLegend = (p5: p5Types) => {
@@ -255,7 +267,7 @@ const drawChordSwitch = (p5: p5Types) => {
   const x = (2 * p5.width) / 3 + 100
   const w = 50
   const h = 50
-  const y = (2 * p5.height) / 3 - h + 10
+  const y = 300
 
   p5.noStroke()
   p5.fill(BLACK())
@@ -290,16 +302,6 @@ const drawChordSwitch = (p5: p5Types) => {
   }
 }
 
-export const onClick = (p5: p5Types) => {
-  const x = p5.mouseX
-  const y = p5.mouseY
-
-  if (checkMajorBtnPress(x, y)) return
-  if (checkChordBtnPress(x, y)) return
-  checkChordSelectPress(x, y)
-  checkPianoKeyPress(x, y)
-}
-
 const checkMajorBtnPress = (x: number, y: number) => {
   let hit = false
   if (
@@ -312,6 +314,8 @@ const checkMajorBtnPress = (x: number, y: number) => {
     major = !major
     if (selected != null) {
       selectedScale = getNotesInScale(selected, major)
+      selectedChord = null
+      selectedChordNotes = null
     }
     hit = true
   }
@@ -330,6 +334,8 @@ const checkChordBtnPress = (x: number, y: number) => {
     y <= chordsSwitchLocation.y2
   ) {
     showChords = !showChords
+    selectedChord = null
+    selectedChordNotes = null
     hit = true
   }
 

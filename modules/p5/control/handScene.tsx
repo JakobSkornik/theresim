@@ -3,7 +3,7 @@ import p5Types from 'p5'
 
 import {
   BLACK,
-  jointIdx,
+  lmIdx,
   BROWN,
   YELLOW,
   BLUE,
@@ -16,6 +16,7 @@ import {
   drawFPS,
   drawLandmarks,
   drawLegend,
+  drawNoHandsWarning,
   getAverageZ,
   getAvgCoordinates,
   queue,
@@ -30,6 +31,7 @@ const scene = (p5: p5Types, hands: HandsContextType) => {
   drawHands(p5, hands.leftHand, hands.rightHand)
   drawLegend(p5)
   drawFPS(p5)
+  drawNoHandsWarning(p5, hands, 'control')
 }
 
 const drawAxes = (p5: p5Types, left: Landmark[], right: Landmark[]) => {
@@ -76,6 +78,7 @@ const drawHands = (p5: p5Types, left: Landmark[], right: Landmark[]) => {
   const y = p5.height - 212
   const w = 630
   const h = 200
+  const s = 3
 
   p5.stroke(BLACK())
   p5.strokeWeight(3)
@@ -100,12 +103,12 @@ const drawHands = (p5: p5Types, left: Landmark[], right: Landmark[]) => {
       p5.rect(x, y, w / 2, h, 10, 0, 0, 10)
     }
 
-    drawLandmarks(p5, jointIdx('palm'), lColor, left, x, y, w, h)
-    drawLandmarks(p5, jointIdx('thumb'), lColor, left, x, y, w, h)
-    drawLandmarks(p5, jointIdx('index'), lColor, left, x, y, w, h)
-    drawLandmarks(p5, jointIdx('middle'), lColor, left, x, y, w, h)
-    drawLandmarks(p5, jointIdx('ring'), lColor, left, x, y, w, h)
-    drawLandmarks(p5, jointIdx('pinky'), lColor, left, x, y, w, h)
+    drawLandmarks(p5, lmIdx('palm'), lColor, left, x, y, w / 2, h, s)
+    drawLandmarks(p5, lmIdx('thumb'), lColor, left, x, y, w / 2, h, s)
+    drawLandmarks(p5, lmIdx('index'), lColor, left, x, y, w / 2, h, s)
+    drawLandmarks(p5, lmIdx('middle'), lColor, left, x, y, w / 2, h, s)
+    drawLandmarks(p5, lmIdx('ring'), lColor, left, x, y, w / 2, h, s)
+    drawLandmarks(p5, lmIdx('pinky'), lColor, left, x, y, w / 2, h, s)
   }
 
   if (right.length) {
@@ -119,12 +122,12 @@ const drawHands = (p5: p5Types, left: Landmark[], right: Landmark[]) => {
       p5.rect(x + w / 2, y, w / 2, h, 0, 10, 10, 0)
     }
 
-    drawLandmarks(p5, jointIdx('palm'), lColor, right, x, y, w, h)
-    drawLandmarks(p5, jointIdx('thumb'), lColor, right, x, y, w, h)
-    drawLandmarks(p5, jointIdx('index'), lColor, right, x, y, w, h)
-    drawLandmarks(p5, jointIdx('middle'), lColor, right, x, y, w, h)
-    drawLandmarks(p5, jointIdx('ring'), lColor, right, x, y, w, h)
-    drawLandmarks(p5, jointIdx('pinky'), lColor, right, x, y, w, h)
+    drawLandmarks(p5, lmIdx('palm'), lColor, right, x + w / 2, y, w / 2, h, s)
+    drawLandmarks(p5, lmIdx('thumb'), lColor, right, x + w / 2, y, w / 2, h, s)
+    drawLandmarks(p5, lmIdx('index'), lColor, right, x + w / 2, y, w / 2, h, s)
+    drawLandmarks(p5, lmIdx('middle'), lColor, right, x + w / 2, y, w / 2, h, s)
+    drawLandmarks(p5, lmIdx('ring'), lColor, right, x + w / 2, y, w / 2, h, s)
+    drawLandmarks(p5, lmIdx('pinky'), lColor, right, x + w / 2, y, w / 2, h, s)
   }
 }
 export default scene

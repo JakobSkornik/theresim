@@ -13,12 +13,16 @@ export const drawLandmarks = (
   offsetY: number = 0,
   width?: number,
   height?: number,
+  size?: number,
 ) => {
   if (!width) {
     width = p5.width
   }
   if (!height) {
     height = p5.height
+  }
+  if (!size) {
+    size = 10
   }
 
   p5.noFill()
@@ -34,10 +38,10 @@ export const drawLandmarks = (
     ) {
       p5.stroke(158)
       p5.fill(BLACK())
-      p5.rect(x + 4, y + 4, 10)
+      p5.rect(x + 4, y + 4, size)
       p5.stroke(color)
       p5.fill(color)
-      p5.rect(x, y, 10)
+      p5.rect(x, y, size)
     }
   }
 }
@@ -85,8 +89,8 @@ export const drawLegend = (p5: p5Types) => {
   p5.text('- Left', x + 70, y + 110)
 }
 
-export const drawFPS = (p5: p5Types, y_offset: number = 60) => {
-  const x = p5.width - 110
+export const drawFPS = (p5: p5Types, y_offset: number = 60, x_offset: number = 0) => {
+  const x = p5.width - 110 - x_offset
   const y = p5.height - y_offset
 
   p5.noStroke()
@@ -229,9 +233,7 @@ export const avg = (q: number[]) => {
   return sum / q.length
 }
 
-export const clamp = (val: number) => {
-  const min = 0
-  const max = 1
+export const clamp = (val: number, min: number = 0, max: number = 1) => {
   return val > max ? max : val < min ? min : val
 }
 

@@ -5,4 +5,6 @@ export type ButtonProps = {
   value: string
   onClick: (e: MouseEvent<HTMLButtonElement>) => void
   style?: { [Key: string]: string }
+  icon?: string
+  iconSize?: number
 }
