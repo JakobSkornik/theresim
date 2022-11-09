@@ -206,7 +206,7 @@ export const drawNoHandsWarning = (
   p5.textSize(20)
   p5.fill(BLACK())
   p5.noStroke()
-  p5.text(text, x + 120, y + 80, 400, 100)
+  p5.text(text, x + 120, y + 80, 380, 100)
 
   lastX = x
   lastY = y
