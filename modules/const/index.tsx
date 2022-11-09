@@ -257,8 +257,8 @@ const freehandDocs = () => {
       <br />
       <br />
       Webcam image stream is processed by <i>Mediapipe</i>. <i>Mediapipe</i>{' '}
-      maps hands to a triple <i>[x, y, z]</i>. Tab <b>Coordinates</b> provides
-      more information.
+      maps hand landmarks to a triple <i>(x, y, z)</i>. Tab <b>Coordinates</b>{' '}
+      provides more information.
       <br />
       <br />
       3D coordinates are mapped to 2D via <i>p5.js</i>.
@@ -276,7 +276,7 @@ const coordinatesDocs = () => {
       <br />
       <br />
       On the right panel live data is fed to a bar chart. Each coordinate is
-      represented by a bar. Coordinates are constrained to intervals{' '}
+      represented by a bar. Coordinates are constrained to interval{' '}
       <i>[0, 1]</i>. To map them to canvas, one only needs to multiply the
       number with desired number of pixels.
       <br />
@@ -292,7 +292,8 @@ const detectionDocs = () => {
   return (
     <p>
       Following the discovery from the previous tab, let's try to implement a
-      simple detection based on a threshold for the <i>z</i> coordinate.
+      simple detection based on a threshold for the <i>z</i> coordinate. Tilting
+      your hands forwards should be detected.
       <br />
       <br />
       When the <i>z</i> is higher than the specified threshold your hands and
@@ -329,11 +330,14 @@ const controlDocs = () => {
 const keyboardDocs = () => {
   return (
     <p>
-      This tab is meant to show why we don't use a piano keyboard.
+      This tab is meant to reinforce my choice of the instrument design.
       <br />
       <br />
-      The first obvious detriment is the overlap in <i>x</i> coordinates. This
-      means that at a single <i>x</i> location two options are available.
+      The first obvious detriment to the piano layout is the overlap in <i>
+        x
+      </i>{' '}
+      coordinates. This means that at a single <i>x</i> location two options are
+      available.
       <br />
       <br />
       Secondly, we want to be able to play simple chords with the left hand.
@@ -341,22 +345,26 @@ const keyboardDocs = () => {
       <br />
       <br />
       Try clicking on notes, toggling major/minor scale and chord display. See
-      how shapes of chords change due to piano keyboard layout. Next tab will
-      show the simplified keyboard and it's advantages.
+      how shapes of chords change due to piano keyboard layout.
+      <br />
+      <br />
+      Next tab will show the simplified keyboard and it's advantages.
     </p>
   )
 }
 
 const instrumentDocs = () => {
-  return <p>
-    This is the proposed layout for my instrument. Instead of displaying
-    all 12 notes, we select a scale. This reduces the number of possible
-    notes and chords to a much more manageable number.
-    <br />
-    <br />
-    Observe how changes to scale do not affect chord shapes and how each
-    possible chord uses the same shape.
-  </p>
+  return (
+    <p>
+      This is the proposed layout for my instrument. Instead of displaying all
+      12 notes, we select a scale. This reduces the number of possible notes and
+      chords to a much more manageable number.
+      <br />
+      <br />
+      Observe how changes to scale do not affect chord shapes and how each
+      possible chord uses the same shape.
+    </p>
+  )
 }
 
 export const getInformationText = (route: string) => {
