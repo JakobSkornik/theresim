@@ -4,10 +4,10 @@ import { RefObject } from 'react'
 
 import { HandsContextType } from '../../types'
 
-export default async function initialize(
+export const initialize = async (
   handContext: HandsContextType,
   ref: RefObject<HTMLVideoElement>,
-) {
+) => {
   var videoElement = ref.current!
   const hands = new Hands({
     locateFile: (file) => {
@@ -48,20 +48,21 @@ export default async function initialize(
     width: 0,
     height: 0,
   })
-  camera.start()
+  await camera.start()
   return true
 }
 
 function camReady() {
-  navigator.mediaDevices
+  let result = navigator.mediaDevices
     .getUserMedia({ video: true })
     .then(function (stream) {
-      if (stream.getVideoTracks().length > 0) {
+      if (stream.getVideoTracks().some((track) => track.enabled)) {
         return true
       }
+      return false
     })
     .catch(() => {})
-  return false
+  return result
 }
 
 // This method mirrors x coords, due to webcam flipping
@@ -70,3 +71,5 @@ function flipHorizontally(hand: Landmark[]) {
     hand[idx].x = 1 - hand[idx].x
   }
 }
+
+export default initialize

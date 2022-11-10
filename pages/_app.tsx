@@ -39,9 +39,9 @@ const sx = {
     paddingLeft: '10px',
     paddingRight: '10px',
     position: 'fixed' as 'fixed',
-    left: 'calc(50vw - 100px)',
+    left: 'calc(50vw - 75px)',
     height: '60px',
-    width: '200px',
+    width: '150px',
     backdropFilter: 'blur(3px)',
     border: '1px solid white',
     borderFilter: 'blur(3px)',
@@ -96,10 +96,6 @@ function AppWrapper(props: Props) {
     setInfo(!infoOpen)
   }
 
-  const onRequestWebcamPermission = () => {
-    navigator.mediaDevices.getUserMedia({video:true}).then(()=>{});
-  }
-
   return (
     <Container title="Theremin" style={sx.container} icon="theremin.png">
       <Navbar />
@@ -132,16 +128,6 @@ function AppWrapper(props: Props) {
             value="fullscreen"
             onClick={onToggleFullscreen}
             icon={fullscreen ? "close.svg":"expand.svg" }
-            iconSize={40}
-          />
-        )}
-        {ctrlPanel && (
-          <Button
-            style={sx.btn}
-            text=""
-            value="webcam"
-            onClick={onRequestWebcamPermission}
-            icon="webcam.svg"
             iconSize={40}
           />
         )}

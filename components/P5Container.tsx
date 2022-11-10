@@ -42,7 +42,7 @@ const P5Container = (props: P5ContainerProps) => {
     if (!parentRef.current) return
 
     if (props.mediapipe && handsContext) {
-      initialize(handsContext, videoElement).then((res) => {
+      initialize(handsContext, videoElement).then((res: boolean) => {
         if (res) handsContext.updateCamReady(true)
       })
     }
