@@ -1,7 +1,7 @@
 import p5Types from 'p5'
 import P5Container from '../../components/P5Container'
 import { useFullScreenContext } from '../../context'
-import { BG, BLACK, borderColor, hexToRgb, primary, RED, shadow } from '../../modules/const'
+import { borderColor, hexToRgb, primary, shadow } from '../../modules/const'
 import P5Canvas from '../../modules/p5/components/P5Canvas'
 import { HandsContextType } from '../../types'
 
@@ -16,7 +16,7 @@ class TODO implements P5Canvas {
   }
 
   onClick(p5: p5Types): void {}
-  
+
   getRandomInt = (max: number) => {
     return Math.floor(Math.random() * max) + 1
   }
@@ -25,23 +25,23 @@ class TODO implements P5Canvas {
     let text = 'This part is still under development.'
     const w = 500
     const h = 200
-  
+
     let maxX = p5.width - w - 4
     let maxY = p5.height - h - 4
-  
+
     if (this.lastX == 0 && this.lastY == 0) {
       this.lastX = this.getRandomInt(maxX - 1)
       this.lastY = this.getRandomInt(maxY - 1)
     }
-  
+
     if (this.lastX <= 4) this.x_dir = true
     if (this.lastX >= maxX) this.x_dir = false
     if (this.lastY <= 0) this.y_dir = true
     if (this.lastY >= maxY) this.y_dir = false
-  
+
     const x = this.x_dir ? this.lastX + 1 : this.lastX - 1
     const y = this.y_dir ? this.lastY + 1 : this.lastY - 1
-  
+
     p5.noStroke()
     p5.fill(hexToRgb(shadow))
     p5.rect(x + 4, y + 4, w, h, 2)
@@ -77,7 +77,7 @@ class TODO implements P5Canvas {
     p5.textSize(20)
     p5.fill(hexToRgb(shadow))
     p5.text(text, x + 120, y + 80, 380, 100)
-  
+
     this.lastX = x
     this.lastY = y
   }
