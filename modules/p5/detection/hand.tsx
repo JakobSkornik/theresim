@@ -1,14 +1,18 @@
 import p5Types from 'p5'
 
 import FPSCounter from '../components/FPSCounter'
-import HandLegend from '../components/HandLegend'
 import Hand from '../components/Hand'
-import NoHandsWarning from '../components/NoHandsWarning'
+import HandLegend from '../components/HandLegend'
+import NoHandsWarning, {
+  HandsWarningParams,
+} from '../components/NoHandsWarning'
 import P5Canvas from '../components/P5Canvas'
-import { hexToRgb, leftColor, rightColor } from '../../const'
+import { BLUE, gray, GRAY, hexToRgb, leftColor, RED, rightColor } from '../../const'
 import { HandsContextType } from '../../../types'
+import { getAverageZ } from '..'
 
-export default class FreeHandCanvas implements P5Canvas {
+export default class DetectionHandCanvas implements P5Canvas {
+  threshold: number = 0.54
   fpsCounter: FPSCounter
   leftHand: Hand
   rightHand: Hand
@@ -43,20 +47,22 @@ export default class FreeHandCanvas implements P5Canvas {
     })
 
     this.noHandsWarning = new NoHandsWarning({
-      x: 30,
-      y: 30,
+      x: 20,
+      y: 20,
       w: w - 40,
-      h: h - 60,
-    })
+      h: h - 50,
+    } as HandsWarningParams)
   }
 
-  show(p5: p5Types, hands: HandsContextType) {
+  show(p5: p5Types, hands: HandsContextType): void {
+    const lCol = getAverageZ(hands.leftHand) <= 0.54 ? hexToRgb(gray) : hexToRgb(leftColor)
+    const rCol = getAverageZ(hands.rightHand) <= 0.54 ? hexToRgb(gray) : hexToRgb(rightColor)
+
     this.fpsCounter.show(p5)
-    this.leftHand.show(p5, hands.leftHand)
-    this.rightHand.show(p5, hands.rightHand)
+    this.leftHand.show(p5, hands.leftHand, lCol)
+    this.rightHand.show(p5, hands.rightHand, rCol)
     this.legend.show(p5)
     this.noHandsWarning.show(p5, hands)
   }
-
-  onClick() {}
+  onClick(): void {}
 }

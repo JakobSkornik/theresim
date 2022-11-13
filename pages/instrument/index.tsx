@@ -1,28 +1,23 @@
 import P5Container from '../../components/P5Container'
+import InstrumentCanvas from '../../modules/p5/instrument/scene'
 import { useFullScreenContext } from '../../context'
-import scene, { onClick } from '../../modules/p5/instrument/scene'
-
 const sx = {
   fullscreen: {
-    position: 'absolute' as 'absolute',
     top: '1px',
     left: '0',
-    height: 'calc(100vh - 10px)',
-    width: 'calc(100vw - 20px)',
-    transition: 'all 0.5s ease-in-out',
+    height: '100vh',
+    width: '100vw',
   },
   windowed: {
-    position: 'absolute' as 'absolute',
-    top: '130px',
-    left: '10px',
-    height: 'calc(100vh - 155px)',
-    width: 'calc(100vw - 45px)',
-    transition: 'all 0.5s ease-in-out',
+    top: '150px',
+    left: '30px',
+    height: 'calc(100vh - 160px)',
+    width: 'calc(100vw - 60px)',
   },
 }
 
 const Instrument = () => {
-  const { fullscreen } = useFullScreenContext()
+  const { bool: fullscreen } = useFullScreenContext()
 
   
   return (
@@ -30,9 +25,7 @@ const Instrument = () => {
       style={fullscreen ? sx.fullscreen : sx.windowed}
       title={'Instrument'}
       mediapipe={false}
-      scene={scene}
-      icon="play.svg"
-      onClick={onClick}
+      scene={InstrumentCanvas}
     />
   )
 }

@@ -1,13 +1,12 @@
 import { createContext, FC } from 'react'
-import { FullscreenContextType } from '../types'
-import { FullscreenProps } from '../types/FullscreenProps'
+import { BooleanContextType, BooleanProps } from '../types'
 
-export const FullscreenContext = createContext<FullscreenContextType>({
-  fullscreen: false,
-  toggleFullscreen: () => {},
+export const FullscreenContext = createContext<BooleanContextType>({
+  bool: false,
+  toggle: () => {},
 })
 
-const FullscreenProvider: FC<FullscreenProps> = (props) => {
+const FullscreenProvider: FC<BooleanProps> = (props) => {
   return (
     <FullscreenContext.Provider value={props.value}>
       {props.children}

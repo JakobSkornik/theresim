@@ -1,71 +1,81 @@
 import '../styles/globals.css'
 import { useEffect, useState } from 'react'
-import type { AppProps } from 'next/app'
-import { Landmark } from '@mediapipe/hands'
-
-import Container from '../components/Container'
-import Navbar from '../components/NavBar'
-import HandsProvider from '../context/hands'
-import { getInformationText, gray } from '../modules/const'
-import Button from '../components/Button'
-import Popup from '../components/Popup'
-import Message from '../components/Message'
 import { useRouter } from 'next/router'
+import { Landmark } from '@mediapipe/hands'
+import type { AppProps } from 'next/app'
+
+import Background from '../components/Background'
+import Button from '../components/Button'
+import Container from '../components/Container'
 import FullscreenProvider from '../context/fullscreen'
-import { FullscreenContextType, HandsContextType, Props } from '../types'
-import { useFullScreenContext } from '../context'
+import HandsProvider from '../context/hands'
+import Message from '../components/Message'
+import Navbar from '../components/NavBar'
+import Popup from '../components/Popup'
+import VideoPlaybackProvider from '../context/playback'
+import { BooleanContextType, HandsContextType, Props } from '../types'
+import { getInformationText, primary } from '../modules/const'
+import { useFullScreenContext, usePlaybackContext } from '../context'
 
 const sx = {
-  main: {
+  appWrapper: {
     height: '100vh',
     width: '100vw',
-    paddingTop: '15px',
-    backgroundColor: gray,
   },
   container: {
-    width: 'calc(100% - 20px)',
-    height: 'calc(100% - 10px)',
-    margin: '0 10px 0 10px',
+    margin: '20px',
+    width: 'calc(100vw - 40px)',
+    height: 'calc(100vh - 40px)',
+    transition: 'margin 700ms ease-out, opacity 700ms ease',
   },
   hoverContainer: {
     position: 'fixed' as 'fixed',
     top: 'calc(100vh - 100px)',
-    left: 'calc(50vw - 167px)',
+    left: 'calc(50vw - 250px)',
     height: '400px',
-    width: '314px',
+    width: '500px',
     borderRadius: '30%',
   },
   ctrlPanel: {
-    paddingLeft: '10px',
-    paddingRight: '10px',
     position: 'fixed' as 'fixed',
-    left: 'calc(50vw - 75px)',
-    height: '60px',
-    width: '150px',
+    left: 'calc(50vw - 180px)',
+    height: '80px',
+    width: '360px',
+    padding: '10px',
+    backgroundColor: primary + '90',
     backdropFilter: 'blur(3px)',
-    border: '1px solid white',
-    borderFilter: 'blur(3px)',
-    borderRadius: '20px 20px',
+    borderRadius: '20px',
     display: 'flex',
     justifyContent: 'space-between',
+    alignItems: 'center',
     transition: 'top 0.2s ease-out',
+    boxShadow: `0 0 30px 1px rgba(200, 200, 200, 0.2), 0 0 40px 10px ${primary}`,
   },
   btn: {
-    width: '60px',
+    width: '65px',
     height: '60px',
     backgroundColor: 'rgba(0, 0, 0, 0)',
     borderColor: 'rgba(0, 0, 0, 0)',
-    margin: '-5px',
+    borderRadius: '40%',
+  },
+  btnActive: {
+    width: '65px',
+    height: '60px',
+    backgroundColor: 'rgba(100, 100, 100, .4)',
+    borderColor: 'rgba(0, 0, 0, 0)',
+    boxShadow: `0 0 30px 1px rgba(200, 200, 200, 0.2), 0 0 40px 10px ${primary}`,
   },
 }
 
 function AppWrapper(props: Props) {
   const router = useRouter()
-  const { fullscreen, toggleFullscreen } = useFullScreenContext()
+  const { bool: fullscreen, toggle: toggleFullscreen } = useFullScreenContext()
+  const { bool: playback, toggle: togglePlayback } = usePlaybackContext()
 
   const [ctrlPanel, setCtrlPanel] = useState(true)
   const [infoOpen, setInfo] = useState(false)
   const [msgOpen, setMsg] = useState(true)
+  const [hidden, setHidden] = useState(false)
 
   const msgText = 'You can find more information in the control panel.'
 
@@ -89,21 +99,42 @@ function AppWrapper(props: Props) {
   }
 
   const onToggleFullscreen = () => {
+    setHidden(false)
     toggleFullscreen()
+  }
+
+  const onTogglePlayback = () => {
+    togglePlayback()
   }
 
   const onToggleInfo = () => {
     setInfo(!infoOpen)
   }
 
+  const onToggleHideUI = () => {
+    setHidden(!hidden)
+  }
+
   return (
-    <Container title="Theremin" style={sx.container} icon="theremin.png">
-      <Navbar />
-      {props.children}
+    <div style={sx.appWrapper}>
+      <Background />
+      <Container
+        title="THERESIM"
+        style={{
+          ...sx.container,
+          ...{
+            marginLeft: fullscreen ? '105vw' : '20px',
+            opacity: hidden ? '0' : '100',
+          },
+        }}
+      >
+        <Navbar />
+        {props.children}
+      </Container>
       <Message
         style={{ opacity: msgOpen && !infoOpen ? '100' : '0' }}
         text={msgText}
-        icon="arrow-down.svg"
+        icon="up-arrow.svg"
         iconSize={50}
       />
       <div
@@ -115,32 +146,44 @@ function AppWrapper(props: Props) {
         style={{
           ...sx.ctrlPanel,
           ...{
-            top: ctrlPanel ? 'calc(100vh - 80px)' : 'calc(100vh - 20px)',
+            top: ctrlPanel ? 'calc(100vh - 80px)' : 'calc(100vh - 10px)',
           },
         }}
         onMouseEnter={openCtrlPanel}
         onMouseLeave={closeCtrlPanel}
       >
-        {ctrlPanel && (
-          <Button
-            style={sx.btn}
-            text=""
-            value="fullscreen"
-            onClick={onToggleFullscreen}
-            icon={fullscreen ? "close.svg":"expand.svg" }
-            iconSize={40}
-          />
-        )}
-        {ctrlPanel && (
-          <Button
-            style={sx.btn}
-            text=""
-            value="info"
-            onClick={onToggleInfo}
-            icon="info.svg"
-            iconSize={40}
-          />
-        )}
+        <Button
+          style={fullscreen ? { ...sx.btn, ...sx.btnActive } : sx.btn}
+          text=""
+          value="fullscreen"
+          onClick={onToggleFullscreen}
+          icon={'expand.svg'}
+          iconSize={50}
+        />
+        <Button
+          style={hidden ? { ...sx.btn, ...sx.btnActive } : sx.btn}
+          text=""
+          value="info"
+          onClick={onToggleHideUI}
+          icon="eye.svg"
+          iconSize={50}
+        />
+        <Button
+          style={playback ? { ...sx.btn, ...sx.btnActive } : sx.btn}
+          text=""
+          value="playback"
+          onClick={onTogglePlayback}
+          icon="webcam.svg"
+          iconSize={50}
+        />
+        <Button
+          style={infoOpen ? { ...sx.btn, ...sx.btnActive } : sx.btn}
+          text=""
+          value="info"
+          onClick={onToggleInfo}
+          icon="info.svg"
+          iconSize={50}
+        />
       </div>
       <Popup
         style={{ opacity: infoOpen ? '100' : '0' }}
@@ -148,12 +191,13 @@ function AppWrapper(props: Props) {
         icon="close.svg"
         togglePopup={onToggleInfo}
       />
-    </Container>
+    </div>
   )
 }
 
 export default function App({ Component, pageProps }: AppProps) {
   const [fullscreen, toggleFullscreen] = useState(false)
+  const [playback, togglePlayback] = useState(false)
   const [camReady, setCamReady] = useState(false)
   const [rightHand, setRightHand] = useState<Landmark[]>([])
   const [leftHand, setLeftHand] = useState<Landmark[]>([])
@@ -170,33 +214,44 @@ export default function App({ Component, pageProps }: AppProps) {
     toggleFullscreen(!fullscreen)
   }
 
+  const updatePlayback = async () => {
+    togglePlayback(!playback)
+  }
+
   return (
-    <div style={sx.main}>
-      <HandsProvider
+    <HandsProvider
+      value={
+        {
+          camReady: camReady,
+          updateCamReady: setCamReady,
+          rightHand: rightHand,
+          leftHand: leftHand,
+          updateRightHand: updateRightHand,
+          updateLeftHand: updateLeftHand,
+        } as HandsContextType
+      }
+    >
+      <FullscreenProvider
         value={
           {
-            camReady: camReady,
-            updateCamReady: setCamReady,
-            rightHand: rightHand,
-            leftHand: leftHand,
-            updateRightHand: updateRightHand,
-            updateLeftHand: updateLeftHand,
-          } as HandsContextType
+            bool: fullscreen,
+            toggle: updateFullscreen,
+          } as BooleanContextType
         }
       >
-        <FullscreenProvider
+        <VideoPlaybackProvider
           value={
             {
-              fullscreen: fullscreen,
-              toggleFullscreen: updateFullscreen,
-            } as FullscreenContextType
+              bool: playback,
+              toggle: updatePlayback,
+            } as BooleanContextType
           }
         >
           <AppWrapper>
             <Component {...pageProps} />
           </AppWrapper>
-        </FullscreenProvider>
-      </HandsProvider>
-    </div>
+        </VideoPlaybackProvider>
+      </FullscreenProvider>
+    </HandsProvider>
   )
 }

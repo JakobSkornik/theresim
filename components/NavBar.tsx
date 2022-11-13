@@ -1,32 +1,37 @@
-import React, { MouseEvent, useState } from 'react'
 import { useRouter } from 'next/router'
+import React, { MouseEvent, useState } from 'react'
 
-import {
-  darkBlue,
-  geranimo,
-  mountain,
-  peachy,
-  pink,
-  purple,
-  rosy,
-} from '../modules/const'
 import Button from './Button'
+import { shadow, fifth, primary } from '../modules/const'
 
 const sx = {
   container: {
-    width: '100%',
-    height: '60px',
-    paddingBottom: '8px',
-    overflowX: 'hidden' as 'hidden',
+    width: 'calc(100vw - 70px)',
+    height: '90px',
+    padding: '10px 0 10px 0',
+    overflowX: 'scroll' as 'scroll',
+    overflowY: 'visible' as 'visible',
     display: 'flex',
-    margin: '5px 0 5px 0',
+    margin: '10px',
     justifyContent: 'left',
+    '-ms-overflow-style': 'none' as 'none',
+    scrollbarWidth: 'none' as 'none',
   },
   btn: {
-    padding: '3px 10px 10px 10px',
-    marginLeft: '15px',
+    padding: '5px 10px 5px 10px',
+    marginLeft: '20px',
   },
 }
+
+const buttonGradient = primary
+
+const activeButtonGradient = `
+linear-gradient(
+  170deg,
+  rgba(66,27,104,1) 0%,
+  rgba(43,17,101,1) 35%,
+  rgba(255,3,112,1) 100%
+)`
 
 const Navbar = () => {
   const router = useRouter()
@@ -47,9 +52,12 @@ const Navbar = () => {
         style={{
           ...sx.btn,
           ...{
-            marginLeft: '7px',
-            backgroundColor: '/freehand' == active ? rosy : rosy + '70',
-            boxShadow: `8px 8px ${'/freehand' == active ? '#596275' : 'black'}`,
+            background:
+              '/freehand' == active ? activeButtonGradient : buttonGradient,
+            boxShadow:
+              '/freehand' == active
+                ? `5px 5px ${shadow}, 0 0 10px 3px rgba(3, 255, 161, 0.4)`
+                : `5px 5px ${'/freehand' == active ? fifth : shadow}`,
           },
         }}
       ></Button>
@@ -60,10 +68,12 @@ const Navbar = () => {
         style={{
           ...sx.btn,
           ...{
-            backgroundColor: '/coordinates' == active ? peachy : peachy + '70',
-            boxShadow: `8px 8px ${
-              '/coordinates' == active ? '#596275' : 'black'
-            }`,
+            background:
+              '/coordinates' == active ? activeButtonGradient : buttonGradient,
+            boxShadow:
+              '/coordinates' == active
+                ? `5px 5px ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.3)`
+                : `5px 5px ${'/coordinates' == active ? fifth : shadow}`,
           },
         }}
       ></Button>
@@ -74,10 +84,12 @@ const Navbar = () => {
         style={{
           ...sx.btn,
           ...{
-            backgroundColor: '/detection' == active ? pink : pink + '70',
-            boxShadow: `8px 8px ${
-              '/detection' == active ? '#596275' : 'black'
-            }`,
+            background:
+              '/detection' == active ? activeButtonGradient : buttonGradient,
+            boxShadow:
+              '/detection' == active
+                ? `5px 5px ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.3)`
+                : `5px 5px ${'/detection' == active ? fifth : shadow}`,
           },
         }}
       ></Button>
@@ -88,8 +100,12 @@ const Navbar = () => {
         style={{
           ...sx.btn,
           ...{
-            backgroundColor: '/control' == active ? purple : purple + '70',
-            boxShadow: `8px 8px ${'/control' == active ? '#596275' : 'black'}`,
+            background:
+              '/control' == active ? activeButtonGradient : buttonGradient,
+            boxShadow:
+              '/control' == active
+                ? `5px 5px ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.3)`
+                : `5px 5px ${'/control' == active ? fifth : shadow}`,
           },
         }}
       ></Button>
@@ -100,8 +116,12 @@ const Navbar = () => {
         style={{
           ...sx.btn,
           ...{
-            backgroundColor: '/keyboard' == active ? mountain : mountain + '70',
-            boxShadow: `8px 8px ${'/keyboard' == active ? '#596275' : 'black'}`,
+            background:
+              '/keyboard' == active ? activeButtonGradient : buttonGradient,
+            boxShadow:
+              '/keyboard' == active
+                ? `5px 5px ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.3)`
+                : `5px 5px ${'/keyboard' == active ? fifth : shadow}`,
           },
         }}
       ></Button>
@@ -112,11 +132,12 @@ const Navbar = () => {
         style={{
           ...sx.btn,
           ...{
-            backgroundColor:
-              '/instrument' == active ? darkBlue : darkBlue + '70',
-            boxShadow: `8px 8px ${
-              '/instrument' == active ? '#596275' : 'black'
-            }`,
+            background:
+              '/instrument' == active ? activeButtonGradient : buttonGradient,
+            boxShadow:
+              '/instrument' == active
+                ? `5px 5px ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.3)`
+                : `5px 5px ${'/instrument' == active ? fifth : shadow}`,
           },
         }}
       ></Button>
@@ -127,8 +148,12 @@ const Navbar = () => {
         style={{
           ...sx.btn,
           ...{
-            backgroundColor: '/demo' == active ? geranimo : geranimo + '70',
-            boxShadow: `8px 8px ${'/demo' == active ? '#596275' : 'black'}`,
+            background:
+              '/demo' == active ? activeButtonGradient : buttonGradient,
+            boxShadow:
+              '/demo' == active
+                ? `5px 5px ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.3)`
+                : `5px 5px ${'/demo' == active ? fifth : shadow}`,
           },
         }}
       ></Button>

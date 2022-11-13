@@ -1,4 +1,4 @@
-import { blue, tintedWhite } from '../modules/const'
+import { blue, borderColor, primary, shadow, textColor, tintedWhite } from '../modules/const'
 import { PopupProps } from '../types/PopupProps'
 import Button from './Button'
 
@@ -6,12 +6,13 @@ const sx = {
   container: {
     position: 'fixed' as 'fixed',
     top: '75px',
-    left: 'calc(100vw - 423px)',
+    left: 'calc(100vw - 440px)',
     width: '400px',
-    backgroundColor: tintedWhite,
-    boxShadow: '8px 8px black',
-    borderRadius: '10px',
-    border: '3px solid black',
+    backgroundColor: primary + 'EF',
+    color: textColor,
+    borderRadius: '2px',
+    borderBottom: '1px solid ' + borderColor + '60',
+    boxShadow: `4px 4px ${shadow}, 0 0 100px 10px rgba(3, 255, 161, 0.2)`,
     marginTop: '0',
     transition: 'opacity 1s',
     pointerEvents: 'none' as 'none',
@@ -19,11 +20,11 @@ const sx = {
   title: {
     height: '45px',
     width: '100%',
-    backgroundColor: blue,
-    color: 'black',
+    backgroundColor: primary + '90',
+    color: shadow,
     borderTopLeftRadius: '5px',
     borderTopRightRadius: '5px',
-    borderBottom: '3px solid black',
+    borderBottom: '1px solid ' + borderColor + '60',
     padding: '0',
     display: 'flex',
     justifyContent: 'space-between',
@@ -35,11 +36,12 @@ const sx = {
     fontSize: '20px',
     marginTop: '0px',
     marginLeft: '10px',
+    color: shadow,
   },
   closeBtn: {
     width: '60px',
     padding: '0',
-    marginTop: '-8px',
+    margin: '6px',
     borderColor: 'rgba(0, 0, 0, 0)',
     backgroundColor: 'rgba(0, 0, 0, 0)',
     pointerEvents: 'all' as 'all',

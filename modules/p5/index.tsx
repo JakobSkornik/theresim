@@ -67,7 +67,7 @@ export const drawLegend = (p5: p5Types) => {
   p5.fill(BLACK())
   p5.rect(x + 8, y + 8, 220, 140, 10)
   p5.stroke(BLACK())
-  p5.strokeWeight(3)
+  p5.strokeWeight(2)
   p5.fill(YELLOW())
   p5.rect(x, y, 220, 140, 10)
 
@@ -102,7 +102,7 @@ export const drawFPS = (
   p5.rect(x + 8, y + 8, 100, 50, 10)
 
   p5.stroke(BLACK())
-  p5.strokeWeight(3)
+  p5.strokeWeight(2)
   p5.fill(YELLOW())
   p5.rect(x, y, 100, 50, 10)
 
@@ -121,7 +121,7 @@ let x_dir = true
 let y_dir = true
 let currentView = 'none'
 
-const getRandomInt = (max: number) => {
+export const getRandomInt = (max: number) => {
   return Math.floor(Math.random() * max) + 1
 }
 
@@ -180,7 +180,7 @@ export const drawNoHandsWarning = (
   p5.rect(x + 8, y + 8, w, h, 10)
 
   p5.stroke(BLACK())
-  p5.strokeWeight(3)
+  p5.strokeWeight(2)
   p5.fill(BG())
   p5.rect(x, y, w, h, 10)
 
@@ -192,7 +192,7 @@ export const drawNoHandsWarning = (
   p5.text('WARNING', x + 20, y + 8, 400, 100)
 
   p5.stroke(BLACK())
-  p5.strokeWeight(3)
+  p5.strokeWeight(2)
   p5.fill(BLACK())
   p5.circle(x + 54, y + 114, 80)
   p5.fill(RED())

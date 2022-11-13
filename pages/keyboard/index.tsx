@@ -1,37 +1,31 @@
 import P5Container from '../../components/P5Container'
+import KeyboardCanvas from '../../modules/p5/keyboard/scene'
 import { useFullScreenContext } from '../../context'
-import scene, { onClick } from '../../modules/p5/keyboard/scene'
 
 const sx = {
   fullscreen: {
-    position: 'absolute' as 'absolute',
     top: '1px',
     left: '0',
-    height: 'calc(100vh - 10px)',
-    width: 'calc(100vw - 20px)',
-    transition: 'all 0.5s ease-in-out',
+    height: '100vh',
+    width: '100vw',
   },
   windowed: {
-    position: 'absolute' as 'absolute',
-    top: '130px',
-    left: '10px',
-    height: 'calc(100vh - 155px)',
-    width: 'calc(100vw - 45px)',
-    transition: 'all 0.5s ease-in-out',
+    top: '150px',
+    left: '30px',
+    height: 'calc(100vh - 160px)',
+    width: 'calc(100vw - 60px)',
   },
 }
 
 const Keyboard = () => {
-  const { fullscreen } = useFullScreenContext()
+  const { bool: fullscreen } = useFullScreenContext()
 
   return (
     <P5Container
       style={fullscreen ? sx.fullscreen : sx.windowed}
       title={'Keyboard'}
       mediapipe={false}
-      scene={scene}
-      icon="piano.svg"
-      onClick={onClick}
+      scene={KeyboardCanvas}
     />
   )
 }

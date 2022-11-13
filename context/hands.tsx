@@ -1,7 +1,6 @@
 import { createContext, FC } from 'react'
 
-import { HandsContextType } from '../types'
-import { HandsProps } from '../types/HandsProps'
+import { HandsContextType, HandsProps } from '../types'
 
 export const HandsContext = createContext<HandsContextType | null>(null)
 

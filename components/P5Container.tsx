@@ -1,26 +1,36 @@
 import dynamic from 'next/dynamic'
-import { createRef, useEffect, useRef, useState } from 'react'
 import useResizeObserver from '@react-hook/resize-observer'
+import { createRef, useEffect, useRef, useState } from 'react'
 
-import Container from '../components/Container'
-import { useHandsContext } from '../context'
-import { P5ContainerProps } from '../types'
 import initialize from '../modules/mediapipe'
+import { useHandsContext, usePlaybackContext } from '../context'
+import { P5ContainerProps } from '../types'
+import { borderColor } from '../modules/const'
 const Canvas = dynamic(() => import('./Canvas'), { ssr: false })
 
 const sx = {
-  container: {
-    height: '100%',
-    width: '100%',
-    marginLeft: '10px',
-  },
   canvasDiv: {
-    height: '100%',
+    position: 'fixed' as 'fixed',
     width: '100%',
+    height: '100%',
+    transition: 'all 0.5s ease-in-out',
+  },
+  playbackDiv: {
+    position: 'fixed' as 'fixed',
+    borderRadius: '2px',
+    margin: '60px 0 10px 20px',
+    transition: 'all 0.5s ease-in-out',
+    zIndex: '-10',
+  },
+  playback: {
+    objectFit: 'fill' as 'fill',
+    transition: 'all 0.5s ease-in-out',
+    transform: 'scaleX(-1)',
   },
 }
 
 const P5Container = (props: P5ContainerProps) => {
+  const { bool: playback } = usePlaybackContext()
   const handsContext = useHandsContext()
   const videoElement = createRef<HTMLVideoElement>()
   const parentRef = useRef<HTMLDivElement>(null)
@@ -49,24 +59,30 @@ const P5Container = (props: P5ContainerProps) => {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Container
-      title={props.title}
-      style={{ ...sx.container, ...props.style }}
-      icon={props.icon}
-    >
-      <div id="test" ref={parentRef} style={sx.canvasDiv}>
-        {dims.height > 0 && dims.width > 0 && (
-          <Canvas
-            height={dims.height - 50}
-            width={dims.width}
-            scene={props.scene}
-            onClick={props.onClick}
-            hands={handsContext!}
-          />
-        )}
+    <div ref={parentRef} style={{ ...sx.canvasDiv, ...props.style }}>
+      <div style={sx.playbackDiv}>
+        <video
+          width={dims.width - 31}
+          height={dims.height - 80}
+          style={{
+            ...sx.playback,
+            ...{
+              opacity: playback ? '20 ' : '0',
+            },
+          }}
+          ref={videoElement}
+        />
       </div>
-      {props.mediapipe && <video ref={videoElement} hidden />}
-    </Container>
+      {dims.height > 0 && dims.width > 0 && (
+        <Canvas
+          title={props.title}
+          height={dims.height}
+          width={dims.width}
+          scene={props.scene}
+          hands={handsContext!}
+        />
+      )}
+    </div>
   )
 }
 

@@ -1,61 +1,53 @@
 import P5Container from '../../components/P5Container'
-import handScene from '../../modules/p5/coordinates/handScene'
-import chartScene from '../../modules/p5/coordinates/chartScene'
+import HandCanvas from '../../modules/p5/coordinates/hand'
+import ChartCanvas from '../../modules/p5/coordinates/chart'
 import { useFullScreenContext } from '../../context'
 
 const sx = {
   fullscreen: {
-    position: 'absolute' as 'absolute',
+    height: '100vh',
     top: '1px',
-    left: '0',
-    height: 'calc(100vh - 10px)',
-    width: 'calc(100vw - 20px)',
-    transition: 'all 0.5s ease-in-out',
-    display: 'flex',
-    justifyContent: 'space-between',
   },
   windowed: {
-    position: 'absolute' as 'absolute',
-    top: '130px',
-    left: '10px',
-    height: 'calc(100vh - 155px)',
-    width: 'calc(100vw - 45px)',
-    transition: 'all 0.5s ease-in-out',
-    display: 'flex',
-    justifyContent: 'space-between',
+    height: 'calc(100vh - 160px)',
+    top: '150px',
   },
-  leftCol: {
-    width: 'calc(100% - 460px)',
-    height: '100%',
+  left: {
+    left: '30px',
+    width: 'calc(70vw - 40px)',
   },
-  rightCol: {
-    width: '450px',
-    height: '100%',
+  right: {
+    left: 'calc(70vw - 20px)',
+    width: 'calc(30vw - 10px)',
   },
 }
 
 const Coordinates = () => {
-  const { fullscreen } = useFullScreenContext()
+  const { bool: fullscreen } = useFullScreenContext()
 
   return (
-    <div style={fullscreen ? sx.fullscreen : sx.windowed}>
-      <div style={sx.leftCol}>
-        <P5Container
-          title={'Left Hand'}
-          mediapipe={true}
-          scene={handScene}
-          icon="controller.svg"
-        />
-      </div>
-      <div style={sx.rightCol}>
-        <P5Container
-          title={'Coordinates'}
-          mediapipe={false}
-          scene={chartScene}
-          icon="chart.svg"
-        />
-      </div>
-    </div>
+    <>
+      <P5Container
+        style={
+          fullscreen
+            ? { ...sx.fullscreen, ...sx.left }
+            : { ...sx.windowed, ...sx.left }
+        }
+        title={'Left Hand'}
+        mediapipe={true}
+        scene={HandCanvas}
+      />
+      <P5Container
+        style={
+          fullscreen
+            ? { ...sx.fullscreen, ...sx.right }
+            : { ...sx.windowed, ...sx.right }
+        }
+        title={'Coordinates'}
+        mediapipe={false}
+        scene={ChartCanvas}
+      />
+    </>
   )
 }
 

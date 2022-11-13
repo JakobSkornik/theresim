@@ -1,19 +1,18 @@
 import Image from 'next/image'
 import React from 'react'
+import { borderColor, shadow } from '../modules/const'
 
 import { ButtonProps } from '../types'
 
 const sx = {
   button: {
-    fontSize: '30px',
-    borderRadius: '10px',
-    border: '3px solid black',
-    color: 'black',
-    outline: 'none',
+    fontSize: '20px',
+    borderRadius: '2px',
+    border: '1px solid ' + borderColor + '60',
+    color: shadow,
+    outline: 'none'
   },
-  icon: {
-    filter: 'drop-shadow(4px 4px rgba(0, 0, 0, 1))',
-  },
+  icon: {},
 }
 
 const Button = (props: ButtonProps) => {

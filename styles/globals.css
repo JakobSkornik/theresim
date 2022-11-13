@@ -1,6 +1,14 @@
 @font-face {
-  font-family: ChakraPetch;
-  src: url("/font.ttf");
+  font-family: Font;
+  src: url('/Font.ttf');
+}
+@font-face {
+  font-family: Oleo;
+  src: url('/Oleo.ttf');
+}
+@font-face {
+  font-family: Outrun;
+  src: url('/Outrun.otf');
 }
 
 html,
@@ -9,9 +17,14 @@ body {
   width: 100vw;
   padding: 0;
   margin: 0;
-  font-family: ChakraPetch !important;
+  font-family: Oleo !important;
+  /* font-weight: 600; */
   overflow-y: hidden;
-  overflow-x:  hidden;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
 }
 
 a {
@@ -31,4 +44,220 @@ a {
     color: black;
     background: white;
   }
+}
+
+
+/* s
+  Styles adapted from:
+    - https://codepen.io/inegoita/pen/BgdXMw
+
+*/
+.background {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -2;
+  align-items: center;
+  justify-content: center;
+  background-color: #2b1165;
+  background: linear-gradient(
+    180deg,
+    #2b1165 0%,
+    rgba(26, 58, 130, 1) 37%,
+    rgba(171, 36, 177, 1) 69%,
+    #f54171 100%
+  );
+}
+.sun {
+  width: 40vh;
+  height: 40vh;
+  font-size: 1rem;
+  border-radius: 20vh;
+  position: relative;
+  overflow: hidden;
+  top: calc(30vh);
+  left: calc(50vw - 20vh);
+  box-shadow: 0 0 10px 2px #fff, 0 0 60px 10px #f54171,
+    0 0 220px 60px rgba(26, 58, 130, 1);
+}
+.sun:before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  height: 50%;
+  background-color: #f54171;
+  background: linear-gradient(
+    0deg,
+    #2b1165 0%,
+    rgba(26, 58, 130, 1) 37%,
+    rgba(171, 36, 177, 1) 69%,
+    #f54171 100%
+  );
+  background-size: 40vh 40vh;
+  width: 100%;
+}
+
+.gooey {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #0000003c;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  filter: blur(15px) contrast(30);
+}
+
+.bubble {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background: #ffe600;
+  box-shadow: 0 0 40px 5px rgb(60, 255, 0), 0 0 50px 3px #f54171,
+    0 0 20px 6px rgb(242, 0, 255);
+  animation: move 7s ease-in-out infinite alternate;
+}
+
+.bubble:nth-child(1) {
+  top: 50px;
+  left: 10px;
+}
+
+.bubble:nth-child(2) {
+  width: 50px;
+  height: 30px;
+  left: 50px;
+  animation-delay: -2s;
+}
+
+.bubble:nth-child(3) {
+  width: 70px;
+  height: 70px;
+  left: -70px;
+  animation-delay: -3.5s;
+}
+
+.bubble:nth-child(4) {
+  left: 0px;
+  width: 80%;
+  bottom: -90px;
+  animation: none;
+}
+
+.bubble:nth-child(5) {
+  position: absolute;
+  top: -70px;
+  left: 60px;
+  width: 60%;
+  animation: none;
+}
+
+@keyframes move {
+  0% {
+    border-radius: 75% 25% 20% 80% / 34% 47% 53% 66%;
+    transform: translateY(-200px);
+  }
+
+  100% {
+    border-radius: 50%;
+    transform: translateY(220px);
+  }
+}
+
+.grid {
+  position: absolute;
+  bottom: -30%;
+  left: 0;
+  margin-left: -50%;
+  width: 200%;
+  height: 100%;
+  background-position-y: 0px;
+  background-image: repeating-linear-gradient(
+      90deg,
+      var(--grid-color, black) 0%,
+      transparent calc(1px + var(--grid-blur, 0px)),
+      transparent var(--grid-size),
+      var(--grid-color, black)
+        calc(var(--grid-size) + 1px + var(--grid-blur, 0px))
+    ),
+    repeating-linear-gradient(
+      180deg,
+      var(--grid-color, black) 0%,
+      transparent calc(1px + var(--grid-blur, 0px)),
+      transparent var(--grid-size),
+      var(--grid-color, black)
+        calc(var(--grid-size) + 1px + var(--grid-blur, 0px))
+    );
+  transform: perspective(50vh) rotateX(60deg) translateZ(10px);
+  animation: moving-grid 0.5s infinite linear;
+  z-index: -1;
+}
+
+@keyframes moving-grid {
+  0% {
+    transform: perspective(50vh) rotateX(60deg) translateZ(10px)
+      translateY(-var(--grid-size));
+  }
+  100% {
+    transform: perspective(50vh) rotateX(60deg) translateZ(10px)
+      translateY(var(--grid-size));
+  }
+}
+
+.mountain {
+  position: absolute;
+  content: '';
+  bottom: 35%;
+  left: calc(50% + var(--mountain-offset, 0px));
+  border-left: calc(var(--mountain-base) / 2) solid transparent;
+  border-bottom: var(--mountain-height, 100px) solid
+    var(--mountain-color1, white);
+  border-top: 0px solid transparent;
+  border-right: calc(var(--mountain-base, 100px) / 2) solid transparent;
+  transform-origin: bottom;
+  transform: skewX(var(--mountain-tilt, 0deg));
+  -webkit-filter: blur(2px);
+  filter: blur(2px);
+  -webkit-mask: -webkit-gradient(
+    linear,
+    left 65%,
+    left 0%,
+    from(rgba(0, 0, 0, 1)),
+    to(rgba(0, 0, 0, 0))
+  );
+  mask: -webkit-gradient(
+    linear,
+    left 65%,
+    left 0%,
+    from(rgba(0, 0, 0, 1)),
+    to(rgba(0, 0, 0, 0))
+  );
+}
+
+.mountain:after {
+  content: '';
+  border-left: calc(var(--mountain-base) / 2) solid transparent;
+  border-bottom: var(--mountain-height, 100px) solid
+    var(--mountain-color2, black);
+  border-top: 0px solid transparent;
+  border-right: calc(var(--mountain-base, 100px) / 2) solid transparent;
+  transform: translate(-50%) scale(0.98);
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.horizontal-line {
+  position: fixed;
+  top: calc(65vh - 2px);
+  height: 3px;
+  background: rgb(147, 22, 78);
+  width: 100vw;
+  -webkit-filter: blur(3px);
+  filter: blur(3px);
 }

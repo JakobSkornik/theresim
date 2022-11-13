@@ -1,26 +1,61 @@
 import { ScaleKeys } from '../../types/ScaleKeys'
 
-interface Dictionary<T> {
-  [Key: string]: T
-}
+export const handRanges = [
+  [0, 1],
+  [1, 5],
+  [5, 9],
+  [9, 13],
+  [13, 17],
+  [17, 21],
+]
 
-export const handParts = {
-  palm: [0, 1],
-  thumb: [1, 5],
-  index: [5, 9],
-  middle: [9, 13],
-  ring: [13, 17],
-  pinky: [17, 21],
-} as Dictionary<number[]>
-
-export const lmIdx = (key: string) => {
-  return handParts[key]
-}
+export const connections = [
+  [0, 1],
+  [1, 2],
+  [2, 3],
+  [3, 4],
+  [5, 6],
+  [6, 7],
+  [7, 8],
+  [9, 10],
+  [10, 11],
+  [11, 12],
+  [13, 14],
+  [14, 15],
+  [15, 16],
+  [17, 18],
+  [18, 19],
+  [19, 20],
+  [2, 5],
+  [0, 17],
+  [5, 9],
+  [9, 13],
+  [13, 17],
+  [5, 17],
+]
 
 // https://flatuicolors.com/palette/ru
-export const gray = '#85797b'
+export const hexToRgb = (hex: string) => {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  var r = parseInt(result![1], 16)
+  var g = parseInt(result![2], 16)
+  var b = parseInt(result![3], 16)
+  return [r, g, b]
+}
+
+export const primary = '#170328'
+export const textColor = '#D91C59'
+export const secondary = '#FF16CE'
+export const tertiary = '#352CFF'
+export const fifth = '#f54171'
+export const shadow = '#03FFA1'
+export const borderColor = '#00B8FF'
+export const leftColor = '#03FF9F'
+export const rightColor = '#D600FF'
+
+export const gray = '#303952'
 export const tintedWhite = '#ebe1d9'
-export const yellow = '#ebb535'
+export const yellow = '#f5cd79'
 export const red = '#ee6134'
 export const blue = '#1e8fc2'
 export const green = '#1e8f7d'
@@ -42,10 +77,12 @@ export const GRAY = (alpha = 255) => [100, 100, 100, alpha]
 export const BG = (alpha = 255) => [235, 225, 217, alpha]
 export const BROWN = (alpha = 255) => [243, 166, 131, alpha]
 export const AAK = (alpha = 255) => [241, 144, 102, alpha]
-export const YELLOW = (alpha = 255) => [235, 181, 53, alpha]
+export const YELLOW = (alpha = 255) => [245, 205, 121, alpha]
 export const PENCIL = (alpha = 255) => [133, 121, 123, alpha]
 export const PINK = (alpha = 255) => [248, 165, 194, alpha]
 export const CURACAO = (alpha = 255) => [61, 193, 211, alpha]
+export const BISCAY = (alpha = 255) => [48, 57, 82, alpha]
+export const CYAN = (alpha = 255) => [170, 216, 233, alpha]
 
 const scale = [
   {

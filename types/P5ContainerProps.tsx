@@ -1,11 +1,9 @@
-import p5Types from 'p5'
-import { HandsContextType } from './HandsContextType'
+import P5Canvas from '../modules/p5/components/P5Canvas'
 
 export type P5ContainerProps = {
   title: string
   mediapipe: boolean
+  scene: typeof P5Canvas
   icon?: string
   style?: { [Key: string]: string }
-  scene: (p5: p5Types, hands: HandsContextType) => void
-  onClick?: (p5: p5Types) => void
 }

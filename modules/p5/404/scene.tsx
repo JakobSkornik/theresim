@@ -17,7 +17,7 @@ const getRandomInt = (max: number) => {
 
 const draw404 = (p5: p5Types) => {
   const w = 500
-  const h = 200
+  const h = 180
 
   let maxX = p5.width - w
   let maxY = p5.height - h
@@ -38,7 +38,7 @@ const draw404 = (p5: p5Types) => {
   p5.rect(x + 8, y + 8, w, h, 10)
 
   p5.stroke(BLACK())
-  p5.strokeWeight(3)
+  p5.strokeWeight(2)
   p5.fill(BG())
   p5.rect(x, y, w, h, 10)
 
@@ -50,7 +50,7 @@ const draw404 = (p5: p5Types) => {
   p5.text('WARNING', x + 20, y + 8, 400, 100)
 
   p5.stroke(BLACK())
-  p5.strokeWeight(3)
+  p5.strokeWeight(2)
   p5.fill(BLACK())
   p5.circle(x + 54, y + 114, 80)
   p5.fill(RED())

@@ -4,7 +4,7 @@ export default function Document() {
   return (
     <Html>
       <Head />
-      <title>Theremin</title>
+      <title>Theresim</title>
       <meta name="description" content="A virtual instrument." />
       <link rel="icon" href="/favicon.svg" />
       <link href="https://unpkg.com/nes.css/css/nes.css" rel="stylesheet" />
