@@ -1,5 +1,4 @@
 // @ts-nocheck
-
 import { shadow } from '../modules/const'
 
 const sx = {

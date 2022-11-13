@@ -18,7 +18,6 @@ body {
   padding: 0;
   margin: 0;
   font-family: Oleo !important;
-  /* font-weight: 600; */
   overflow-y: hidden;
   overflow-x: hidden;
 }
@@ -46,11 +45,9 @@ a {
   }
 }
 
-
 /* s
   Styles adapted from:
     - https://codepen.io/inegoita/pen/BgdXMw
-
 */
 .background {
   width: 100vw;

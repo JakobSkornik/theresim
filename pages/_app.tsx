@@ -165,7 +165,7 @@ function AppWrapper(props: Props) {
           text=""
           value="info"
           onClick={onToggleHideUI}
-          icon="eye.svg"
+          icon="sunset.svg"
           iconSize={50}
         />
         <Button
