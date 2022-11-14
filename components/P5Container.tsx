@@ -5,7 +5,6 @@ import { createRef, useEffect, useRef, useState } from 'react'
 import initialize from '../modules/mediapipe'
 import { useControlPanelContext, useHandsContext } from '../context'
 import { P5ContainerProps } from '../types'
-import Loader from './Loader'
 const Canvas = dynamic(() => import('./Canvas'), { ssr: false })
 
 const sx = {
@@ -55,20 +54,29 @@ const P5Container = (props: P5ContainerProps) => {
   const [dims, setDims] = useState({ width: 0, height: 0 })
 
   useEffect(() => {
-    if (!parentRef.current || !props.mediapipe) {
+    toggleLoading(true)
+    if (!parentRef.current) {
+      if (!props.mediapipe) {
+        toggleLoading(false)
+      }
       return
     }
 
     const init = async () => {
-      if (props.mediapipe && handsContext) {
-        await initialize(handsContext, videoElement).then((res: boolean) => {
-          if (res) handsContext.updateCamReady(true)
-        })
+      if (handsContext) {
+        try {
+          await initialize(handsContext, videoElement).then((res: boolean) => {
+            if (res) handsContext.updateCamReady(true)
+          })
+        } catch(e: any) {
+          console.log(`Please check your webcam: ${e.message}.`)
+        }
       }
     }
-    
-    toggleLoading(true)
+
     init().then(() => {
+      toggleLoading(false)
+    }).catch((e: DOMException) => {
       toggleLoading(false)
     })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -76,7 +84,7 @@ const P5Container = (props: P5ContainerProps) => {
   return (
     <div ref={parentRef} style={{ ...sx.canvasDiv, ...props.style }}>
       <div style={sx.playbackDiv}>
-        <video
+        {props.mediapipe && <video
           width={dims.width - 31}
           height={dims.height - 80}
           style={{
@@ -86,7 +94,7 @@ const P5Container = (props: P5ContainerProps) => {
             },
           }}
           ref={videoElement}
-        />
+        />}
       </div>
       {dims.height > 0 && dims.width > 0 && (
         <Canvas
