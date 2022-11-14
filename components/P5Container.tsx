@@ -31,7 +31,7 @@ const sx = {
     position: 'fixed' as 'fixed',
     width: '100%',
     height: '100%',
-    transition: 'all 2 ease-in-out',
+    transition: 'all 1 ease-in-out',
   },
 }
 

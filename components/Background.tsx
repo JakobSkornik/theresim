@@ -4,7 +4,7 @@ import { shadow } from '../modules/const'
 const sx = {
   title: {
     position: 'fixed' as 'fixed',
-    left: '35vw',
+    left: 'calc(50vw - 20vh - 50px)',
     top: '35vh',
     fontFamily: 'Outrun',
     fontSize: '80px',
@@ -12,7 +12,6 @@ const sx = {
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     transform: 'rotate(-10deg)',
-    // textShadow: `8px 8px ${shadow}`,
     filter: `drop-shadow(2px 2px ${shadow})`,
   },
   grid: {
@@ -23,7 +22,7 @@ const sx = {
   mountain1: {
     '--mountain-base': '10vw',
     '--mountain-height': '5vw',
-    '--mountain-color1': '#583593',
+    '--mountain-color1': '#25277447',
     '--mountain-color2': '#9729AB',
     '--mountain-offset': '10vw',
     '--mountain-tilt': '-20deg',
@@ -31,7 +30,7 @@ const sx = {
   mountain2: {
     '--mountain-base': '7vw',
     '--mountain-height': '3vw',
-    '--mountain-color1': '#583593',
+    '--mountain-color1': '#2b116570',
     '--mountain-color2': '#9729AB',
     '--mountain-offset': '-20vw',
     '--mountain-tilt': '10deg',
@@ -47,33 +46,57 @@ const sx = {
   mountain4: {
     '--mountain-base': '23vw',
     '--mountain-height': '10vw',
-    '--mountain-color1': '#583593',
-    '--mountain-color2': '#9729AB',
+    '--mountain-color1': '#9729AB',
+    '--mountain-color2': '#583593',
     '--mountain-offset': '-50vw',
     '--mountain-tilt': '-2deg',
+  },
+  leftLight: {
+    position: 'fixed' as 'fixed',
+    bottom: '0',
+    height: '40vh',
+    width: '40vw',
+    left: '10vw',
+    transform: 'rotate(-10deg)',
+    filter: 'blur(3px)',
+  },
+  rightLight: {
+    position: 'fixed' as 'fixed',
+    bottom: '0',
+    height: '40vh',
+    width: '40vw',
+    left: '50vw',
+    transform: 'rotate(10deg)',
+    filter: 'blur(3px)',
+  },
+  road: {
+    position: 'fixed' as 'fixed',
+    bottom: '0',
+    height: '35vh',
+    width: '100vw',
+    left: '0',
+    filter: 'blur(3px)',
   },
 }
 
 const Background = () => {
   return (
     <div className="background">
-      <div className="grid" style={sx.grid}></div>
-      <div className="horizontal-line"></div>
-      <div className="mountain" style={sx.mountain1}></div>
-      <div className="mountain" style={sx.mountain2}></div>
-      <div className="mountain" style={sx.mountain3}></div>
-      <div className="mountain" style={sx.mountain4}></div>
-      <div className="sun">
-        <div className="gooey">
-          <div className="bubble"></div>
-          <div className="bubble"></div>
-          <div className="bubble"></div>
-          <div className="bubble"></div>
-          <div className="bubble"></div>
-          <div className="bubble"></div>
-          <div className="bubble"></div>
-          <div className="bubble"></div>
-        </div>
+      <div className="grid" style={sx.grid} />
+      <div className="horizontal-line" />
+      <div className="mountain" style={sx.mountain1} />
+      <div className="mountain" style={sx.mountain2} />
+      <div className="mountain" style={sx.mountain3} />
+      <div className="mountain" style={sx.mountain4} />
+      <div className="sun" />
+      <div style={sx.road}>
+        <img src="/icons/road.svg" alt="road" />
+      </div>
+      <div style={sx.leftLight}>
+        <img src="/icons/headlight.svg" alt="Left Headlight" />
+      </div>
+      <div style={sx.rightLight}>
+        <img src="/icons/headlight.svg" alt="Right Headlight" />
       </div>
       <span style={sx.title}>Theresim</span>
     </div>

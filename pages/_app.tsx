@@ -27,6 +27,7 @@ const sx = {
     width: 'calc(100vw - 40px)',
     height: 'calc(100vh - 40px)',
     transition: 'margin 700ms ease-out, opacity 700ms ease',
+    willChange: 'margin',
   },
 }
 
@@ -113,7 +114,6 @@ export default function App({ Component, pageProps }: AppProps) {
   }
 
   const updateLoading = (load?: boolean) => {
-    console.log('UPDATING LOADING', load)
     if (load != null) {
       toggleLoading(load)
       return

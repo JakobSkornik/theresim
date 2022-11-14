@@ -11,6 +11,7 @@ const sx = {
     width: '100%',
     backdropFilter: 'blur(3px)',
     transition: 'opacity .7s ease-in-out',
+    willChange: 'opacity',
     pointerEvents: 'none' as 'none',
   },
   loader: {

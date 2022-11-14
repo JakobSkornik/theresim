@@ -17,6 +17,7 @@ const sx = {
     borderBottom: '1px solid ' + borderColor + '60',
     boxShadow: `4px 4px ${shadow}, 0 0 100px 10px rgba(3, 255, 161, 0.2)`,
     transition: 'opacity 0.5s',
+    willChange: 'opacity',
     pointerEvents: 'none' as 'none',
   },
   title: {

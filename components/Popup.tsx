@@ -1,6 +1,6 @@
-import { blue, borderColor, primary, rightColor, shadow, textColor, tintedWhite } from '../modules/const'
-import { PopupProps } from '../types/PopupProps'
 import Button from './Button'
+import { borderColor, primary, shadow, textColor} from '../modules/const'
+import { PopupProps } from '../types/PopupProps'
 
 const sx = {
   container: {
@@ -21,6 +21,7 @@ const sx = {
     },
     marginTop: '0',
     transition: 'opacity 1s',
+    willChange: 'opacity',
     pointerEvents: 'none' as 'none',
   },
   title: {
