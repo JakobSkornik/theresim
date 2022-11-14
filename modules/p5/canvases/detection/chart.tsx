@@ -1,4 +1,6 @@
 import p5Types from 'p5'
+
+import P5Canvas from '../../components/P5Canvas'
 import {
   BLACK,
   hexToRgb,
@@ -6,11 +8,9 @@ import {
   PENCIL,
   rightColor,
   shadow,
-} from '../../const'
-import { avg, getAverageZ, queue } from '..'
-
-import { HandsContextType } from '../../../types'
-import P5Canvas from '../components/P5Canvas'
+} from '../../../const'
+import { avg, getAverageZ, queue } from '../../hooks'
+import { HandsContextType } from '../../../../types'
 
 export default class CoordinateChartCanvas implements P5Canvas {
   minWidth: number = 280

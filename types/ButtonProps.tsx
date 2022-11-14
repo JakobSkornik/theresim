@@ -7,4 +7,6 @@ export type ButtonProps = {
   style?: { [Key: string]: string }
   icon?: string
   iconSize?: number
+  onMouseEnter?: (e: MouseEvent<HTMLButtonElement>) => void
+  onMouseLeave?: (e: MouseEvent<HTMLButtonElement>) => void
 }

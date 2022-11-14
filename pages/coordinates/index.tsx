@@ -1,7 +1,7 @@
+import ChartCanvas from '../../modules/p5/canvases/coordinates/chart'
+import HandCanvas from '../../modules/p5/canvases/coordinates/hand'
 import P5Container from '../../components/P5Container'
-import HandCanvas from '../../modules/p5/coordinates/hand'
-import ChartCanvas from '../../modules/p5/coordinates/chart'
-import { useFullScreenContext } from '../../context'
+import { useControlPanelContext } from '../../context'
 
 const sx = {
   fullscreen: {
@@ -23,7 +23,7 @@ const sx = {
 }
 
 const Coordinates = () => {
-  const { bool: fullscreen } = useFullScreenContext()
+  const { fullscreen } = useControlPanelContext()
 
   return (
     <>

@@ -1,6 +1,6 @@
+import InstrumentCanvas from '../../modules/p5/canvases/instrument/scene'
 import P5Container from '../../components/P5Container'
-import InstrumentCanvas from '../../modules/p5/instrument/scene'
-import { useFullScreenContext } from '../../context'
+import { useControlPanelContext } from '../../context'
 const sx = {
   fullscreen: {
     top: '1px',
@@ -17,9 +17,8 @@ const sx = {
 }
 
 const Instrument = () => {
-  const { bool: fullscreen } = useFullScreenContext()
+  const { fullscreen } = useControlPanelContext()
 
-  
   return (
     <P5Container
       style={fullscreen ? sx.fullscreen : sx.windowed}

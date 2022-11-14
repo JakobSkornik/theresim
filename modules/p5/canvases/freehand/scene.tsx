@@ -1,12 +1,12 @@
 import p5Types from 'p5'
 
-import FPSCounter from '../components/FPSCounter'
-import HandLegend from '../components/HandLegend'
-import Hand from '../components/Hand'
-import NoHandsWarning from '../components/NoHandsWarning'
-import P5Canvas from '../components/P5Canvas'
-import { hexToRgb, leftColor, rightColor } from '../../const'
-import { HandsContextType } from '../../../types'
+import FPSCounter from '../../components/FPSCounter'
+import HandLegend from '../../components/HandLegend'
+import Hand from '../../components/Hand'
+import NoHandsWarning from '../../components/NoHandsWarning'
+import P5Canvas from '../../components/P5Canvas'
+import { hexToRgb, leftColor, rightColor } from '../../../const'
+import { HandsContextType } from '../../../../types'
 
 export default class FreeHandCanvas implements P5Canvas {
   fpsCounter: FPSCounter

@@ -1,4 +1,4 @@
-import { blue, borderColor, primary, shadow, textColor, tintedWhite } from '../modules/const'
+import { blue, borderColor, primary, rightColor, shadow, textColor, tintedWhite } from '../modules/const'
 import { PopupProps } from '../types/PopupProps'
 import Button from './Button'
 
@@ -12,7 +12,13 @@ const sx = {
     color: textColor,
     borderRadius: '2px',
     borderBottom: '1px solid ' + borderColor + '60',
-    boxShadow: `4px 4px ${shadow}, 0 0 100px 10px rgba(3, 255, 161, 0.2)`,
+    _boxShadow: `4px 4px ${shadow}, 0 0 30px 1px ${shadow}40`,
+    get boxShadow() {
+      return this._boxShadow
+    },
+    set boxShadow(value) {
+      this._boxShadow = value
+    },
     marginTop: '0',
     transition: 'opacity 1s',
     pointerEvents: 'none' as 'none',
@@ -33,7 +39,7 @@ const sx = {
     marginLeft: '10px',
   },
   text: {
-    fontSize: '20px',
+    fontSize: '18px',
     marginTop: '0px',
     marginLeft: '10px',
     color: shadow,

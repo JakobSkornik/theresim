@@ -1,16 +1,16 @@
 import p5Types from 'p5'
 
-import Container from '../components/Container'
-import FPSCounter from '../components/FPSCounter'
-import FrequencyChart from '../components/FrequencyChart'
-import HandLegend from '../components/HandLegend'
-import NoHandsWarning from '../components/NoHandsWarning'
-import P5Canvas from '../components/P5Canvas'
-import { HandsContextType } from '../../../types'
-import { hexToRgb, leftColor, primary, rightColor, shadow } from '../../const'
-import AmplitudeChart from '../components/AmplitudeChart'
-import Hand from '../components/Hand'
-import Box from '../components/Box'
+import AmplitudeChart from '../../components/AmplitudeChart'
+import Box from '../../components/Box'
+import Container from '../../components/Container'
+import FPSCounter from '../../components/FPSCounter'
+import FrequencyChart from '../../components/FrequencyChart'
+import Hand from '../../components/Hand'
+import HandLegend from '../../components/HandLegend'
+import NoHandsWarning from '../../components/NoHandsWarning'
+import P5Canvas from '../../components/P5Canvas'
+import { HandsContextType } from '../../../../types'
+import { hexToRgb, leftColor, primary, rightColor, shadow } from '../../../const'
 
 export default class ControlScene implements P5Canvas {
   fpsCounter: FPSCounter

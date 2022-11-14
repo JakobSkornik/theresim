@@ -1,15 +1,15 @@
 import p5Types from 'p5'
 
-import FPSCounter from '../components/FPSCounter'
-import Hand from '../components/Hand'
-import HandLegend from '../components/HandLegend'
+import FPSCounter from '../../components/FPSCounter'
+import Hand from '../../components/Hand'
+import HandLegend from '../../components/HandLegend'
 import NoHandsWarning, {
   HandsWarningParams,
-} from '../components/NoHandsWarning'
-import P5Canvas from '../components/P5Canvas'
-import { BLUE, gray, GRAY, hexToRgb, leftColor, RED, rightColor } from '../../const'
-import { HandsContextType } from '../../../types'
-import { getAverageZ } from '..'
+} from '../../components/NoHandsWarning'
+import P5Canvas from '../../components/P5Canvas'
+import { getAverageZ } from '../../hooks'
+import { gray, hexToRgb, leftColor, rightColor } from '../../../const'
+import { HandsContextType } from '../../../../types'
 
 export default class DetectionHandCanvas implements P5Canvas {
   threshold: number = 0.54

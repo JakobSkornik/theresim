@@ -5,17 +5,17 @@ import { Landmark } from '@mediapipe/hands'
 import type { AppProps } from 'next/app'
 
 import Background from '../components/Background'
-import Button from '../components/Button'
 import Container from '../components/Container'
-import FullscreenProvider from '../context/fullscreen'
+import ControlPanel from '../components/ControlPanel'
+import ControlPanelProvider from '../context/controlPanel'
 import HandsProvider from '../context/hands'
+import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Navbar from '../components/NavBar'
 import Popup from '../components/Popup'
-import VideoPlaybackProvider from '../context/playback'
-import { BooleanContextType, HandsContextType, Props } from '../types'
+import { ControlPanelContextType, HandsContextType, Props } from '../types'
 import { getInformationText, primary } from '../modules/const'
-import { useFullScreenContext, usePlaybackContext } from '../context'
+import { useControlPanelContext } from '../context'
 
 const sx = {
   appWrapper: {
@@ -28,61 +28,19 @@ const sx = {
     height: 'calc(100vh - 40px)',
     transition: 'margin 700ms ease-out, opacity 700ms ease',
   },
-  hoverContainer: {
-    position: 'fixed' as 'fixed',
-    top: 'calc(100vh - 100px)',
-    left: 'calc(50vw - 250px)',
-    height: '400px',
-    width: '500px',
-    borderRadius: '30%',
-  },
-  ctrlPanel: {
-    position: 'fixed' as 'fixed',
-    left: 'calc(50vw - 180px)',
-    height: '80px',
-    width: '360px',
-    padding: '10px',
-    backgroundColor: primary + '90',
-    backdropFilter: 'blur(3px)',
-    borderRadius: '20px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    transition: 'top 0.2s ease-out',
-    boxShadow: `0 0 30px 1px rgba(200, 200, 200, 0.2), 0 0 40px 10px ${primary}`,
-  },
-  btn: {
-    width: '65px',
-    height: '60px',
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    borderColor: 'rgba(0, 0, 0, 0)',
-    borderRadius: '40%',
-  },
-  btnActive: {
-    width: '65px',
-    height: '60px',
-    backgroundColor: 'rgba(100, 100, 100, .4)',
-    borderColor: 'rgba(0, 0, 0, 0)',
-    boxShadow: `0 0 30px 1px rgba(200, 200, 200, 0.2), 0 0 40px 10px ${primary}`,
-  },
 }
 
 function AppWrapper(props: Props) {
   const router = useRouter()
-  const { bool: fullscreen, toggle: toggleFullscreen } = useFullScreenContext()
-  const { bool: playback, toggle: togglePlayback } = usePlaybackContext()
-
-  const [ctrlPanel, setCtrlPanel] = useState(true)
-  const [infoOpen, setInfo] = useState(false)
+  const { fullscreen, showUI, info, toggleInfo, loading } =
+    useControlPanelContext()
   const [msgOpen, setMsg] = useState(true)
-  const [hidden, setHidden] = useState(false)
 
   const msgText = 'You can find more information in the control panel.'
 
   useEffect(() => {
     const timeId = setTimeout(() => {
       setMsg(false)
-      setCtrlPanel(false)
     }, 2000)
 
     return () => {
@@ -90,29 +48,8 @@ function AppWrapper(props: Props) {
     }
   }, [])
 
-  const openCtrlPanel = () => {
-    setCtrlPanel(true)
-  }
-
-  const closeCtrlPanel = () => {
-    setCtrlPanel(false)
-  }
-
-  const onToggleFullscreen = () => {
-    setHidden(false)
-    toggleFullscreen()
-  }
-
-  const onTogglePlayback = () => {
-    togglePlayback()
-  }
-
   const onToggleInfo = () => {
-    setInfo(!infoOpen)
-  }
-
-  const onToggleHideUI = () => {
-    setHidden(!hidden)
+    toggleInfo()
   }
 
   return (
@@ -124,69 +61,23 @@ function AppWrapper(props: Props) {
           ...sx.container,
           ...{
             marginLeft: fullscreen ? '105vw' : '20px',
-            opacity: hidden ? '0' : '100',
+            opacity: showUI ? '1' : '0',
           },
         }}
       >
         <Navbar />
         {props.children}
       </Container>
+      <Loader style={{ opacity: loading ? '1' : '0' }} />
+      <ControlPanel />
       <Message
-        style={{ opacity: msgOpen && !infoOpen ? '100' : '0' }}
+        style={{ opacity: msgOpen && !info ? '1' : '0' }}
         text={msgText}
-        icon="up-arrow.svg"
+        icon="arrow.svg"
         iconSize={50}
       />
-      <div
-        style={sx.hoverContainer}
-        onMouseEnter={openCtrlPanel}
-        onMouseLeave={closeCtrlPanel}
-      ></div>
-      <div
-        style={{
-          ...sx.ctrlPanel,
-          ...{
-            top: ctrlPanel ? 'calc(100vh - 80px)' : 'calc(100vh - 10px)',
-          },
-        }}
-        onMouseEnter={openCtrlPanel}
-        onMouseLeave={closeCtrlPanel}
-      >
-        <Button
-          style={fullscreen ? { ...sx.btn, ...sx.btnActive } : sx.btn}
-          text=""
-          value="fullscreen"
-          onClick={onToggleFullscreen}
-          icon={'expand.svg'}
-          iconSize={50}
-        />
-        <Button
-          style={hidden ? { ...sx.btn, ...sx.btnActive } : sx.btn}
-          text=""
-          value="info"
-          onClick={onToggleHideUI}
-          icon="sunset.svg"
-          iconSize={50}
-        />
-        <Button
-          style={playback ? { ...sx.btn, ...sx.btnActive } : sx.btn}
-          text=""
-          value="playback"
-          onClick={onTogglePlayback}
-          icon="webcam.svg"
-          iconSize={50}
-        />
-        <Button
-          style={infoOpen ? { ...sx.btn, ...sx.btnActive } : sx.btn}
-          text=""
-          value="info"
-          onClick={onToggleInfo}
-          icon="info.svg"
-          iconSize={50}
-        />
-      </div>
       <Popup
-        style={{ opacity: infoOpen ? '100' : '0' }}
+        style={{ opacity: info ? '1' : '0' }}
         text={getInformationText(router.route)}
         icon="close.svg"
         togglePopup={onToggleInfo}
@@ -198,6 +89,9 @@ function AppWrapper(props: Props) {
 export default function App({ Component, pageProps }: AppProps) {
   const [fullscreen, toggleFullscreen] = useState(false)
   const [playback, togglePlayback] = useState(false)
+  const [showUI, toggleShowUI] = useState(true)
+  const [info, toggleInfo] = useState(false)
+  const [loading, toggleLoading] = useState(true)
   const [camReady, setCamReady] = useState(false)
   const [rightHand, setRightHand] = useState<Landmark[]>([])
   const [leftHand, setLeftHand] = useState<Landmark[]>([])
@@ -210,48 +104,64 @@ export default function App({ Component, pageProps }: AppProps) {
     setLeftHand(hand)
   }
 
-  const updateFullscreen = async () => {
+  const updateFullscreen = () => {
     toggleFullscreen(!fullscreen)
   }
 
-  const updatePlayback = async () => {
+  const updatePlayback = () => {
     togglePlayback(!playback)
   }
 
+  const updateLoading = (load?: boolean) => {
+    console.log('UPDATING LOADING', load)
+    if (load != null) {
+      toggleLoading(load)
+      return
+    }
+    toggleLoading(!loading)
+  }
+
+  const updateShowUI = (show?: boolean) => {
+    if (show != null) {
+      toggleShowUI(show)
+    } else {
+      toggleShowUI(!showUI)
+    }
+  }
+
+  const updateInfo = () => {
+    toggleInfo(!info)
+  }
+
+  const handContext = {
+    camReady: camReady,
+    updateCamReady: setCamReady,
+    rightHand: rightHand,
+    leftHand: leftHand,
+    updateRightHand: updateRightHand,
+    updateLeftHand: updateLeftHand,
+  } as HandsContextType
+
+  const controlPanelContext = {
+    fullscreen: fullscreen,
+    toggleFullscreen: updateFullscreen,
+    playback: playback,
+    togglePlayback: updatePlayback,
+    showUI: showUI,
+    toggleShowUI: updateShowUI,
+    info: info,
+    toggleInfo: updateInfo,
+    loading: loading,
+    toggleLoading: updateLoading,
+  } as ControlPanelContextType
+
   return (
-    <HandsProvider
-      value={
-        {
-          camReady: camReady,
-          updateCamReady: setCamReady,
-          rightHand: rightHand,
-          leftHand: leftHand,
-          updateRightHand: updateRightHand,
-          updateLeftHand: updateLeftHand,
-        } as HandsContextType
-      }
-    >
-      <FullscreenProvider
-        value={
-          {
-            bool: fullscreen,
-            toggle: updateFullscreen,
-          } as BooleanContextType
-        }
-      >
-        <VideoPlaybackProvider
-          value={
-            {
-              bool: playback,
-              toggle: updatePlayback,
-            } as BooleanContextType
-          }
-        >
-          <AppWrapper>
-            <Component {...pageProps} />
-          </AppWrapper>
-        </VideoPlaybackProvider>
-      </FullscreenProvider>
+    <HandsProvider value={handContext}>
+      <ControlPanelProvider value={controlPanelContext}>
+        <AppWrapper>
+          <Component {...pageProps} />
+        </AppWrapper>
+      </ControlPanelProvider>
     </HandsProvider>
   )
 }

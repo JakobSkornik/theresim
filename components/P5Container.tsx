@@ -3,9 +3,9 @@ import useResizeObserver from '@react-hook/resize-observer'
 import { createRef, useEffect, useRef, useState } from 'react'
 
 import initialize from '../modules/mediapipe'
-import { useHandsContext, usePlaybackContext } from '../context'
+import { useControlPanelContext, useHandsContext } from '../context'
 import { P5ContainerProps } from '../types'
-import { borderColor } from '../modules/const'
+import Loader from './Loader'
 const Canvas = dynamic(() => import('./Canvas'), { ssr: false })
 
 const sx = {
@@ -27,11 +27,17 @@ const sx = {
     transition: 'all 0.5s ease-in-out',
     transform: 'scaleX(-1)',
   },
+  loader: {
+    position: 'fixed' as 'fixed',
+    width: '100%',
+    height: '100%',
+    transition: 'all 2 ease-in-out',
+  },
 }
 
 const P5Container = (props: P5ContainerProps) => {
-  const { bool: playback } = usePlaybackContext()
   const handsContext = useHandsContext()
+  const { playback, toggleLoading } = useControlPanelContext()
   const videoElement = createRef<HTMLVideoElement>()
   const parentRef = useRef<HTMLDivElement>(null)
 
@@ -49,13 +55,22 @@ const P5Container = (props: P5ContainerProps) => {
   const [dims, setDims] = useState({ width: 0, height: 0 })
 
   useEffect(() => {
-    if (!parentRef.current) return
-
-    if (props.mediapipe && handsContext) {
-      initialize(handsContext, videoElement).then((res: boolean) => {
-        if (res) handsContext.updateCamReady(true)
-      })
+    if (!parentRef.current || !props.mediapipe) {
+      return
     }
+
+    const init = async () => {
+      if (props.mediapipe && handsContext) {
+        await initialize(handsContext, videoElement).then((res: boolean) => {
+          if (res) handsContext.updateCamReady(true)
+        })
+      }
+    }
+    
+    toggleLoading(true)
+    init().then(() => {
+      toggleLoading(false)
+    })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -67,7 +82,7 @@ const P5Container = (props: P5ContainerProps) => {
           style={{
             ...sx.playback,
             ...{
-              opacity: playback ? '20 ' : '0',
+              opacity: playback ? '0.2' : '0',
             },
           }}
           ref={videoElement}

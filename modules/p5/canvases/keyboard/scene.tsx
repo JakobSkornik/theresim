@@ -15,11 +15,11 @@ import {
   primary,
   shadow,
   tertiary,
-} from '../../const'
-import Box from '../components/Box'
-import P5Canvas from '../components/P5Canvas'
-import { KeyLocation } from '../../../types/KeyLocation'
-import { ScaleKeys } from '../../../types/ScaleKeys'
+} from '../../../const'
+import Box from '../../components/Box'
+import P5Canvas from '../../components/P5Canvas'
+import { KeyLocation } from '../../../../types/KeyLocation'
+import { ScaleKeys } from '../../../../types/ScaleKeys'
 
 export default class KeyboardCanvas implements P5Canvas {
   major = true

@@ -1,7 +1,7 @@
 import Image from 'next/image'
-import React from 'react'
-import { borderColor, shadow } from '../modules/const'
+import React, { MouseEvent } from 'react'
 
+import { borderColor, shadow } from '../modules/const'
 import { ButtonProps } from '../types'
 
 const sx = {
@@ -10,18 +10,36 @@ const sx = {
     borderRadius: '2px',
     border: '1px solid ' + borderColor + '60',
     color: shadow,
-    outline: 'none'
+    outline: 'none',
   },
   icon: {},
 }
 
 const Button = (props: ButtonProps) => {
+  const mouseEnter = (e: MouseEvent<HTMLButtonElement>) => {
+    if (!props.onMouseEnter) {
+      return
+    }
+
+    props.onMouseEnter(e)
+  }
+
+  const mouseLeave = (e: MouseEvent<HTMLButtonElement>) => {
+    if (!props.onMouseLeave) {
+      return
+    }
+
+    props.onMouseLeave(e)
+  }
+
   return (
     <button
       value={props.value}
       type="button"
       style={{ ...sx.button, ...props.style }}
       onClick={props.onClick}
+      onMouseEnter={mouseEnter}
+      onMouseLeave={mouseLeave}
     >
       {props.icon && (
         <span>

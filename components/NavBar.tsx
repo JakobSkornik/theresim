@@ -14,7 +14,7 @@ const sx = {
     display: 'flex',
     margin: '10px',
     justifyContent: 'left',
-    '-ms-overflow-style': 'none' as 'none',
+    msOverflowStyle: 'none' as 'none',
     scrollbarWidth: 'none' as 'none',
   },
   btn: {
@@ -46,7 +46,7 @@ const Navbar = () => {
   return (
     <div style={sx.container}>
       <Button
-        text="Freehands"
+        text="Hands"
         value="/freehand"
         onClick={handleClick}
         style={{

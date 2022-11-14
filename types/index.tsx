@@ -1,8 +1,8 @@
-import { BooleanContextType } from './BooleanContextType'
-import { BooleanProps } from './BooleanProps'
 import { ButtonProps } from './ButtonProps'
 import { CanvasProps } from './CanvasProps'
 import { ContainerProps } from './ContainerProps'
+import { ControlPanelContextType } from './ControlPanelContextType'
+import { ControlPanelProps } from './ControlPanelProps'
 import { HandsContextType } from './HandsContextType'
 import { HandsProps } from './HandsProps'
 import { KeyLocation } from './KeyLocation'
@@ -12,11 +12,11 @@ import { PopupProps } from './PopupProps'
 import { Props } from './Props'
 import { ScaleKeys } from './ScaleKeys'
 
-export type { BooleanContextType }
 export type { ButtonProps }
 export type { CanvasProps }
 export type { ContainerProps }
-export type { BooleanProps }
+export type { ControlPanelContextType }
+export type { ControlPanelProps }
 export type { HandsContextType }
 export type { HandsProps } 
 export type { KeyLocation }

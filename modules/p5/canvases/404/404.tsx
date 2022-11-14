@@ -1,8 +1,8 @@
 import p5Types from 'p5'
 
-import { borderColor, hexToRgb, primary, shadow } from '../../../modules/const'
-import P5Canvas from '../../../modules/p5/components/P5Canvas'
-import { HandsContextType } from '../../../types'
+import { borderColor, hexToRgb, primary, shadow } from '../../../const'
+import P5Canvas from '../../components/P5Canvas'
+import { HandsContextType } from '../../../../types'
 
 export default class Custom404 implements P5Canvas {
   lastX = 0

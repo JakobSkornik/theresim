@@ -1,6 +1,6 @@
+import KeyboardCanvas from '../../modules/p5/canvases/keyboard/scene'
 import P5Container from '../../components/P5Container'
-import KeyboardCanvas from '../../modules/p5/keyboard/scene'
-import { useFullScreenContext } from '../../context'
+import { useControlPanelContext } from '../../context'
 
 const sx = {
   fullscreen: {
@@ -18,7 +18,7 @@ const sx = {
 }
 
 const Keyboard = () => {
-  const { bool: fullscreen } = useFullScreenContext()
+  const { fullscreen } = useControlPanelContext()
 
   return (
     <P5Container

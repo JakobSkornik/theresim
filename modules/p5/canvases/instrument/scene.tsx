@@ -1,7 +1,7 @@
 import p5Types from 'p5'
 
-import { KeyLocation } from '../../../types/KeyLocation'
-import { ScaleKeys } from '../../../types/ScaleKeys'
+import { KeyLocation } from '../../../../types/KeyLocation'
+import { ScaleKeys } from '../../../../types/ScaleKeys'
 import {
   BLACK,
   getChromaticIdx,
@@ -15,8 +15,8 @@ import {
   shadow,
   WHITE,
   tertiary,
-} from '../../const'
-import P5Canvas from '../components/P5Canvas'
+} from '../../../const'
+import P5Canvas from '../../components/P5Canvas'
 
 export default class InstrumentCanvas implements P5Canvas {
   selected: number | null = 0
@@ -24,14 +24,13 @@ export default class InstrumentCanvas implements P5Canvas {
   selectedScale: ScaleKeys | null = getNotesInScale(0, true)
   keyLocations: KeyLocation[] = []
   chordLocations: KeyLocation[] = []
-  noteNames: string[] = []
+  noteNames: string[] = getSimpleNotes(0)
 
   show(p5: p5Types): void {
     this.drawKeyboard(p5, 30, 70)
     this.drawChords(p5)
     this.drawSettings(p5, 500, 200)
   }
-
 
   onClick = (p5: p5Types) => {
     const x = p5.mouseX

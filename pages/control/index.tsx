@@ -1,6 +1,6 @@
 import P5Container from '../../components/P5Container'
-import Scene from '../../modules/p5/control/scene'
-import { useFullScreenContext } from '../../context'
+import Scene from '../../modules/p5/canvases/control/scene'
+import { useControlPanelContext } from '../../context'
 
 const sx = {
   fullscreen: {
@@ -18,7 +18,7 @@ const sx = {
 }
 
 const Control = () => {
-  const { bool: fullscreen } = useFullScreenContext()
+  const { fullscreen } = useControlPanelContext()
 
   return (
     <P5Container

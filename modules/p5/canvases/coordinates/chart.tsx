@@ -1,9 +1,16 @@
 import p5Types from 'p5'
-import { BLACK, fifth, hexToRgb, primary, rightColor, secondary, shadow, tertiary, yellow } from '../../const'
-import { avg, getAvgCoordinates, queue } from '../hooks'
 
-import { HandsContextType } from '../../../types'
-import P5Canvas from '../components/P5Canvas'
+import P5Canvas from '../../components/P5Canvas'
+import { avg, getAvgCoordinates, queue } from '../../hooks'
+import {
+  BLACK,
+  fifth,
+  hexToRgb,
+  rightColor,
+  shadow,
+  tertiary,
+} from '../../../const'
+import { HandsContextType } from '../../../../types'
 
 export default class CoordinateChartCanvas implements P5Canvas {
   minWidth: number = 280
@@ -56,9 +63,30 @@ export default class CoordinateChartCanvas implements P5Canvas {
     const x3 = x2 + barMargin + barWidth
     const y = this.h - 40
 
-    this.bar(p5, x1, avgX * (maxY - chartOffsetY), barWidth, maxY, hexToRgb(tertiary))
-    this.bar(p5, x2, avgY * (maxY - chartOffsetY), barWidth, maxY, hexToRgb(rightColor))
-    this.bar(p5, x3, avgZ * (maxY - chartOffsetY), barWidth, maxY, hexToRgb(fifth))
+    this.bar(
+      p5,
+      x1,
+      avgX * (maxY - chartOffsetY),
+      barWidth,
+      maxY,
+      hexToRgb(tertiary),
+    )
+    this.bar(
+      p5,
+      x2,
+      avgY * (maxY - chartOffsetY),
+      barWidth,
+      maxY,
+      hexToRgb(rightColor),
+    )
+    this.bar(
+      p5,
+      x3,
+      avgZ * (maxY - chartOffsetY),
+      barWidth,
+      maxY,
+      hexToRgb(fifth),
+    )
 
     if (this.w < 320) {
       return

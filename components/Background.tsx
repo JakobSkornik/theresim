@@ -9,8 +9,8 @@ const sx = {
     fontFamily: 'Outrun',
     fontSize: '80px',
     background: '-webkit-linear-gradient(#170328, #f54171)',
-    '-webkit-background-clip': 'text',
-    '-webkit-text-fill-color': 'transparent',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
     transform: 'rotate(-10deg)',
     // textShadow: `8px 8px ${shadow}`,
     filter: `drop-shadow(2px 2px ${shadow})`,
@@ -65,6 +65,9 @@ const Background = () => {
       <div className="mountain" style={sx.mountain4}></div>
       <div className="sun">
         <div className="gooey">
+          <div className="bubble"></div>
+          <div className="bubble"></div>
+          <div className="bubble"></div>
           <div className="bubble"></div>
           <div className="bubble"></div>
           <div className="bubble"></div>

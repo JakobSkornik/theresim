@@ -1,7 +1,7 @@
 // @ts-nocheck
 import dynamic from 'next/dynamic'
 import p5Types from 'p5'
-import { useState } from 'react'
+import { memo, useState } from 'react'
 const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
   ssr: false,
 })
@@ -12,12 +12,11 @@ import { CanvasProps } from '../types'
 
 const Canvas = (props: CanvasProps) => {
   const [font, setFont] = useState<p5Types.Font | null>(null)
-  const [scene, setScene] = useState<P5Canvas>(
-    new props.scene(props.width, props.height),
-  )
+  const [scene, setScene] = useState<P5Canvas | null>(null)
 
   const preload = (p5: p5Types) => {
     setFont(p5.loadFont('Oleo.ttf'))
+    setScene(new props.scene(props.width, props.height))
   }
 
   const setup = (p5: p5Types, canvasParentRef: HTMLDivElement) => {
@@ -62,4 +61,4 @@ const Canvas = (props: CanvasProps) => {
   )
 }
 
-export default Canvas
+export default memo(Canvas)

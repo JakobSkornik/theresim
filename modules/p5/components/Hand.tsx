@@ -2,7 +2,7 @@ import p5Types from 'p5'
 
 import { Landmark } from '@mediapipe/hands'
 import { connections, handRanges } from '../../const'
-import { clamp } from '..'
+import { clamp, getAvgCoordinates } from '../hooks'
 
 export type HandParams = {
   x: number
@@ -11,6 +11,7 @@ export type HandParams = {
   h: number
   color: number[]
   size?: number
+  pointerStyle?: boolean
 }
 
 export default class Hand {
@@ -20,6 +21,7 @@ export default class Hand {
   h: number
   size: number
   color: number[]
+  pointerStyle: boolean
 
   constructor(params: HandParams) {
     this.x = params.x
@@ -28,6 +30,7 @@ export default class Hand {
     this.h = params.h
     this.color = params.color
     this.size = params.size ?? 15
+    this.pointerStyle = params.pointerStyle ?? false
   }
 
   show(p5: p5Types, hand: Landmark[], color?: number[]) {
@@ -35,6 +38,11 @@ export default class Hand {
       return
     }
     color = color ?? this.color
+
+    if (this.pointerStyle) {
+      this.drawPointer(p5, hand, color)
+      return
+    }
 
     for (let i = 0; i < handRanges.length; i++) {
       this.drawLandmarks(p5, handRanges[i], hand, color)
@@ -130,5 +138,21 @@ export default class Hand {
     p5.vertex(x5, y5)
     p5.vertex(x2, y2)
     p5.endShape()
+  }
+
+  drawPointer(p5: p5Types, hand: Landmark[], color: number[]) {
+    let x = hand[0].x * this.w + this.x
+    let y = hand[0].y * this.h + this.y
+
+    if (
+      x >= this.x &&
+      x <= this.w + this.x &&
+      y >= this.y &&
+      y <= this.h + this.y
+    ) {
+      p5.noStroke()
+      p5.fill(color)
+      p5.circle(x, y, 20)
+    }
   }
 }

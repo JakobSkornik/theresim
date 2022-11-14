@@ -1,5 +1,5 @@
 import p5Types from 'p5'
-import { getRandomInt } from '..'
+import { getRandomInt } from '../hooks'
 import { HandsContextType } from '../../../types'
 import { borderColor, hexToRgb, primary, shadow } from '../../const'
 import { BoxParams } from './Box'

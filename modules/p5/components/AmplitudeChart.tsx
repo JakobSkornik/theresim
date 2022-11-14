@@ -2,7 +2,7 @@ import p5Types from 'p5'
 import { Landmark } from '@mediapipe/hands'
 
 import Box from './Box'
-import { clamp, getAvgCoordinates } from '..'
+import { clamp, getAvgCoordinates } from '../hooks'
 import {
   AAK,
   BISCAY,
