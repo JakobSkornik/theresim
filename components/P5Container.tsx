@@ -82,7 +82,7 @@ const P5Container = (props: P5ContainerProps) => {
           style={{
             ...sx.playback,
             ...{
-              opacity: playback ? '0.2' : '0',
+              opacity: playback ? '0.5' : '0',
             },
           }}
           ref={videoElement}
