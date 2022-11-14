@@ -6,7 +6,7 @@ export type ControlPanelContextType = {
   showUI: boolean
   toggleShowUI: (showUI?: boolean) => void
   info: boolean
-  toggleInfo: () => void
+  toggleInfo: (open?: boolean) => void
   loading: boolean
   toggleLoading: (load?: boolean) => void
 }

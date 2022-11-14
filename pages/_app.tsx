@@ -49,8 +49,8 @@ function AppWrapper(props: Props) {
     }
   }, [])
 
-  const onToggleInfo = () => {
-    toggleInfo()
+  const closeInfo = () => {
+    toggleInfo(false)
   }
 
   return (
@@ -81,7 +81,7 @@ function AppWrapper(props: Props) {
         style={{ opacity: info ? '1' : '0' }}
         text={getInformationText(router.route)}
         icon="close.svg"
-        togglePopup={onToggleInfo}
+        togglePopup={closeInfo}
       />
     </div>
   )
@@ -116,9 +116,9 @@ export default function App({ Component, pageProps }: AppProps) {
   const updateLoading = (load?: boolean) => {
     if (load != null) {
       toggleLoading(load)
-      return
+    } else {
+      toggleLoading(!loading)
     }
-    toggleLoading(!loading)
   }
 
   const updateShowUI = (show?: boolean) => {
@@ -129,8 +129,12 @@ export default function App({ Component, pageProps }: AppProps) {
     }
   }
 
-  const updateInfo = () => {
-    toggleInfo(!info)
+  const updateInfo = (open?: boolean) => {
+    if (open != null) {
+      toggleInfo(open)
+    } else {
+      toggleInfo(!info)
+    }
   }
 
   const handContext = {

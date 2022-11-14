@@ -1,12 +1,12 @@
 import Button from './Button'
-import { borderColor, primary, shadow, textColor} from '../modules/const'
+import { borderColor, primary, shadow, textColor } from '../modules/const'
 import { PopupProps } from '../types/PopupProps'
 
 const sx = {
   container: {
     position: 'fixed' as 'fixed',
-    top: '75px',
-    left: 'calc(100vw - 440px)',
+    top: '25px',
+    left: 'calc(100vw - 430px)',
     width: '400px',
     backgroundColor: primary + 'EF',
     color: textColor,
@@ -51,7 +51,7 @@ const sx = {
     margin: '6px',
     borderColor: 'rgba(0, 0, 0, 0)',
     backgroundColor: 'rgba(0, 0, 0, 0)',
-    pointerEvents: 'all' as 'all',
+    pointerEvents: 'auto' as 'auto',
   },
 }
 
