@@ -2,10 +2,10 @@ import dynamic from 'next/dynamic'
 import useResizeObserver from '@react-hook/resize-observer'
 import { createRef, useEffect, useRef, useState } from 'react'
 
+import Canvas from './Canvas'
 import initialize from '../modules/mediapipe'
 import { useControlPanelContext, useHandsContext } from '../context'
 import { P5ContainerProps } from '../types'
-const Canvas = dynamic(() => import('./Canvas'), { ssr: false })
 
 const sx = {
   canvasDiv: {
@@ -54,7 +54,7 @@ const P5Container = (props: P5ContainerProps) => {
   const [dims, setDims] = useState({ width: 0, height: 0 })
 
   useEffect(() => {
-    toggleLoading(true)
+    // toggleLoading(true)
     if (!parentRef.current) {
       if (!props.mediapipe) {
         toggleLoading(false)
@@ -76,7 +76,7 @@ const P5Container = (props: P5ContainerProps) => {
 
     init().then(() => {
       toggleLoading(false)
-    }).catch((e: DOMException) => {
+    }).catch(() => {
       toggleLoading(false)
     })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

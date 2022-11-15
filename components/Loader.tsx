@@ -55,7 +55,7 @@ const Loader = ({ style }: any) => {
         ...style,
         ...{
           transition: loading
-            ? 'opacity 0s ease-in-out'
+            ? 'opacity 0.3s ease-in-out'
             : 'opacity 1s ease-in-out',
         },
       }}

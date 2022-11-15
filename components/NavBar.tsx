@@ -3,6 +3,7 @@ import React, { MouseEvent, useState } from 'react'
 
 import Button from './Button'
 import { shadow, fifth, primary } from '../modules/const'
+import { useControlPanelContext } from '../context'
 
 const sx = {
   container: {
@@ -36,11 +37,16 @@ linear-gradient(
 const Navbar = () => {
   const router = useRouter()
   const [active, setActive] = useState(router.route)
+  const { toggleLoading } = useControlPanelContext()
 
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    setActive(e.currentTarget.value)
-    router.push(e.currentTarget.value)
+
+    if (e.currentTarget.value != active) {
+      toggleLoading(true)
+      setActive(e.currentTarget.value)
+      router.push(e.currentTarget.value)
+    }
   }
 
   return (

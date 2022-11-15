@@ -4,6 +4,18 @@ import p5Types from 'p5'
 import { memo, useState } from 'react'
 const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
   ssr: false,
+  loading: () => {
+    const lazyEl = document.getElementById('lazyEl')?.outerHTML;
+
+    return (
+      <div
+        style={{ display: 'contents' }}
+        dangerouslySetInnerHTML={{
+          __html: lazyEl ? lazyEl : '',
+        }}
+      />
+    );
+  },
 })
 
 import Container from '../modules/p5/components/Container'
@@ -52,6 +64,7 @@ const Canvas = (props: CanvasProps) => {
 
   return (
     <Sketch
+      id='lazyEl'
       preload={preload}
       setup={setup}
       mouseClicked={onClick}
