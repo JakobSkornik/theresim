@@ -1,42 +1,51 @@
 import p5Types from 'p5'
 
-import { borderColor, hexToRgb, primary, shadow } from '../../../const'
 import P5Canvas from '../../components/P5Canvas'
-import { HandsContextType } from '../../../../types'
+import { borderColor, hexToRgb, primary, shadow } from '../../../const'
 
 export default class Custom404 implements P5Canvas {
   lastX = 0
   lastY = 0
   x_dir = true
   y_dir = true
+  minX: number
+  maxX: number
+  minY: number
+  maxY: number
 
-  show(p5: p5Types, hands: HandsContextType): void {
+  constructor(w: number, h: number) {
+    console.log("MAXIDMS", w, h)
+    this.minX = 25
+    this.maxX = this.minX + w - 540
+    this.minY = 60
+    this.maxY = this.minY + h - 290
+  }
+
+  show(p5: p5Types): void {
     this.draw404(p5)
   }
 
-  onClick(p5: p5Types): void {}
+  onClick(): void {}
 
   getRandomInt = (max: number) => {
     return Math.floor(Math.random() * max) + 1
   }
 
   draw404(p5: p5Types) {
-    let text = 'You have wondered off trail. Please return to the app via the navigation bar.'
+    let text =
+      'You have wondered off trail.Please return to the app via the navigation bar.'
     const w = 500
     const h = 200
 
-    let maxX = p5.width - w - 4
-    let maxY = p5.height - h - 4
-
     if (this.lastX == 0 && this.lastY == 0) {
-      this.lastX = this.getRandomInt(maxX - 1)
-      this.lastY = this.getRandomInt(maxY - 1)
+      this.lastX = this.getRandomInt(this.maxX - this.minX)
+      this.lastY = this.getRandomInt(this.maxY - this.minX)
     }
 
-    if (this.lastX <= 4) this.x_dir = true
-    if (this.lastX >= maxX) this.x_dir = false
-    if (this.lastY <= 0) this.y_dir = true
-    if (this.lastY >= maxY) this.y_dir = false
+    if (this.lastX <= this.minX) this.x_dir = true
+    if (this.lastX >= this.maxX) this.x_dir = false
+    if (this.lastY <= this.minY) this.y_dir = true
+    if (this.lastY >= this.maxY) this.y_dir = false
 
     const x = this.x_dir ? this.lastX + 1 : this.lastX - 1
     const y = this.y_dir ? this.lastY + 1 : this.lastY - 1
@@ -79,5 +88,6 @@ export default class Custom404 implements P5Canvas {
 
     this.lastX = x
     this.lastY = y
+    console.log(this.lastX, this.lastY)
   }
 }
