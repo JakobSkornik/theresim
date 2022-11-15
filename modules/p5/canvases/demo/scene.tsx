@@ -6,9 +6,17 @@ import Hand from '../../components/Hand'
 import HandLegend from '../../components/HandLegend'
 import NoHandsWarning from '../../components/NoHandsWarning'
 import P5Canvas from '../../components/P5Canvas'
-import { gray, hexToRgb, leftColor, rightColor } from '../../../const'
+import {
+  gray,
+  hexToRgb,
+  leftColor,
+  pianoNotes,
+  rightColor,
+} from '../../../const'
 import { HandsContextType } from '../../../../types'
 import { getAverageZ } from '../../hooks'
+import Keyboard from '../../components/Keyboard'
+import { BoxParams } from '../../components/Box'
 
 type Controls = {
   leftVisible: boolean
@@ -26,6 +34,7 @@ export default class DemoCanvas implements P5Canvas {
   leftHand: Hand
   rightHand: Hand
   legend: HandLegend
+  keyboard: Keyboard
   noHandsWarning: NoHandsWarning
   threshold: number = 0.54
   controls: Controls = {
@@ -34,36 +43,59 @@ export default class DemoCanvas implements P5Canvas {
     leftActive: false,
     rightActive: false,
   }
+  selectedRoot = 17
 
   gain: Gain
   synth: Synth
 
   notePlaying: number | null = null
-  notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5']
-  frame = 0
+  notes = pianoNotes
+  rightHandDims: BoxParams
+  leftHandDims: BoxParams
 
   constructor(w: number, h: number) {
+    this.rightHandDims = {
+      x: 20,
+      y: 60,
+      w: w - 30,
+      h: h - 80,
+    }
+    this.leftHandDims = {
+      x: 20,
+      y: 60,
+      w: w - 30,
+      h: h - 80,
+    }
+
     this.fpsCounter = new FPSCounter({
       x: w - 105,
       y: h - 70,
     })
 
     this.leftHand = new Hand({
-      x: 20,
-      y: 80,
-      w: w - 40,
-      h: h - 110,
+      x: this.leftHandDims.x,
+      y: this.leftHandDims.y,
+      w: this.leftHandDims.w,
+      h: this.leftHandDims.h,
       color: hexToRgb(leftColor),
       pointerStyle: true,
     })
 
     this.rightHand = new Hand({
-      x: 20,
-      y: 80,
-      w: w - 40,
-      h: h - 110,
+      x: this.rightHandDims.x,
+      y: this.rightHandDims.y,
+      w: this.rightHandDims.w,
+      h: this.rightHandDims.h,
       color: hexToRgb(rightColor),
       pointerStyle: true,
+    })
+
+    this.keyboard = new Keyboard({
+      x: this.rightHandDims.x + 200,
+      y: this.rightHandDims.y + 30,
+      w: this.rightHandDims.w - 220,
+      h: this.rightHandDims.h - 90,
+      numOfKeys: 16,
     })
 
     this.legend = new HandLegend({
@@ -97,7 +129,7 @@ export default class DemoCanvas implements P5Canvas {
 
   show(p5: p5Types, hands: HandsContextType): void {
     this.getControls(hands)
-    this.fpsCounter.show(p5)
+    this.keyboard.show(p5)
     this.leftHand.show(
       p5,
       hands.leftHand,
@@ -109,17 +141,16 @@ export default class DemoCanvas implements P5Canvas {
       this.controls.rightActive ? hexToRgb(rightColor) : hexToRgb(gray),
     )
     this.legend.show(p5)
+    this.fpsCounter.show(p5)
     this.noHandsWarning.show(p5, hands)
 
     let z = getAverageZ(hands.rightHand)
 
     if (!hands.rightHand.length || z < 0.53) {
-      if (this.notePlaying) {
-        this.synth.triggerRelease()
-        this.notePlaying = null
-      }
+      this.synth.triggerRelease()
       return
     }
+
     // const idx = Math.round(hands.rightHand[0].x * 400)
     // console.log(idx)
     // if (this.notePlaying == this.notes[idx]) {
@@ -132,20 +163,27 @@ export default class DemoCanvas implements P5Canvas {
     // if (this.notePlaying == null) {
     //   this.triggerNotePressed(idx)
     // }
-    const frequency = Math.round(hands.rightHand[0].x * 400)
+
+    // const frequency = Math.round(hands.rightHand[0].x * 400)
+
     // const amplitude = hands.rightHand[0].y
-    // console.log(this.gain.gain.value)
     // this.gain.gain.linearRampToValueAtTime(amplitude, now())
-    // console.log(this.gain.gain.value)
-    if (this.notePlaying == frequency) {
-      return
-    }
-    if (frequency != this.notePlaying) {
-      // this.triggerNoteRelease()
-      this.synth.oscillator.frequency.linearRampToValueAtTime(frequency, now())
-    }
+
+    const x = hands.rightHand[0].x * this.rightHandDims.w + this.rightHandDims.x
+    const idx = this.keyboard.getKeyIndex(x + this.selectedRoot)
+
+  
     if (this.notePlaying == null) {
-      this.triggerNotePressed(frequency)
+      this.synth.triggerRelease()
+      this.triggerNotePressed(this.notes[idx].freq)
+    } else if (this.notePlaying == idx) {
+      return
+    } else {
+      this.triggerNoteRelease()
+      this.synth.oscillator.frequency.linearRampToValueAtTime(
+        this.notes[idx].freq,
+        now(),
+      )
     }
   }
 
@@ -170,8 +208,10 @@ export default class DemoCanvas implements P5Canvas {
   }
 
   triggerNoteRelease() {
-    this.synth.triggerRelease(this.notePlaying!)
-    this.notePlaying = null
+    if (this.notePlaying != null) {
+      this.synth.triggerRelease()
+      this.notePlaying = null
+    }
   }
 
   onClick(p5: p5Types): void {}

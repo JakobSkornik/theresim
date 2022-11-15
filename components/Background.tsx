@@ -24,7 +24,7 @@ const sx = {
     '--mountain-height': '5vw',
     '--mountain-color1': '#25277447',
     '--mountain-color2': '#9729AB',
-    '--mountain-offset': '10vw',
+    '--mountain-offset': '40vw',
     '--mountain-tilt': '-20deg',
   },
   mountain2: {

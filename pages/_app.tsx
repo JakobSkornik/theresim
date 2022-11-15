@@ -1,4 +1,5 @@
 import '../styles/globals.css'
+import { AnimatePresence } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { Landmark } from '@mediapipe/hands'
 import type { AppProps } from 'next/app'
@@ -8,7 +9,7 @@ import ControlPanelProvider from '../context/controlPanel'
 import HandsProvider from '../context/hands'
 import { ControlPanelContextType, HandsContextType } from '../types'
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps, router }: AppProps) {
   const [fullscreen, toggleFullscreen] = useState(false)
   const [playback, togglePlayback] = useState(false)
   const [showUI, toggleShowUI] = useState(true)
@@ -63,9 +64,13 @@ export default function App({ Component, pageProps }: AppProps) {
     }
   }
 
+  const updateCamReady = (ready: boolean) => {
+    setCamReady(ready)
+  }
+
   const handContext = {
     camReady: camReady,
-    updateCamReady: setCamReady,
+    updateCamReady: updateCamReady,
     rightHand: rightHand,
     leftHand: leftHand,
     updateRightHand: updateRightHand,
@@ -89,7 +94,9 @@ export default function App({ Component, pageProps }: AppProps) {
     <HandsProvider value={handContext}>
       <ControlPanelProvider value={controlPanelContext}>
         <AppWrapper>
-          <Component {...pageProps} />
+          <AnimatePresence mode="wait">
+            <Component {...pageProps} key={router.pathname} />
+          </AnimatePresence>
         </AppWrapper>
       </ControlPanelProvider>
     </HandsProvider>

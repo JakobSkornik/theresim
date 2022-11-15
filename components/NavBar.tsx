@@ -3,7 +3,7 @@ import React, { MouseEvent, useState } from 'react'
 
 import Button from './Button'
 import { shadow, fifth, primary } from '../modules/const'
-import { useControlPanelContext } from '../context'
+import { useControlPanelContext, useHandsContext } from '../context'
 
 const sx = {
   container: {
@@ -38,11 +38,16 @@ const Navbar = () => {
   const router = useRouter()
   const [active, setActive] = useState(router.route)
   const { toggleLoading } = useControlPanelContext()
+  const handsContext = useHandsContext()
 
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
     if (e.currentTarget.value != active) {
+      if (handsContext) {
+        handsContext.camReady = false
+      }
+
       toggleLoading(true)
       setActive(e.currentTarget.value)
       router.push(e.currentTarget.value)

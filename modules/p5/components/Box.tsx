@@ -1,7 +1,7 @@
 import p5Types from 'p5'
 
-import { BLACK, borderColor, hexToRgb, shadow, YELLOW } from '../../const'
 import P5Element, { P5ElementParams } from './P5Element'
+import { borderColor, hexToRgb, shadow, YELLOW } from '../../const'
 
 export type BoxParams = P5ElementParams & {
   w: number
