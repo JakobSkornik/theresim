@@ -14,7 +14,6 @@ export default class Custom404 implements P5Canvas {
   maxY: number
 
   constructor(w: number, h: number) {
-    console.log("MAXIDMS", w, h)
     this.minX = 25
     this.maxX = this.minX + w - 540
     this.minY = 60
@@ -88,6 +87,5 @@ export default class Custom404 implements P5Canvas {
 
     this.lastX = x
     this.lastY = y
-    console.log(this.lastX, this.lastY)
   }
 }

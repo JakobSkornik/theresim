@@ -60,7 +60,6 @@ export default class Keyboard extends Box {
 
   getKeyIndex(x: number) {
     let idx = 0
-    console.log(x, this.keyRanges)
     while (this.keyRanges.length > idx && x > this.keyRanges[idx][1]) {
       idx++
     }
