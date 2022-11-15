@@ -1,6 +1,6 @@
-import dynamic from 'next/dynamic'
 import useResizeObserver from '@react-hook/resize-observer'
-import { createRef, useEffect, useRef, useState } from 'react'
+import { motion } from 'framer-motion'
+import { createRef, useCallback, useEffect, useRef, useState } from 'react'
 
 import Canvas from './Canvas'
 import initialize from '../modules/mediapipe'
@@ -34,11 +34,19 @@ const sx = {
   },
 }
 
+const variants = {
+  hidden: { opacity: 0, x: -4000, y: 0, transition: { duration: 0.2 } },
+  enter: { opacity: 1, x: 0, y: 0, transition: { duration: 0.2 } },
+  exit: { opacity: 0, x: 3000, y: 0, transition: { duration: 0.1 } },
+}
+
 const P5Container = (props: P5ContainerProps) => {
   const handsContext = useHandsContext()
-  const { playback, toggleLoading } = useControlPanelContext()
+  const { loading, playback, toggleLoading } = useControlPanelContext()
   const videoElement = createRef<HTMLVideoElement>()
   const parentRef = useRef<HTMLDivElement>(null)
+
+  const [dims, setDims] = useState({ width: 0, height: 0 })
 
   useResizeObserver(parentRef, (entry) => {
     if (!parentRef.current) return
@@ -51,50 +59,72 @@ const P5Container = (props: P5ContainerProps) => {
     window.dispatchEvent(new Event('resize'))
   })
 
-  const [dims, setDims] = useState({ width: 0, height: 0 })
-
-  useEffect(() => {
-    // toggleLoading(true)
-    if (!parentRef.current) {
-      if (!props.mediapipe) {
-        toggleLoading(false)
+  const init = useCallback(async () => {
+    if (handsContext) {
+      try {
+        await initialize(handsContext, videoElement).then((res: boolean) => {
+          handsContext.updateCamReady(res)
+        })
+      } catch (e: any) {
+        console.log(`Please check your webcam: ${e.message}.`)
       }
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Triggers the first time only
+  useEffect(() => {
+    if (!props.mediapipe) {
+      toggleLoading(false)
       return
     }
 
-    const init = async () => {
-      if (handsContext) {
-        try {
-          await initialize(handsContext, videoElement).then((res: boolean) => {
-            if (res) handsContext.updateCamReady(true)
-          })
-        } catch(e: any) {
-          console.log(`Please check your webcam: ${e.message}.`)
-        }
-      }
+    if (!parentRef.current || !handsContext || handsContext.camReady) {
+      return
     }
 
-    init().then(() => {
-      toggleLoading(false)
-    }).catch(() => {
-      toggleLoading(false)
-    })
+    init()
+    toggleLoading(false)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Triggers on navigations
+  useEffect(() => {
+    if (
+      !props.mediapipe ||
+      !handsContext ||
+      !handsContext.camReady ||
+      !loading
+    ) {
+      return
+    }
+
+    init()
+    toggleLoading(false)
+  }, [handsContext?.camReady]) // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
-    <div ref={parentRef} style={{ ...sx.canvasDiv, ...props.style }}>
+    <motion.div
+      variants={variants}
+      animate="enter"
+      initial="hidden"
+      exit="exit"
+      transition={{ type: 'linear' }}
+      ref={parentRef}
+      style={{ ...sx.canvasDiv, ...props.style }}
+    >
       <div style={sx.playbackDiv}>
-        {props.mediapipe && <video
-          width={dims.width - 31}
-          height={dims.height - 80}
-          style={{
-            ...sx.playback,
-            ...{
-              opacity: playback ? '0.5' : '0',
-            },
-          }}
-          ref={videoElement}
-        />}
+        {props.mediapipe && (
+          <video
+            width={dims.width - 31}
+            height={dims.height - 80}
+            style={{
+              ...sx.playback,
+              ...{
+                opacity: playback ? '0.5' : '0',
+              },
+            }}
+            ref={videoElement}
+          />
+        )}
       </div>
       {dims.height > 0 && dims.width > 0 && (
         <Canvas
@@ -105,7 +135,7 @@ const P5Container = (props: P5ContainerProps) => {
           hands={handsContext!}
         />
       )}
-    </div>
+    </motion.div>
   )
 }
 
