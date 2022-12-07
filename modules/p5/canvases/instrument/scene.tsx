@@ -20,7 +20,7 @@ import P5Canvas from '../../components/P5Canvas'
 
 export default class InstrumentCanvas implements P5Canvas {
   selected: number | null = 0
-  selectedChord: number | null = null
+  selectedChord: number | undefined = undefined
   selectedScale: ScaleKeys | null = getNotesInScale(0, true)
   keyLocations: KeyLocation[] = []
   chordLocations: KeyLocation[] = []
