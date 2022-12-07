@@ -210,6 +210,14 @@ export const getChromaticIdx = (idx: number, white: boolean) => {
   }
 }
 
+export const getNoteName = (idx: number, white: boolean) => {
+  let notes = ['C#', 'D#', 'F#', 'G#', 'A#']
+  if (white) {
+    notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
+  }
+  return notes[idx]
+}
+
 export const getNotesInChord = (chord: number, type: string) => {
   let third = 4
   let fifth = 7

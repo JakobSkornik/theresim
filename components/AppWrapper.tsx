@@ -18,9 +18,9 @@ const sx = {
     width: '100vw',
   },
   container: {
-    margin: '20px',
-    width: 'calc(100vw - 40px)',
-    height: 'calc(100vh - 40px)',
+    margin: '2vh 2vw 2vh 2vw',
+    width: '96vw',
+    height: '96vh',
     transition: 'margin 700ms ease-out, opacity 700ms ease',
     willChange: 'margin',
   },

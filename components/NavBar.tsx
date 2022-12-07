@@ -7,20 +7,19 @@ import { useControlPanelContext, useHandsContext } from '../context'
 
 const sx = {
   container: {
-    width: 'calc(100vw - 70px)',
-    height: '90px',
-    padding: '10px 0 10px 0',
+    width: '96vw',
+    height: '10vh',
     overflowX: 'scroll' as 'scroll',
     overflowY: 'visible' as 'visible',
     display: 'flex',
-    margin: '10px',
     justifyContent: 'left',
+    alignItems: 'center',
     msOverflowStyle: 'none' as 'none',
     scrollbarWidth: 'none' as 'none',
   },
   btn: {
-    padding: '5px 10px 5px 10px',
-    marginLeft: '20px',
+    padding: '1vh 1vw 1vh 1vw',
+    marginLeft: '1vw',
   },
 }
 
@@ -67,8 +66,8 @@ const Navbar = () => {
               '/freehand' == active ? activeButtonGradient : buttonGradient,
             boxShadow:
               '/freehand' == active
-                ? `5px 5px ${shadow}, 0 0 10px 3px rgba(3, 255, 161, 0.4)`
-                : `5px 5px ${'/freehand' == active ? fifth : shadow}`,
+                ? `0.5vw 0.5vh ${shadow}, 0 0 10px 3px rgba(3, 255, 161, 0.4)`
+                : `0.5vw 0.5vh ${'/freehand' == active ? fifth : shadow}`,
           },
         }}
       ></Button>
@@ -83,8 +82,8 @@ const Navbar = () => {
               '/coordinates' == active ? activeButtonGradient : buttonGradient,
             boxShadow:
               '/coordinates' == active
-                ? `5px 5px ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.3)`
-                : `5px 5px ${'/coordinates' == active ? fifth : shadow}`,
+                ? `0.5vw 0.5vh ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.3)`
+                : `0.5vw 0.5vh ${'/coordinates' == active ? fifth : shadow}`,
           },
         }}
       ></Button>
@@ -99,8 +98,8 @@ const Navbar = () => {
               '/detection' == active ? activeButtonGradient : buttonGradient,
             boxShadow:
               '/detection' == active
-                ? `5px 5px ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.3)`
-                : `5px 5px ${'/detection' == active ? fifth : shadow}`,
+                ? `0.5vw 0.5vh ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.3)`
+                : `0.5vw 0.5vh ${'/detection' == active ? fifth : shadow}`,
           },
         }}
       ></Button>
@@ -115,8 +114,8 @@ const Navbar = () => {
               '/control' == active ? activeButtonGradient : buttonGradient,
             boxShadow:
               '/control' == active
-                ? `5px 5px ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.3)`
-                : `5px 5px ${'/control' == active ? fifth : shadow}`,
+                ? `0.5vw 0.5vh ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.3)`
+                : `0.5vw 0.5vh ${'/control' == active ? fifth : shadow}`,
           },
         }}
       ></Button>
@@ -131,8 +130,8 @@ const Navbar = () => {
               '/keyboard' == active ? activeButtonGradient : buttonGradient,
             boxShadow:
               '/keyboard' == active
-                ? `5px 5px ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.3)`
-                : `5px 5px ${'/keyboard' == active ? fifth : shadow}`,
+                ? `0.5vw 0.5vh ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.3)`
+                : `0.5vw 0.5vh ${'/keyboard' == active ? fifth : shadow}`,
           },
         }}
       ></Button>
@@ -147,8 +146,8 @@ const Navbar = () => {
               '/instrument' == active ? activeButtonGradient : buttonGradient,
             boxShadow:
               '/instrument' == active
-                ? `5px 5px ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.3)`
-                : `5px 5px ${'/instrument' == active ? fifth : shadow}`,
+                ? `0.5vw 0.5vh ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.3)`
+                : `0.5vw 0.5vh ${'/instrument' == active ? fifth : shadow}`,
           },
         }}
       ></Button>
@@ -163,8 +162,8 @@ const Navbar = () => {
               '/demo' == active ? activeButtonGradient : buttonGradient,
             boxShadow:
               '/demo' == active
-                ? `5px 5px ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.3)`
-                : `5px 5px ${'/demo' == active ? fifth : shadow}`,
+                ? `0.5vw 0.5vh ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.3)`
+                : `0.5vw 0.5vh ${'/demo' == active ? fifth : shadow}`,
           },
         }}
       ></Button>

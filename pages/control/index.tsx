@@ -4,16 +4,16 @@ import { useControlPanelContext } from '../../context'
 
 const sx = {
   fullscreen: {
-    top: '1px',
-    left: '0',
-    height: '100vh',
-    width: '100vw',
+    top: '0vh',
+    left: '0vw',
+    height: '101vh',
+    width: '99vw',
   },
   windowed: {
-    top: '150px',
-    left: '30px',
-    height: 'calc(100vh - 160px)',
-    width: 'calc(100vw - 60px)',
+    top: '15vh',
+    left: '1vw',
+    height: '84vh',
+    width: '96vw',
   },
 }
 

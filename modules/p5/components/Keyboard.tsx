@@ -1,29 +1,45 @@
 import p5Types from 'p5'
-import { BLACK, fifth, hexToRgb, shadow } from '../../const'
-
-import Box, { BoxParams } from './Box'
+import { KeyLocation } from '../../../types'
+import { BLACK, hexToRgb, leftColor, rightColor, shadow } from '../../const'
+import { Controls } from '../canvases/demo/scene'
+import { BoxParams } from './Box'
 
 export type KeyboardParams = BoxParams & {
   numOfKeys: number
 }
 
-export default class Keyboard extends Box {
+export default class Keyboard {
+  x: number
+  y: number
+  w: number
+  h: number
+  activeNote: number = -1
+  activeChord: number[] = []
   numOfKeys: number
   keyWidth: number
-  keyRanges: number[][] = []
+  keyLocations: KeyLocation[] = []
 
   constructor(params: KeyboardParams) {
-    super(params as BoxParams)
+    this.x = params.x
+    this.y = params.y
+    this.w = params.w
+    this.h = params.h
     this.numOfKeys = params.numOfKeys
     this.keyWidth = this.w / this.numOfKeys
 
-    for (let i = 0; i < this.numOfKeys - 1; i++) {
+    for (let i = 0; i < this.numOfKeys; i++) {
       const x_offset = i * this.keyWidth + this.x
-      this.keyRanges.push([x_offset, x_offset + this.keyWidth])
+      this.keyLocations.push({
+        idx: i,
+        x1: x_offset,
+        x2: x_offset + this.keyWidth + 4,
+        y1: this.y,
+        y2: this.y + this.h + 4,
+      })
     }
   }
 
-  show(p5: p5Types) {
+  show(p5: p5Types, notes: string[]) {
     for (let i = 0; i < this.numOfKeys; i++) {
       const x_offset = i * this.keyWidth + this.x
       const tlBorder = i == 0 ? 10 : 0
@@ -42,9 +58,17 @@ export default class Keyboard extends Box {
         10,
       )
 
+      let color = '#FFFFFF'
+      if (this.activeChord.includes(i)) {
+        color = leftColor
+      }
+      if (this.activeNote == i) {
+        color = rightColor
+      }
+
       p5.stroke(BLACK())
       p5.strokeWeight(2)
-      p5.fill([...hexToRgb(fifth), ...[20]])
+      p5.fill([...hexToRgb(color), ...[90]])
       p5.rect(
         x_offset,
         this.y,
@@ -55,14 +79,57 @@ export default class Keyboard extends Box {
         10,
         10,
       )
+
+      p5.noStroke()
+      p5.fill(leftColor)
+      p5.text(
+        notes[i % 7],
+        x_offset + (this.keyWidth - p5.textWidth(notes[i % 7])) / 2,
+        this.y + this.h - 30,
+      )
     }
   }
 
-  getKeyIndex(x: number) {
-    let idx = 0
-    while (this.keyRanges.length > idx && x > this.keyRanges[idx][1]) {
-      idx++
+  getActive(
+    p5: p5Types,
+    controls: Controls,
+    activeChord: number,
+    major: boolean,
+  ) {
+    if (controls.rightActive) {
+      const x = controls.rightX! * p5.width
+      const y = controls.rightY! * p5.height
+
+      let newSelected = -1
+      for (let i = 0; i < this.keyLocations.length; i++) {
+        const x1 = this.keyLocations[i].x1
+        const x2 = this.keyLocations[i].x2
+        const y1 = this.keyLocations[i].y1
+        const y2 = this.keyLocations[i].y2
+        if (x >= x1 && x <= x2 && y >= y1 && y <= y2) {
+          newSelected = i
+        }
+      }
+      this.activeNote = newSelected
+    } else {
+      this.activeNote = -1
     }
-    return idx
+
+    if (activeChord >= 0) {
+      let offsets = [0, 2, 4, 7, 9, 11, 14, 16, 18]
+      let chordNotes = []
+
+      let offset = 0
+      if (!major && activeChord > 0) {
+        offset = 1
+      }
+
+      for (let i = 0; i < offsets.length; i++) {
+        chordNotes.push((offsets[i] + activeChord + offset) % this.numOfKeys)
+      }
+      this.activeChord = chordNotes
+    } else {
+      this.activeChord = []
+    }
   }
 }

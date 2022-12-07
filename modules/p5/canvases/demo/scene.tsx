@@ -1,40 +1,49 @@
 import p5Types from 'p5'
+import { Key, Scale } from 'tonal'
 import { Gain, now, Synth } from 'tone'
 
 import FPSCounter from '../../components/FPSCounter'
 import Hand from '../../components/Hand'
 import HandLegend from '../../components/HandLegend'
+import Keyboard from '../../components/Keyboard'
+import KeySelector from '../../components/KeySelector'
 import NoHandsWarning from '../../components/NoHandsWarning'
 import P5Canvas from '../../components/P5Canvas'
-import {
-  gray,
-  hexToRgb,
-  leftColor,
-  pianoNotes,
-  rightColor,
-} from '../../../const'
-import { HandsContextType } from '../../../../types'
+import Padboard from '../../components/Padboard'
+import { gray, hexToRgb, leftColor, rightColor } from '../../../const'
+import { HandsContextType, KeyLocation } from '../../../../types'
 import { getAverageZ } from '../../hooks'
-import Keyboard from '../../components/Keyboard'
 import { BoxParams } from '../../components/Box'
 
-type Controls = {
+export type Controls = {
   leftVisible: boolean
   rightVisible: boolean
   leftActive: boolean
   rightActive: boolean
   leftX?: number
+  leftXBuffer: number[]
   leftY?: number
+  leftYBuffer: number[]
   rightX?: number
+  rightXBuffer: number[]
   rightY?: number
+  rightYBuffer: number[]
 }
 
 export default class DemoCanvas implements P5Canvas {
+  major: boolean = true
+  selectedRoot: string = 'C'
+  notes: string[] = Scale.get(`C major`).notes
+  chords: string[] = this.getChords(`C`)
+  referenceOctave: number = 3
+  chordOctave: number = 3
   fpsCounter: FPSCounter
   leftHand: Hand
   rightHand: Hand
   legend: HandLegend
   keyboard: Keyboard
+  padboard: Padboard
+  keySelector: KeySelector
   noHandsWarning: NoHandsWarning
   threshold: number = 0.54
   controls: Controls = {
@@ -42,25 +51,28 @@ export default class DemoCanvas implements P5Canvas {
     rightVisible: false,
     leftActive: false,
     rightActive: false,
+    leftXBuffer: [],
+    leftYBuffer: [],
+    rightXBuffer: [],
+    rightYBuffer: [],
   }
-  selectedRoot = 17
+  canvas: BoxParams
+  keyLocations: KeyLocation[] = []
+  majorButtonLocation: KeyLocation | null = null
 
   gain: Gain
-  synth: Synth
+  noteSynth: Synth
+  notePlaying: string | null = null
+  
+  chordPlaying: string | null = null
+  chordSynth1: Synth
+  chordSynth2: Synth
+  chordSynth3: Synth
 
-  notePlaying: number | null = null
-  notes = pianoNotes
-  rightHandDims: BoxParams
-  leftHandDims: BoxParams
 
   constructor(w: number, h: number) {
-    this.rightHandDims = {
-      x: 20,
-      y: 60,
-      w: w - 30,
-      h: h - 80,
-    }
-    this.leftHandDims = {
+    
+    this.canvas = {
       x: 20,
       y: 60,
       w: w - 30,
@@ -73,29 +85,43 @@ export default class DemoCanvas implements P5Canvas {
     })
 
     this.leftHand = new Hand({
-      x: this.leftHandDims.x,
-      y: this.leftHandDims.y,
-      w: this.leftHandDims.w,
-      h: this.leftHandDims.h,
+      x: this.canvas.x,
+      y: this.canvas.y,
+      w: this.canvas.w,
+      h: this.canvas.h,
       color: hexToRgb(leftColor),
       pointerStyle: true,
     })
 
     this.rightHand = new Hand({
-      x: this.rightHandDims.x,
-      y: this.rightHandDims.y,
-      w: this.rightHandDims.w,
-      h: this.rightHandDims.h,
+      x: this.canvas.x,
+      y: this.canvas.y,
+      w: this.canvas.w,
+      h: this.canvas.h,
       color: hexToRgb(rightColor),
       pointerStyle: true,
     })
 
     this.keyboard = new Keyboard({
-      x: this.rightHandDims.x + 200,
-      y: this.rightHandDims.y + 30,
-      w: this.rightHandDims.w - 220,
-      h: this.rightHandDims.h - 90,
-      numOfKeys: 16,
+      x: this.canvas.x + 300,
+      y: this.canvas.y + 180,
+      w: this.canvas.w - 320,
+      h: this.canvas.h - 190,
+      numOfKeys: 21,
+    })
+
+    this.padboard = new Padboard({
+      x: this.canvas.x + 10,
+      y: this.canvas.y + 180,
+      w: 250,
+      h: this.canvas.h - 190,
+    })
+
+    this.keySelector = new KeySelector({
+      x: this.canvas.x + 10,
+      y: this.canvas.y + 10,
+      w: 300,
+      h: 100,
     })
 
     this.legend = new HandLegend({
@@ -111,7 +137,7 @@ export default class DemoCanvas implements P5Canvas {
     })
 
     this.gain = new Gain(0.4)
-    this.synth = new Synth({
+    this.noteSynth = new Synth({
       oscillator: {
         type: 'sine',
       },
@@ -121,15 +147,58 @@ export default class DemoCanvas implements P5Canvas {
         sustain: 1.0,
         release: 0.8,
       },
+      volume: 0.3
     })
-    this.synth.oscillator.type = 'sine'
-    this.synth.toDestination()
+    this.chordSynth1 = new Synth({
+      oscillator: {
+        type: 'sine',
+      },
+      envelope: {
+        attack: 0.8,
+        decay: 0.2,
+        sustain: 1.0,
+        release: 0.8,
+      },
+      volume: 0.1
+    })
+    this.chordSynth2 = new Synth({
+      oscillator: {
+        type: 'sine',
+      },
+      envelope: {
+        attack: 0.8,
+        decay: 0.2,
+        sustain: 1.0,
+        release: 0.8,
+      },
+      volume: 0.1
+    })
+    this.chordSynth3 = new Synth({
+      oscillator: {
+        type: 'sine',
+      },
+      envelope: {
+        attack: 0.8,
+        decay: 0.2,
+        sustain: 1.0,
+        release: 0.8,
+      },
+      volume: 0.1
+    })
+    this.noteSynth.toDestination()
+    this.chordSynth1.toDestination()
+    this.chordSynth2.toDestination()
+    this.chordSynth3.toDestination()
     this.gain.toDestination()
   }
 
   show(p5: p5Types, hands: HandsContextType): void {
     this.getControls(hands)
-    this.keyboard.show(p5)
+    const activeChord = this.padboard.getActive(p5, this.controls)
+    this.keyboard.getActive(p5, this.controls, activeChord, this.major)
+
+    this.keyboard.show(p5, this.notes)
+    this.padboard.show(p5, this.chords)
     this.leftHand.show(
       p5,
       hands.leftHand,
@@ -140,48 +209,74 @@ export default class DemoCanvas implements P5Canvas {
       hands.rightHand,
       this.controls.rightActive ? hexToRgb(rightColor) : hexToRgb(gray),
     )
-    this.legend.show(p5)
+    this.keySelector.show(p5)
     this.fpsCounter.show(p5)
     this.noHandsWarning.show(p5, hands)
 
-    let z = getAverageZ(hands.rightHand)
+    this.playRighthandNote()
+    this.playLefthandChord()
+  }
 
-    if (!hands.rightHand.length || z < 0.53) {
-      this.synth.triggerRelease()
+  playRighthandNote() {
+    if (this.keyboard.activeNote < 0) {
+      this.noteSynth.triggerRelease()
       return
     }
 
-    // const idx = Math.round(hands.rightHand[0].x * 400)
-    // console.log(idx)
-    // if (this.notePlaying == this.notes[idx]) {
-    //   return
-    // }
-    // if (this.notes[idx] != this.notePlaying) {
-    //   this.triggerNoteRelease()
-    //   this.triggerNotePressed(idx)
-    // }
-    // if (this.notePlaying == null) {
-    //   this.triggerNotePressed(idx)
-    // }
+    const octave = Math.floor(this.keyboard.activeNote / 7)
+    const idx = this.keyboard.activeNote % 7
+    const fullNote = `${this.notes[idx]}${octave + this.referenceOctave}`
 
-    // const frequency = Math.round(hands.rightHand[0].x * 400)
-
-    // const amplitude = hands.rightHand[0].y
-    // this.gain.gain.linearRampToValueAtTime(amplitude, now())
-
-    const x = hands.rightHand[0].x * this.rightHandDims.w + this.rightHandDims.x
-    const idx = this.keyboard.getKeyIndex(x + this.selectedRoot)
-
-  
     if (this.notePlaying == null) {
-      this.synth.triggerRelease()
-      this.triggerNotePressed(this.notes[idx].freq)
-    } else if (this.notePlaying == idx) {
+      this.noteSynth.triggerRelease()
+      this.triggerNotePressed(fullNote)
+    } else if (this.notePlaying == fullNote) {
       return
     } else {
       this.triggerNoteRelease()
-      this.synth.oscillator.frequency.linearRampToValueAtTime(
-        this.notes[idx].freq,
+      this.noteSynth.oscillator.frequency.linearRampToValueAtTime(
+        fullNote,
+        now(),
+      )
+    }
+  }
+
+  playLefthandChord() {
+    console.log(this.padboard.activeChord)
+    if (this.padboard.activeChord < 0) {
+      this.chordSynth1.triggerRelease()
+      this.chordSynth2.triggerRelease()
+      this.chordSynth3.triggerRelease()
+      return
+    }
+
+    const chord = this.chords[this.padboard.activeChord]
+    const idx = this.padboard.activeChord
+    const chordNotes = [
+      this.notes[idx % 6] + this.chordOctave,
+      this.notes[(idx + 2 )% 6] + this.chordOctave,
+      this.notes[(idx + 4) % 6] + this.chordOctave,
+    ]
+    console.log(idx, chordNotes)
+    if (!this.chordPlaying) {
+      this.chordSynth1.triggerRelease()
+      this.chordSynth2.triggerRelease()
+      this.chordSynth3.triggerRelease()
+      this.triggerChordPressed(chord, chordNotes)
+    } else if (this.chordPlaying == chord) {
+      return
+    } else {
+      this.triggerChordRelease()
+      this.chordSynth1.oscillator.frequency.linearRampToValueAtTime(
+        chordNotes[0],
+        now(),
+      )
+      this.chordSynth2.oscillator.frequency.linearRampToValueAtTime(
+        chordNotes[1],
+        now(),
+      )
+      this.chordSynth3.oscillator.frequency.linearRampToValueAtTime(
+        chordNotes[2],
         now(),
       )
     }
@@ -193,26 +288,86 @@ export default class DemoCanvas implements P5Canvas {
       this.controls.leftX = hands.leftHand[0].x
       this.controls.leftY = hands.leftHand[0].y
       this.controls.leftActive = getAverageZ(hands.leftHand) >= this.threshold
+    } else {
+      this.controls.leftVisible = false
+      this.controls.leftActive = false
     }
+
     if (hands.rightHand.length) {
       this.controls.rightVisible = true
       this.controls.rightX = hands.rightHand[0].x
       this.controls.rightY = hands.rightHand[0].y
       this.controls.rightActive = getAverageZ(hands.rightHand) >= this.threshold
+    } else {
+      this.controls.rightVisible = false
+      this.controls.rightActive = false
     }
   }
 
-  triggerNotePressed(frequency: number) {
-    this.notePlaying = frequency
-    this.synth.triggerAttack(frequency)
+  onClick(p5: p5Types): void {
+    const x = p5.mouseX
+    const y = p5.mouseY
+
+    const majorBtnPress = this.keySelector.checkMajorBtnPress(x, y)
+    if (majorBtnPress !== null) {
+      this.major = majorBtnPress
+      const scaleName = `${this.selectedRoot} ${this.major ? 'major' : 'minor'}`
+      this.notes = Scale.get(scaleName).notes
+      this.chords = this.getChords(this.selectedRoot)
+      return
+    }
+
+    const pianoKeyPress = this.keySelector.checkPianoKeyPress(x, y)
+
+    if (pianoKeyPress !== null) {
+      this.selectedRoot = pianoKeyPress
+      const scaleName = `${this.selectedRoot} ${this.major ? 'major' : 'minor'}`
+      this.notes = Scale.get(scaleName).notes
+      this.chords = this.getChords(this.selectedRoot)
+      return
+    }
+  }
+
+  getChords(scaleName: string) {
+    let chords
+    if (this.major) {
+      chords = [...Key.majorKey(scaleName).chords]
+    } else {
+      chords = [...Key.minorKey(scaleName).natural.chords]
+      chords.splice(1, 1)
+    }
+
+    for (let i = 0; i < 6; i++) {
+      chords[i] = chords[i].slice(0, -1)
+    }
+    return chords
+  }
+
+  triggerNotePressed(note: string) {
+    this.notePlaying = note
+    this.noteSynth.triggerAttack(note)
+  }
+
+  triggerChordPressed(chord: string, chordNotes: string[]) {
+    this.chordPlaying = chord
+    this.chordSynth1.triggerAttack(chordNotes[0])
+    this.chordSynth2.triggerAttack(chordNotes[1])
+    this.chordSynth3.triggerAttack(chordNotes[2])
   }
 
   triggerNoteRelease() {
     if (this.notePlaying != null) {
-      this.synth.triggerRelease()
+      this.noteSynth.triggerRelease()
       this.notePlaying = null
     }
   }
 
-  onClick(p5: p5Types): void {}
+  triggerChordRelease() {
+    if (this.chordPlaying != null) {
+      this.chordSynth1.triggerRelease()
+      this.chordSynth2.triggerRelease()
+      this.chordSynth3.triggerRelease()
+      this.chordPlaying = null
+    }
+  }
 }

@@ -7,7 +7,7 @@ import { ContainerProps } from '../types'
 
 const sx = {
   title: {
-    height: '45px',
+    height: '5vh',
     backgroundColor: primary,
     borderTopLeftRadius: '2px',
     borderTopRightRadius: '2px',
@@ -20,15 +20,14 @@ const sx = {
     backgroundColor: primary + 'B0',
     borderRadius: '2px',
     border: '1px solid ' + borderColor + '60',
-    boxShadow: `8px 8px ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.2)`,
+    boxShadow: `1vw 1vh ${shadow}, 0 0 10px 2px rgba(3, 255, 161, 0.2)`,
   },
   icon: {
     // margin: '5px 10px 10px 20px',
     // filter: `drop-shadow(4px 4px ${shadow})`,
   },
   header: {
-    margin: '5px 5px 5px 25px',
-    fontSize: '28px',
+    fontSize: '3.5vh',
     letterSpacing: '5px',
     color: shadow,
   },
