@@ -202,7 +202,6 @@ export default class DemoCanvas implements P5Canvas {
     const idx = this.keyboard.activeNote
     const fullNote = this.notes[idx]
 
-    console.log(this.notePlaying, this.keyboard.activeNote)
     if (this.notePlaying == null) {
       this.noteSynth.triggerRelease()
       this.triggerNotePressed(fullNote)
