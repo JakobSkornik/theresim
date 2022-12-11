@@ -83,8 +83,8 @@ export default class Keyboard {
       p5.noStroke()
       p5.fill(leftColor)
       p5.text(
-        notes[i % 7],
-        x_offset + (this.keyWidth - p5.textWidth(notes[i % 7])) / 2,
+        notes[i],
+        x_offset + (this.keyWidth - p5.textWidth(notes[i])) / 2,
         this.y + this.h - 30,
       )
     }

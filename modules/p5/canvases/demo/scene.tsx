@@ -1,6 +1,6 @@
 import p5Types from 'p5'
 import { Key, Scale } from 'tonal'
-import { Gain, now, Synth } from 'tone'
+import { Gain, now, PolySynth, Synth } from 'tone'
 
 import FPSCounter from '../../components/FPSCounter'
 import Hand from '../../components/Hand'
@@ -32,10 +32,14 @@ export type Controls = {
 
 export default class DemoCanvas implements P5Canvas {
   major: boolean = true
-  selectedRoot: string = 'C'
-  notes: string[] = Scale.get(`C major`).notes
-  chords: string[] = this.getChords(`C`)
   referenceOctave: number = 3
+  selectedRoot: string = 'C'
+  notes: string[] = [
+    ...Scale.get(`C${this.referenceOctave} major`).notes,
+    ...Scale.get(`C${this.referenceOctave + 1} major`).notes,
+    ...Scale.get(`C${this.referenceOctave + 2} major`).notes,
+  ]
+  chords: string[] = this.getChords(`C`)
   chordOctave: number = 3
   fpsCounter: FPSCounter
   leftHand: Hand
@@ -63,15 +67,11 @@ export default class DemoCanvas implements P5Canvas {
   gain: Gain
   noteSynth: Synth
   notePlaying: string | null = null
-  
-  chordPlaying: string | null = null
-  chordSynth1: Synth
-  chordSynth2: Synth
-  chordSynth3: Synth
 
+  chordPlaying: string[] = []
+  chordSynth: PolySynth
 
   constructor(w: number, h: number) {
-    
     this.canvas = {
       x: 20,
       y: 60,
@@ -107,7 +107,7 @@ export default class DemoCanvas implements P5Canvas {
       y: this.canvas.y + 180,
       w: this.canvas.w - 320,
       h: this.canvas.h - 190,
-      numOfKeys: 21,
+      numOfKeys: 14,
     })
 
     this.padboard = new Padboard({
@@ -136,60 +136,35 @@ export default class DemoCanvas implements P5Canvas {
       h: h - 60,
     })
 
-    this.gain = new Gain(0.4)
+    this.gain = new Gain(0.1)
     this.noteSynth = new Synth({
       oscillator: {
         type: 'sine',
       },
       envelope: {
-        attack: 0.8,
-        decay: 0.2,
-        sustain: 1.0,
+        attack: 0.5,
+        decay: 2.0,
+        sustain: 0.6,
         release: 0.8,
       },
-      volume: 0.3
+      volume: -15,
     })
-    this.chordSynth1 = new Synth({
+    this.chordSynth = new PolySynth()
+    this.chordSynth.set({
       oscillator: {
         type: 'sine',
       },
       envelope: {
-        attack: 0.8,
-        decay: 0.2,
-        sustain: 1.0,
-        release: 0.8,
+        attack: 1.0,
+        decay: 1.0,
+        sustain: 0.1,
+        release: 1.0,
+        attackCurve: 'sine',
       },
-      volume: 0.1
-    })
-    this.chordSynth2 = new Synth({
-      oscillator: {
-        type: 'sine',
-      },
-      envelope: {
-        attack: 0.8,
-        decay: 0.2,
-        sustain: 1.0,
-        release: 0.8,
-      },
-      volume: 0.1
-    })
-    this.chordSynth3 = new Synth({
-      oscillator: {
-        type: 'sine',
-      },
-      envelope: {
-        attack: 0.8,
-        decay: 0.2,
-        sustain: 1.0,
-        release: 0.8,
-      },
-      volume: 0.1
+      volume: -15,
     })
     this.noteSynth.toDestination()
-    this.chordSynth1.toDestination()
-    this.chordSynth2.toDestination()
-    this.chordSynth3.toDestination()
-    this.gain.toDestination()
+    this.chordSynth.toDestination()
   }
 
   show(p5: p5Types, hands: HandsContextType): void {
@@ -219,14 +194,15 @@ export default class DemoCanvas implements P5Canvas {
 
   playRighthandNote() {
     if (this.keyboard.activeNote < 0) {
+      this.notePlaying = null
       this.noteSynth.triggerRelease()
       return
     }
 
-    const octave = Math.floor(this.keyboard.activeNote / 7)
-    const idx = this.keyboard.activeNote % 7
-    const fullNote = `${this.notes[idx]}${octave + this.referenceOctave}`
+    const idx = this.keyboard.activeNote
+    const fullNote = this.notes[idx]
 
+    console.log(this.notePlaying, this.keyboard.activeNote)
     if (this.notePlaying == null) {
       this.noteSynth.triggerRelease()
       this.triggerNotePressed(fullNote)
@@ -242,44 +218,27 @@ export default class DemoCanvas implements P5Canvas {
   }
 
   playLefthandChord() {
-    console.log(this.padboard.activeChord)
     if (this.padboard.activeChord < 0) {
-      this.chordSynth1.triggerRelease()
-      this.chordSynth2.triggerRelease()
-      this.chordSynth3.triggerRelease()
+      this.triggerChordRelease()
       return
     }
 
-    const chord = this.chords[this.padboard.activeChord]
     const idx = this.padboard.activeChord
     const chordNotes = [
-      this.notes[idx % 6] + this.chordOctave,
-      this.notes[(idx + 2 )% 6] + this.chordOctave,
-      this.notes[(idx + 4) % 6] + this.chordOctave,
+      this.notes[idx % 7],
+      this.notes[(idx + 2) % 7],
+      this.notes[(idx + 4) % 7],
     ]
-    console.log(idx, chordNotes)
-    if (!this.chordPlaying) {
-      this.chordSynth1.triggerRelease()
-      this.chordSynth2.triggerRelease()
-      this.chordSynth3.triggerRelease()
-      this.triggerChordPressed(chord, chordNotes)
-    } else if (this.chordPlaying == chord) {
+
+    if (this.chordPlaying[0] == chordNotes[0]) {
       return
-    } else {
-      this.triggerChordRelease()
-      this.chordSynth1.oscillator.frequency.linearRampToValueAtTime(
-        chordNotes[0],
-        now(),
-      )
-      this.chordSynth2.oscillator.frequency.linearRampToValueAtTime(
-        chordNotes[1],
-        now(),
-      )
-      this.chordSynth3.oscillator.frequency.linearRampToValueAtTime(
-        chordNotes[2],
-        now(),
-      )
     }
+
+    if (this.chordPlaying.length) {
+      this.triggerChordRelease()
+    }
+
+    this.triggerChordPressed(chordNotes)
   }
 
   getControls(hands: HandsContextType) {
@@ -311,8 +270,13 @@ export default class DemoCanvas implements P5Canvas {
     const majorBtnPress = this.keySelector.checkMajorBtnPress(x, y)
     if (majorBtnPress !== null) {
       this.major = majorBtnPress
-      const scaleName = `${this.selectedRoot} ${this.major ? 'major' : 'minor'}`
-      this.notes = Scale.get(scaleName).notes
+      this.notes = [
+        ...Scale.get(`${this.selectedRoot}${this.referenceOctave} major`).notes,
+        ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 1} major`)
+          .notes,
+        ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 2} major`)
+          .notes,
+      ]
       this.chords = this.getChords(this.selectedRoot)
       return
     }
@@ -321,8 +285,14 @@ export default class DemoCanvas implements P5Canvas {
 
     if (pianoKeyPress !== null) {
       this.selectedRoot = pianoKeyPress
-      const scaleName = `${this.selectedRoot} ${this.major ? 'major' : 'minor'}`
-      this.notes = Scale.get(scaleName).notes
+      this.notes = [
+        ...Scale.get(`${this.selectedRoot}${this.referenceOctave} major`).notes,
+        ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 1} major`)
+          .notes,
+        ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 2} major`)
+          .notes,
+      ]
+
       this.chords = this.getChords(this.selectedRoot)
       return
     }
@@ -348,11 +318,9 @@ export default class DemoCanvas implements P5Canvas {
     this.noteSynth.triggerAttack(note)
   }
 
-  triggerChordPressed(chord: string, chordNotes: string[]) {
-    this.chordPlaying = chord
-    this.chordSynth1.triggerAttack(chordNotes[0])
-    this.chordSynth2.triggerAttack(chordNotes[1])
-    this.chordSynth3.triggerAttack(chordNotes[2])
+  triggerChordPressed(chordNotes: string[]) {
+    this.chordPlaying = chordNotes
+    this.chordSynth.triggerAttack(chordNotes)
   }
 
   triggerNoteRelease() {
@@ -364,10 +332,8 @@ export default class DemoCanvas implements P5Canvas {
 
   triggerChordRelease() {
     if (this.chordPlaying != null) {
-      this.chordSynth1.triggerRelease()
-      this.chordSynth2.triggerRelease()
-      this.chordSynth3.triggerRelease()
-      this.chordPlaying = null
+      this.chordSynth.triggerRelease(this.chordPlaying)
     }
+    this.chordPlaying = []
   }
 }
