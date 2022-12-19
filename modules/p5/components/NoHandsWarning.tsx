@@ -3,6 +3,7 @@ import { getRandomInt } from '../hooks'
 import { HandsContextType } from '../../../types'
 import { borderColor, hexToRgb, primary, shadow } from '../../const'
 import { BoxParams } from './Box'
+import { HandsController } from '../../mediapipe'
 
 export type HandsWarningParams = BoxParams & {
   waitLen?: number
@@ -29,9 +30,9 @@ export default class NoHandsWarning {
     this.waitLen = params.waitLen ?? 300
   }
 
-  show(p5: p5Types, hands: HandsContextType) {
+  show(p5: p5Types, hands: HandsController) {
     let text = 'No webcam detected. Please check your webcam status.'
-    if (hands.camReady) {
+    if (hands.camAvailable) {
       text =
         'No hands detected. Please raise your hands in front of the camera.'
 

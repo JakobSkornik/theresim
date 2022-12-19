@@ -3,8 +3,8 @@ import { motion } from 'framer-motion'
 import { createRef, useCallback, useEffect, useRef, useState } from 'react'
 
 import Canvas from './Canvas'
-import initialize from '../modules/mediapipe'
-import { useControlPanelContext, useHandsContext } from '../context'
+import { HandsController } from '../modules/mediapipe'
+import { useControlPanelContext } from '../context'
 import { P5ContainerProps } from '../types'
 
 const sx = {
@@ -41,13 +41,14 @@ const variants = {
 }
 
 const P5Container = (props: P5ContainerProps) => {
-  const handsContext = useHandsContext()
+  // const handsContext = useHandsContext()
   const { loading, playback, toggleLoading } = useControlPanelContext()
   const videoElement = createRef<HTMLVideoElement>()
   const parentRef = useRef<HTMLDivElement>(null)
 
   const [dims, setDims] = useState({ width: 0, height: 0 })
-
+  const [hands, setHands] = useState<HandsController>()
+ 
   useResizeObserver(parentRef, (entry) => {
     if (!parentRef.current) return
 
@@ -60,11 +61,11 @@ const P5Container = (props: P5ContainerProps) => {
   })
 
   const init = useCallback(async () => {
-    if (handsContext) {
+    if (hands == undefined) {
       try {
-        await initialize(handsContext, videoElement).then((res: boolean) => {
-          handsContext.updateCamReady(res)
-        })
+        const handsController = new HandsController(videoElement)
+        await handsController.finishInit()
+        setHands(handsController)
       } catch (e: any) {
         console.log(`Please check your webcam: ${e.message}.`)
       }
@@ -78,7 +79,7 @@ const P5Container = (props: P5ContainerProps) => {
       return
     }
 
-    if (!parentRef.current || !handsContext || handsContext.camReady) {
+    if (!parentRef.current) {
       return
     }
 
@@ -90,8 +91,6 @@ const P5Container = (props: P5ContainerProps) => {
   useEffect(() => {
     if (
       !props.mediapipe ||
-      !handsContext ||
-      !handsContext.camReady ||
       !loading
     ) {
       return
@@ -99,7 +98,7 @@ const P5Container = (props: P5ContainerProps) => {
 
     init()
     toggleLoading(false)
-  }, [handsContext?.camReady]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <motion.div
@@ -132,7 +131,7 @@ const P5Container = (props: P5ContainerProps) => {
           height={dims.height}
           width={dims.width}
           scene={props.scene}
-          hands={handsContext!}
+          hands={hands!}
         />
       )}
     </motion.div>

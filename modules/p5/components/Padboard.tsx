@@ -5,6 +5,15 @@ import { Controls } from '../canvases/demo/scene'
 
 import { BoxParams } from './Box'
 
+const chords: { [code: number]: number } = {
+  1: 0,
+  2: 1,
+  3: 2,
+  6: 3,
+  30: 4,
+  31: 5,
+}
+
 export default class Padboard {
   x: number
   y: number
@@ -81,26 +90,12 @@ export default class Padboard {
     }
   }
 
-  getActive(p5: p5Types, controls: Controls) {
-    if (controls.leftActive) {
-      const x = controls.leftX! * p5.width
-      const y = controls.leftY! * p5.height
-
-      let newSelected = -1
-      for (let i = 0; i < this.keyLocations.length; i++) {
-        const x1 = this.keyLocations[i].x1
-        const x2 = this.keyLocations[i].x2
-        const y1 = this.keyLocations[i].y1
-        const y2 = this.keyLocations[i].y2
-        if (x >= x1 && x <= x2 && y >= y1 && y <= y2) {
-          newSelected = i
-        }
-      }
-      this.activeChord = newSelected
+  getActive(controls: Controls) {
+    if (controls.leftVisible) {
+      this.activeChord = chords[controls.leftGesture]
     } else {
       this.activeChord = -1
     }
-
     return this.activeChord
   }
 }

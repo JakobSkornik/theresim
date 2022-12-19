@@ -11,23 +11,19 @@ import NoHandsWarning from '../../components/NoHandsWarning'
 import P5Canvas from '../../components/P5Canvas'
 import Padboard from '../../components/Padboard'
 import { gray, hexToRgb, leftColor, rightColor } from '../../../const'
-import { HandsContextType, KeyLocation } from '../../../../types'
+import { KeyLocation } from '../../../../types'
 import { getAverageZ } from '../../hooks'
 import { BoxParams } from '../../components/Box'
+import { HandsController } from '../../../mediapipe'
+import { Landmark } from '@mediapipe/hands'
 
 export type Controls = {
   leftVisible: boolean
+  leftGesture: number
   rightVisible: boolean
-  leftActive: boolean
   rightActive: boolean
-  leftX?: number
-  leftXBuffer: number[]
-  leftY?: number
-  leftYBuffer: number[]
   rightX?: number
-  rightXBuffer: number[]
   rightY?: number
-  rightYBuffer: number[]
 }
 
 export default class DemoCanvas implements P5Canvas {
@@ -42,7 +38,6 @@ export default class DemoCanvas implements P5Canvas {
   chords: string[] = this.getChords(`C`)
   chordOctave: number = 3
   fpsCounter: FPSCounter
-  leftHand: Hand
   rightHand: Hand
   legend: HandLegend
   keyboard: Keyboard
@@ -52,13 +47,9 @@ export default class DemoCanvas implements P5Canvas {
   threshold: number = 0.54
   controls: Controls = {
     leftVisible: false,
+    leftGesture: 0,
     rightVisible: false,
-    leftActive: false,
     rightActive: false,
-    leftXBuffer: [],
-    leftYBuffer: [],
-    rightXBuffer: [],
-    rightYBuffer: [],
   }
   canvas: BoxParams
   keyLocations: KeyLocation[] = []
@@ -82,15 +73,6 @@ export default class DemoCanvas implements P5Canvas {
     this.fpsCounter = new FPSCounter({
       x: w - 105,
       y: h - 70,
-    })
-
-    this.leftHand = new Hand({
-      x: this.canvas.x,
-      y: this.canvas.y,
-      w: this.canvas.w,
-      h: this.canvas.h,
-      color: hexToRgb(leftColor),
-      pointerStyle: true,
     })
 
     this.rightHand = new Hand({
@@ -167,18 +149,13 @@ export default class DemoCanvas implements P5Canvas {
     this.chordSynth.toDestination()
   }
 
-  show(p5: p5Types, hands: HandsContextType): void {
+  show(p5: p5Types, hands: HandsController): void {
     this.getControls(hands)
-    const activeChord = this.padboard.getActive(p5, this.controls)
+    const activeChord = this.padboard.getActive(this.controls)
     this.keyboard.getActive(p5, this.controls, activeChord, this.major)
 
     this.keyboard.show(p5, this.notes)
     this.padboard.show(p5, this.chords)
-    this.leftHand.show(
-      p5,
-      hands.leftHand,
-      this.controls.leftActive ? hexToRgb(leftColor) : hexToRgb(gray),
-    )
     this.rightHand.show(
       p5,
       hands.rightHand,
@@ -240,22 +217,19 @@ export default class DemoCanvas implements P5Canvas {
     this.triggerChordPressed(chordNotes)
   }
 
-  getControls(hands: HandsContextType) {
+  getControls(hands: HandsController) {
     if (hands.leftHand.length) {
       this.controls.leftVisible = true
-      this.controls.leftX = hands.leftHand[0].x
-      this.controls.leftY = hands.leftHand[0].y
-      this.controls.leftActive = getAverageZ(hands.leftHand) >= this.threshold
+      this.controls.leftGesture = this.leftHandGesture(hands.leftHand)
     } else {
       this.controls.leftVisible = false
-      this.controls.leftActive = false
     }
 
     if (hands.rightHand.length) {
       this.controls.rightVisible = true
-      this.controls.rightX = hands.rightHand[0].x
-      this.controls.rightY = hands.rightHand[0].y
-      this.controls.rightActive = getAverageZ(hands.rightHand) >= this.threshold
+      this.controls.rightX = hands.rightHand[8].x
+      this.controls.rightY = hands.rightHand[8].y
+      this.controls.rightActive = this.rightHandActive(hands.rightHand)
     } else {
       this.controls.rightVisible = false
       this.controls.rightActive = false
@@ -334,5 +308,35 @@ export default class DemoCanvas implements P5Canvas {
       this.chordSynth.triggerRelease(this.chordPlaying)
     }
     this.chordPlaying = []
+  }
+
+  leftHandGesture(hand: Landmark[]) {
+    let bits = ['0', '0', '0', '0', '0']
+
+    if (hand[4].x > hand[3].x) {
+      bits[4] = '1'
+    }
+
+    if (hand[8].y < hand[6].y) {
+      bits[3] = '1'
+    }
+
+    if (hand[12].y < hand[10].y) {
+      bits[2] = '1'
+    }
+
+    if (hand[16].y < hand[14].y) {
+      bits[1] = '1'
+    }
+
+    if (hand[20].y < hand[18].y) {
+      bits[0] = '1'
+    }
+
+    return parseInt(bits.join(''), 2)
+  }
+
+  rightHandActive(hand: Landmark[]) {
+    return hand[4].x < hand[3].x
   }
 }

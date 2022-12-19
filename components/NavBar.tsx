@@ -71,7 +71,8 @@ const Navbar = () => {
           },
         }}
       ></Button>
-      <Button
+      
+      {/* <Button
         text="Coordinates"
         value="/coordinates"
         onClick={handleClick}
@@ -150,7 +151,8 @@ const Navbar = () => {
                 : `0.5vw 0.5vh ${'/instrument' == active ? fifth : shadow}`,
           },
         }}
-      ></Button>
+      ></Button> */}
+
       <Button
         text="Demo"
         value="/demo"

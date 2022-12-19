@@ -30,6 +30,7 @@ const sx = {
     fontSize: '3.5vh',
     letterSpacing: '5px',
     color: shadow,
+    margin: 0,
   },
 }
 

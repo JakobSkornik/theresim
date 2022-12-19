@@ -2,7 +2,7 @@ import p5Types from 'p5'
 
 import { Landmark } from '@mediapipe/hands'
 import { connections, handRanges } from '../../const'
-import { clamp, getAvgCoordinates } from '../hooks'
+import { clamp } from '../hooks'
 
 export type HandParams = {
   x: number
@@ -141,8 +141,8 @@ export default class Hand {
   }
 
   drawPointer(p5: p5Types, hand: Landmark[], color: number[]) {
-    let x = hand[0].x * this.w + this.x
-    let y = hand[0].y * this.h + this.y
+    let x = hand[8].x * this.w + this.x
+    let y = hand[8].y * this.h + this.y
 
     if (
       x >= this.x &&
