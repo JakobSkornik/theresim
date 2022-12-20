@@ -1,6 +1,6 @@
-import P5Container from '../components/P5Container'
-import { useControlPanelContext } from '../context'
-import Custom404Scene from '../modules/p5/canvases/404/404'
+import CalibrateCanvas from '../../modules/p5/canvases/calibrate/scene'
+import P5Container from '../../components/P5Container'
+import { useControlPanelContext } from '../../context'
 
 const sx = {
   fullscreen: {
@@ -17,17 +17,17 @@ const sx = {
   },
 }
 
-const Custom404 = () => {
+const Calibrate = () => {
   const { fullscreen } = useControlPanelContext()
 
   return (
     <P5Container
       style={fullscreen ? sx.fullscreen : sx.windowed}
-      title={'404'}
-      mediapipe={false}
-      scene={Custom404Scene}
+      title={'Hands'}
+      mediapipe={true}
+      scene={CalibrateCanvas}
     />
   )
 }
 
-export default Custom404
+export default Calibrate

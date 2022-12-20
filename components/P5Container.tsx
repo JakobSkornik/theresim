@@ -41,8 +41,7 @@ const variants = {
 }
 
 const P5Container = (props: P5ContainerProps) => {
-  // const handsContext = useHandsContext()
-  const { loading, playback, toggleLoading } = useControlPanelContext()
+  const { playback, toggleLoading } = useControlPanelContext()
   const videoElement = createRef<HTMLVideoElement>()
   const parentRef = useRef<HTMLDivElement>(null)
 
@@ -85,20 +84,7 @@ const P5Container = (props: P5ContainerProps) => {
 
     init()
     toggleLoading(false)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Triggers on navigations
-  useEffect(() => {
-    if (
-      !props.mediapipe ||
-      !loading
-    ) {
-      return
-    }
-
-    init()
-    toggleLoading(false)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <motion.div

@@ -43,7 +43,7 @@ export default class Padboard {
     }
   }
 
-  show(p5: p5Types, chords: string[]) {
+  show(p5: p5Types, chords: string[], assets: p5Types.Image[]) {
     for (let i = 0; i < this.numOfKeys; i++) {
       const y_offset = i * this.keyHeight + this.y
       const tBorder = i == 0 ? 10 : 0
@@ -86,6 +86,14 @@ export default class Padboard {
         chords[i % 6],
         this.x + (this.w - p5.textWidth(chords[i % 6])) / 2,
         y_offset + this.keyHeight - 30,
+      )
+
+      p5.image(
+        assets[i],
+        this.x,
+        y_offset,
+        this.keyHeight * 0.8,
+        this.keyHeight * 0.8
       )
     }
   }

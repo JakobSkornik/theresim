@@ -23,6 +23,7 @@ const sx = {
   title: {
     height: '45px',
     width: '100%',
+    fontSize: '4vh',
     backgroundColor: primary,
     color: shadow,
     borderTopLeftRadius: '5px',
@@ -33,7 +34,7 @@ const sx = {
   },
   text: {
     color: shadow,
-    fontSize: '20px',
+    fontSize: '3vh',
     whiteSpace: 'pre-wrap' as 'pre-wrap',
   },
   icon: {
@@ -49,9 +50,7 @@ const Message = (props: MessageProps) => {
   return (
     <div style={{ ...props.style, ...sx.container }}>
       <div style={sx.title}>
-        <span>
-          <h1>Info</h1>
-        </span>
+        <span>Info</span>
       </div>
       <span style={sx.text}>{props.text}</span>
       {props.icon && (

@@ -347,7 +347,7 @@ export const getNotesInScale = (start: number, major: boolean) => {
   } as ScaleKeys
 }
 
-const freehandDocs = () => {
+const calibrateDocs = () => {
   return (
     <p>
       Please provide necessary permissions for the app to be able to use your
@@ -467,8 +467,8 @@ const instrumentDocs = () => {
 
 export const getInformationText = (route: string) => {
   switch (route) {
-    case '/freehand':
-      return freehandDocs()
+    case '/calibrate':
+      return calibrateDocs()
     case '/coordinates':
       return coordinatesDocs()
     case '/detection':

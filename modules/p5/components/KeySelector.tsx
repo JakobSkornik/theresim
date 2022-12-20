@@ -28,6 +28,33 @@ export default class KeySelector {
     this.y = params.y
     this.w = params.w
     this.h = params.h
+
+    let wWidth = this.w / 7
+    let bWidth = wWidth * 0.7
+
+    for (let i = 0; i < 7; i++) {
+      const x_offset = i * wWidth + this.x
+      this.pianoKeyLocations.push({
+        name: getNoteName(i, true),
+        x1: x_offset,
+        x2: x_offset + wWidth,
+        y1: this.y,
+        y2: this.y + this.h,
+      })
+    }
+
+    const offsets = [1, 2, 4, 5, 6]
+    for (let i = 0; i < 5; i++) {
+      const x_offset = offsets[i] * wWidth + this.x - bWidth / 2
+
+      this.pianoKeyLocations.push({
+        name: getNoteName(i, false),
+        x1: x_offset,
+        x2: x_offset + bWidth,
+        y1: this.y,
+        y2: this.y + (2 * this.h) / 3,
+      })
+    }
   }
 
   show(p5: p5Types) {
@@ -71,14 +98,6 @@ export default class KeySelector {
         this.y + this.h - 10,
       )
 
-      this.pianoKeyLocations.push({
-        name: note,
-        x1: x_offset,
-        x2: x_offset + wWidth,
-        y1: this.y,
-        y2: this.y + this.h,
-      })
-
       const offsets = [1, 2, 4, 5, 6]
       for (let i = 0; i < 5; i++) {
         const x_offset = offsets[i] * wWidth + this.x - bWidth / 2
@@ -97,14 +116,6 @@ export default class KeySelector {
           p5.fill(hexToRgb(rightColor))
           p5.rect(x_offset, this.y, bWidth, height, 0, 0, 10, 10)
         }
-
-        this.pianoKeyLocations.push({
-          name: note,
-          x1: x_offset,
-          x2: x_offset + bWidth,
-          y1: this.y,
-          y2: this.y + (2 * this.h) / 3,
-        })
       }
 
       const switchY = this.y + this.h + 10
