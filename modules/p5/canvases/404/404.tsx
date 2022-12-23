@@ -19,12 +19,16 @@ export default class Custom404 implements P5Canvas {
     this.minY = 60
     this.maxY = this.minY + h - 290
   }
+  
+  async setup() {}
 
   show(p5: p5Types): void {
     this.draw404(p5)
   }
 
-  onClick(): void {}
+  resize(w: number, h: number) {}
+
+  onClick(p5: p5Types): void {}
 
   getRandomInt = (max: number) => {
     return Math.floor(Math.random() * max) + 1

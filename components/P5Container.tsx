@@ -84,7 +84,7 @@ const P5Container = (props: P5ContainerProps) => {
 
     init()
     toggleLoading(false)
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <motion.div
