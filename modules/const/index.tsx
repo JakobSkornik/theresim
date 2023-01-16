@@ -465,6 +465,27 @@ const instrumentDocs = () => {
   )
 }
 
+const demoDocs = () => {
+  return (
+    <p>
+      To play the instrument enable the webcam. To ensure you are visible by the webcam,
+      enable webcam feedback by clicking the webcam icon in the control panel.
+      <br />
+      <br />
+      You play chords with your left hand. Simply gesture the chord with appropriate
+      hand gesture displayed next to the chord.
+      <br />
+      <br />
+      You play notes with your right hand. Extend your index finger, the tip of the 
+      finger selects the note. Extend your thumb to trigger note, retract your thumb to 
+      stop playing.
+      <br />
+      <br />
+      Above the playing area is the scale selector and instrument selector.
+    </p>
+  )
+}
+
 export const getInformationText = (route: string) => {
   switch (route) {
     case '/calibrate':
@@ -479,6 +500,8 @@ export const getInformationText = (route: string) => {
       return keyboardDocs()
     case '/instrument':
       return instrumentDocs()
+    case '/demo':
+      return demoDocs()
     default:
       return (
         <p>

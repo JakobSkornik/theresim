@@ -28,9 +28,9 @@ const sx = {
 
 const AppWrapper = (props: Props) => {
   const router = useRouter()
+  const [msgOpen, setMsg] = useState(true)
   const { fullscreen, showUI, info, toggleInfo, loading } =
     useControlPanelContext()
-  const [msgOpen, setMsg] = useState(true)
 
   const msgText = 'You can find more information in the control panel.'
 
