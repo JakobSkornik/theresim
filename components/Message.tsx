@@ -23,7 +23,7 @@ const sx = {
   title: {
     height: '45px',
     width: '100%',
-    fontSize: '4vh',
+    fontSize: '22px',
     backgroundColor: primary,
     color: shadow,
     borderTopLeftRadius: '5px',
@@ -34,7 +34,7 @@ const sx = {
   },
   text: {
     color: shadow,
-    fontSize: '3vh',
+    fontSize: '10px',
     whiteSpace: 'pre-wrap' as 'pre-wrap',
   },
   icon: {

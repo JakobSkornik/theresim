@@ -32,12 +32,12 @@ const AppWrapper = (props: Props) => {
   const { fullscreen, showUI, info, toggleInfo, loading } =
     useControlPanelContext()
 
-  const msgText = 'You can find more information in the control panel.'
+  const msgText = 'You can find more information in the control panel. If the instrument is not loading, it is likely that the music library is downloading instruments. Wait for 2 minutes and then refresh.'
 
   useEffect(() => {
     const timeId = setTimeout(() => {
       setMsg(false)
-    }, 2000)
+    }, 10000)
 
     return () => {
       clearTimeout(timeId)
