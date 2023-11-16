@@ -11,30 +11,20 @@ export default class InstrumentSelector {
   h: number
 
   cols: number = 5
-  rows: number = 4
+  rows: number = 2
 
   keyLocations: KeyLocation[] = []
   instruments: string[] = [
     'acoustic_grand_piano',
     'harpsichord',
-    'clavinet',
-    'drawbar_organ',
     'rock_organ',
-    'tango_accordion',
     'distortion_guitar',
     'violin',
-    'cello',
     'string_ensemble_2',
     'choir_aahs',
     'synth_brass_2',
-    'soprano_sax',
-    'bassoon',
     'pad_3_polysynth',
     'fx_1_rain',
-    'fx_7_echoes',
-    'sitar',
-    'fiddle',
-    'shanai',
   ]
   selected: string = this.instruments[0]
 
