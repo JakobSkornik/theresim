@@ -4,6 +4,7 @@ import { Key, Scale } from 'tonal'
 import FPSCounter from '../../components/FPSCounter'
 import Hand from '../../components/Hand'
 import HandLegend from '../../components/HandLegend'
+import InstrumentSelector from '../../components/InstrumentSelector'
 import Keyboard from '../../components/Keyboard'
 import KeySelector from '../../components/KeySelector'
 import NoHandsWarning from '../../components/NoHandsWarning'
@@ -15,7 +16,6 @@ import { BoxParams } from '../../components/Box'
 import { HandsController } from '../../../mediapipe'
 import { Landmark } from '@mediapipe/hands'
 import { Player } from 'soundfont-player'
-import InstrumentSelector from '../../components/InstrumentSelector'
 
 var Soundfont = require('soundfont-player')
 
@@ -142,6 +142,10 @@ export default class DemoCanvas implements P5Canvas {
   }
 
   show(p5: p5Types, hands: HandsController, assets: p5Types.Image[]): void {
+    if (!hands) {
+      return
+    }
+
     this.getControls(hands)
     const activeChord = this.padboard.getActive(this.controls)
     this.keyboard.getActive(p5, this.controls, activeChord, this.major)
@@ -226,7 +230,11 @@ export default class DemoCanvas implements P5Canvas {
   }
 
   getControls(hands: HandsController) {
-    if (hands.leftHand.length) {
+    if (!hands) {
+      return
+    }
+
+    if (hands && hands.leftHand.length) {
       this.controls.leftVisible = true
       this.controls.leftGesture = this.leftHandGesture(hands.leftHand)
     } else {

@@ -8,7 +8,6 @@ import ControlPanelProvider from '../context/controlPanel'
 import { ControlPanelContextType } from '../types'
 
 export default function App({ Component, pageProps, router }: AppProps) {
-  const [fullscreen, toggleFullscreen] = useState(false)
   const [playback, togglePlayback] = useState(false)
   const [showUI, toggleShowUI] = useState(true)
   const [info, toggleInfo] = useState(false)
@@ -18,10 +17,6 @@ export default function App({ Component, pageProps, router }: AppProps) {
   useEffect(() => {
     window.alert = () => {}
   }, [])
-
-  const updateFullscreen = () => {
-    toggleFullscreen(!fullscreen)
-  }
 
   const updatePlayback = () => {
     togglePlayback(!playback)
@@ -52,8 +47,6 @@ export default function App({ Component, pageProps, router }: AppProps) {
   }
 
   const controlPanelContext = {
-    fullscreen: fullscreen,
-    toggleFullscreen: updateFullscreen,
     playback: playback,
     togglePlayback: updatePlayback,
     showUI: showUI,

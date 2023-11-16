@@ -2,8 +2,6 @@ import { createContext, FC } from 'react'
 import { ControlPanelContextType, ControlPanelProps } from '../types'
 
 export const ControlPanelContext = createContext<ControlPanelContextType>({
-    fullscreen: false,
-    toggleFullscreen: () => {},
     playback: false,
     togglePlayback: () => {},
     showUI: false,

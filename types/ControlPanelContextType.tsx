@@ -1,6 +1,4 @@
 export type ControlPanelContextType = {
-  fullscreen: boolean
-  toggleFullscreen: () => void
   playback: boolean
   togglePlayback: () => void
   showUI: boolean

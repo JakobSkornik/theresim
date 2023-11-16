@@ -2,11 +2,9 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
 import Background from './Background'
-import Container from './Container'
 import ControlPanel from './ControlPanel'
 import Loader from './Loader'
 import Message from './Message'
-import Navbar from './NavBar'
 import Popup from './Popup'
 import { getInformationText } from '../modules/const'
 import { Props } from '../types/Props'
@@ -29,10 +27,10 @@ const sx = {
 const AppWrapper = (props: Props) => {
   const router = useRouter()
   const [msgOpen, setMsg] = useState(true)
-  const { fullscreen, showUI, info, toggleInfo, loading } =
-    useControlPanelContext()
+  const { info, toggleInfo, loading } = useControlPanelContext()
 
-  const msgText = 'You can find more information in the control panel. If the instrument is not loading, it is likely that the music library is downloading instruments. Wait for 2 minutes and then refresh.'
+  const msgText =
+    'You can find more information in the control panel. If the instrument is not loading, it is likely that the music library is downloading instruments. Wait for 2 minutes and then refresh.'
 
   useEffect(() => {
     const timeId = setTimeout(() => {
@@ -51,19 +49,7 @@ const AppWrapper = (props: Props) => {
   return (
     <div style={sx.appWrapper}>
       <Background />
-      <Container
-        title="THERESIM"
-        style={{
-          ...sx.container,
-          ...{
-            marginLeft: fullscreen ? '105vw' : '20px',
-            opacity: showUI ? '1' : '0',
-          },
-        }}
-      >
-        <Navbar />
-        {props.children}
-      </Container>
+      {props.children}
       <Loader style={{ opacity: loading ? '1' : '0' }} />
       <ControlPanel />
       <Message

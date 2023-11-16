@@ -7,9 +7,9 @@ import { primary } from '../modules/const'
 const sx = {
   ctrlPanel: {
     position: 'fixed' as 'fixed',
-    left: 'calc(50vw - 180px)',
+    left: 'calc(50vw - 130px)',
     height: '80px',
-    width: '360px',
+    width: '260px',
     padding: '10px',
     backgroundColor: primary + '90',
     backdropFilter: 'blur(3px)',
@@ -46,16 +46,8 @@ const sx = {
 }
 
 const ControlPanel = () => {
-  const {
-    fullscreen,
-    toggleFullscreen,
-    playback,
-    togglePlayback,
-    showUI,
-    toggleShowUI,
-    info,
-    toggleInfo,
-  } = useControlPanelContext()
+  const { playback, togglePlayback, showUI, toggleShowUI, info, toggleInfo } =
+    useControlPanelContext()
 
   const [ctrlPanel, setCtrlPanel] = useState(true)
   useEffect(() => {
@@ -67,11 +59,6 @@ const ControlPanel = () => {
       clearTimeout(timeId)
     }
   }, [])
-
-  const onToggleFullscreen = () => {
-    toggleShowUI(true)
-    toggleFullscreen()
-  }
 
   const onTogglePlayback = () => {
     togglePlayback()
@@ -109,16 +96,6 @@ const ControlPanel = () => {
         onMouseEnter={openCtrlPanel}
         onMouseLeave={closeCtrlPanel}
       ></div>
-      <Button
-        style={fullscreen ? { ...sx.btn, ...sx.btnActive } : sx.btn}
-        text=""
-        value="fullscreen"
-        onClick={onToggleFullscreen}
-        icon={'expand.svg'}
-        iconSize={50}
-        onMouseEnter={openCtrlPanel}
-        onMouseLeave={closeCtrlPanel}
-      />
       <Button
         style={!showUI ? { ...sx.btn, ...sx.btnActive } : sx.btn}
         text=""
