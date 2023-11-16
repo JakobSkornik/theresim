@@ -263,7 +263,6 @@ export default class DemoCanvas implements P5Canvas {
     }
 
     const pianoKeyPress = this.keySelector.checkPianoKeyPress(x, y)
-
     if (pianoKeyPress !== null) {
       this.selectedRoot = pianoKeyPress
       this.notes = [
