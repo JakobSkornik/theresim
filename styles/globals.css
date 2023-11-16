@@ -13,6 +13,8 @@
 
 html,
 body {
+  min-height: 560px !important;
+  min-width: 960px !important;
   height: 100vh;
   width: 100vw;
   padding: 0;
@@ -90,6 +92,8 @@ a {
 }
 
 .background {
+  min-height: 560px !important;
+  min-width: 960px !important;
   width: 100vw;
   height: 100vh;
   position: fixed;
@@ -115,7 +119,7 @@ a {
   border-radius: 20vh;
   position: relative;
   overflow: hidden;
-  top: calc(20vh);
+  top: calc(35% + 10vh);
   left: calc(50vw - 20vh);
 }
 .sun:before {
@@ -143,6 +147,8 @@ a {
   margin-left: -50%;
   width: 200%;
   height: 100%;
+  min-height: 560px !important;
+  min-width: 960px !important;
   background-position-y: 0px;
   background-image: repeating-linear-gradient(
       90deg,

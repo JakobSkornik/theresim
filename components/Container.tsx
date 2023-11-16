@@ -1,6 +1,5 @@
 import Image from 'next/image'
-import React, { useEffect } from 'react'
-import { motion, useAnimationControls } from 'framer-motion'
+import React from 'react'
 
 import { borderColor, primary, shadow } from '../modules/const'
 import { ContainerProps } from '../types'
@@ -33,13 +32,6 @@ const sx = {
     margin: 0,
   },
 }
-
-const animations = {
-  hidden: { opacity: 0, x: -200, y: 0 },
-  enter: { opacity: 1, x: 0, y: 0 },
-  exit: { opacity: 0, x: 0, y: -100 },
-}
-
 const Container = (props: ContainerProps) => {
   return (
     <div style={{ ...props.style, ...sx.container }}>

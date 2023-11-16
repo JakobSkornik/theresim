@@ -14,13 +14,13 @@ import { useControlPanelContext } from '../context'
 
 const sx = {
   appWrapper: {
-    height: '100vh',
-    width: '100vw',
+    height: 'max(100vh, 560px)',
+    width: 'max(100vw, 960px)',
   },
   container: {
     margin: '2vh 2vw 2vh 2vw',
-    width: '96vw',
-    height: '96vh',
+    width: 'max(96vw, 940px)',
+    height: 'max(96vh, 540px)',
     transition: 'margin 700ms ease-out, opacity 700ms ease',
     willChange: 'margin',
   },
