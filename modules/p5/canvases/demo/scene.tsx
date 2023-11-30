@@ -259,11 +259,12 @@ export default class DemoCanvas implements P5Canvas {
     const majorBtnPress = this.keySelector.checkMajorBtnPress(x, y)
     if (majorBtnPress !== null) {
       this.major = majorBtnPress
+      const mode = this.major ? 'major' : 'minor'
       this.notes = [
-        ...Scale.get(`${this.selectedRoot}${this.referenceOctave} major`).notes,
-        ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 1} major`)
+        ...Scale.get(`${this.selectedRoot}${this.referenceOctave} ${mode}`).notes,
+        ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 1} ${mode}`)
           .notes,
-        ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 2} major`)
+        ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 2} ${mode}`)
           .notes,
       ]
       this.chords = this.getChords(this.selectedRoot)
@@ -273,11 +274,12 @@ export default class DemoCanvas implements P5Canvas {
     const pianoKeyPress = this.keySelector.checkPianoKeyPress(x, y)
     if (pianoKeyPress !== null) {
       this.selectedRoot = pianoKeyPress
+      const mode = this.major ? 'major' : 'minor'
       this.notes = [
-        ...Scale.get(`${this.selectedRoot}${this.referenceOctave} major`).notes,
-        ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 1} major`)
+        ...Scale.get(`${this.selectedRoot}${this.referenceOctave} ${mode}`).notes,
+        ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 1} ${mode}`)
           .notes,
-        ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 2} major`)
+        ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 2} ${mode}`)
           .notes,
       ]
 
@@ -380,6 +382,7 @@ export default class DemoCanvas implements P5Canvas {
   }
 
   rightHandActive(hand: Landmark[]) {
-    return hand[4].x < hand[3].x
+    // return hand[4].x < hand[3].x (for thumb)
+    return hand[8].y > hand[6].y
   }
 }

@@ -2,7 +2,7 @@ import { createContext, FC } from 'react'
 import { ControlPanelContextType, ControlPanelProps } from '../types'
 
 export const ControlPanelContext = createContext<ControlPanelContextType>({
-    playback: false,
+    playback: true,
     togglePlayback: () => {},
     showUI: false,
     toggleShowUI: () => {},

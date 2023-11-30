@@ -1,5 +1,3 @@
-import { ScaleKeys } from '../../types/ScaleKeys'
-
 export const handRanges = [
   [0, 1],
   [1, 5],
@@ -138,213 +136,12 @@ export const CURACAO = (alpha = 255) => [61, 193, 211, alpha]
 export const BISCAY = (alpha = 255) => [48, 57, 82, alpha]
 export const CYAN = (alpha = 255) => [170, 216, 233, alpha]
 
-const scale = [
-  {
-    key: 'C',
-    color: 'white',
-    idx: 0,
-  },
-  {
-    key: 'C#',
-    color: 'black',
-    idx: 0,
-  },
-  {
-    key: 'D',
-    color: 'white',
-    idx: 1,
-  },
-  {
-    key: 'D#',
-    color: 'black',
-    idx: 1,
-  },
-  {
-    key: 'E',
-    color: 'white',
-    idx: 2,
-  },
-  {
-    key: 'F',
-    color: 'white',
-    idx: 3,
-  },
-  {
-    key: 'F#',
-    color: 'black',
-    idx: 2,
-  },
-  {
-    key: 'G',
-    color: 'white',
-    idx: 4,
-  },
-  {
-    key: 'G#',
-    color: 'black',
-    idx: 3,
-  },
-  {
-    key: 'A',
-    color: 'white',
-    idx: 5,
-  },
-  {
-    key: 'A#',
-    color: 'black',
-    idx: 4,
-  },
-  {
-    key: 'B',
-    color: 'white',
-    idx: 6,
-  },
-]
-
-export const getChromaticIdx = (idx: number, white: boolean) => {
-  const wKeys = [0, 2, 4, 5, 7, 9, 11]
-  const bKeys = [1, 3, 6, 8, 10]
-  return {
-    idx: white ? wKeys[idx] : bKeys[idx],
-    name: white ? scale[wKeys[idx]].key : scale[bKeys[idx]].key,
-  }
-}
-
 export const getNoteName = (idx: number, white: boolean) => {
   let notes = ['C#', 'D#', 'F#', 'G#', 'A#']
   if (white) {
     notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
   }
   return notes[idx]
-}
-
-export const getNotesInChord = (chord: number, type: string) => {
-  let third = 4
-  let fifth = 7
-  if (type !== 'maj') third = 3
-  if (type == 'dim') fifth = 6
-  let offsets = [chord, (chord + third) % 12, (chord + fifth) % 12]
-  let wKeys = []
-  let bKeys = []
-  for (let i = 0; i < 3; i++) {
-    let current = offsets[i] % 12
-    if (scale[current].color == 'white') {
-      wKeys.push(scale[current].idx)
-    } else {
-      bKeys.push(scale[current].idx)
-    }
-  }
-  return {
-    wKeys: wKeys,
-    bKeys: bKeys,
-  } as ScaleKeys
-}
-
-export const getOrderedChordsInScale = (start: number, major: boolean) => {
-  const offsets = major ? [2, 2, 1, 2, 2, 2, 1] : [2, 1, 2, 2, 1, 2, 2]
-  const result = []
-  let current = start
-  for (let i = 0; i < offsets.length; i++) {
-    result.push(scale[current].key)
-    current = (current + offsets[i]) % scale.length
-  }
-  return processScale(result, major)
-}
-
-export const processScale = (scale: string[], major: boolean) => {
-  scale = [...scale]
-  while (!allUnique(scale)) {
-    if (major && scale[0].charAt(1) == '#') {
-      const lastKey = scale[0].charAt(0)
-      scale[0] = getNextChar(scale[0].charAt(0)) + 'b'
-      scale[scale.length - 1] = lastKey
-    }
-    for (let i = scale.length - 1; i >= 0; i--) {
-      if (duplicate(scale[i].charAt(0), scale)) {
-        scale[i] = getNextChar(scale[i].charAt(0)) + 'b'
-      }
-    }
-  }
-  const minorChords = major ? [1, 2, 5] : [0, 3, 4]
-  const dimChord = major ? 6 : 1
-  scale[dimChord] = scale[dimChord] + 'dim'
-  for (let i = 0; i < 3; i++) {
-    scale[minorChords[i]] = scale[minorChords[i]] + 'm'
-  }
-  return scale
-}
-
-export const processNotes = (scale: string[]) => {
-  scale = [...scale]
-  while (!allUnique(scale)) {
-    if (scale[0].charAt(1) == '#') {
-      const lastKey = scale[0].charAt(0)
-      scale[0] = getNextChar(scale[0].charAt(0)) + 'b'
-      scale[scale.length - 1] = lastKey
-    }
-    for (let i = scale.length - 1; i >= 0; i--) {
-      if (duplicate(scale[i].charAt(0), scale)) {
-        scale[i] = getNextChar(scale[i].charAt(0)) + 'b'
-      }
-    }
-  }
-  return scale
-}
-
-const allUnique = (scale: string[]) => {
-  for (let i = 0; i < scale.length; i++) {
-    if (duplicate(scale[i].charAt(0), scale)) {
-      return false
-    }
-  }
-  return true
-}
-
-const duplicate = (key: string, str: string[]) => {
-  let cnt = 0
-  for (let i = 0; i < str.length; i++) {
-    if (key == str[i].charAt(0)) {
-      cnt++
-    }
-  }
-  if (cnt > 1) return true
-  return false
-}
-
-const getNextChar = (char: string) => {
-  if (char == 'G') return 'A'
-  return String.fromCharCode(char.charCodeAt(0) + 1)
-}
-
-export const getSimpleNotes = (start: number) => {
-  const offsets = [2, 2, 1, 2, 2, 2, 1]
-  let result = []
-  let current = start
-  for (let i = 0; i < offsets.length; i++) {
-    result.push(scale[current].key)
-    current = (current + offsets[i]) % scale.length
-  }
-  return processNotes(result)
-}
-
-export const getNotesInScale = (start: number, major: boolean) => {
-  const offsets = major ? [2, 2, 1, 2, 2, 2, 1] : [2, 1, 2, 2, 1, 2, 2]
-  let wKeys = []
-  let bKeys = []
-  let current = start
-  for (let i = 0; i < offsets.length; i++) {
-    if (scale[current].color == 'white') {
-      wKeys.push(scale[current].idx)
-    } else {
-      bKeys.push(scale[current].idx)
-    }
-    current = (current + offsets[i]) % scale.length
-  }
-
-  return {
-    wKeys: wKeys,
-    bKeys: bKeys,
-  } as ScaleKeys
 }
 
 const calibrateDocs = () => {
@@ -468,17 +265,18 @@ const instrumentDocs = () => {
 const demoDocs = () => {
   return (
     <p>
-      To play the instrument enable the webcam. To ensure you are visible by the webcam,
-      enable webcam feedback by clicking the webcam icon in the control panel.
+      To play the instrument enable the webcam. To ensure you are visible by the
+      webcam, enable webcam feedback by clicking the webcam icon in the control
+      panel.
       <br />
       <br />
-      You play chords with your left hand. Simply gesture the chord with appropriate
-      hand gesture displayed next to the chord.
+      You play chords with your left hand. Simply gesture the chord with
+      appropriate hand gesture displayed next to the chord.
       <br />
       <br />
-      You play notes with your right hand. Extend your index finger, the tip of the 
-      finger selects the note. Extend your thumb to trigger note, retract your thumb to 
-      stop playing.
+      You play notes with your right hand. Extend your index finger, the tip of
+      the finger selects the note. Extend your thumb to trigger note, retract
+      your thumb to stop playing.
       <br />
       <br />
       Above the playing area is the scale selector and instrument selector.

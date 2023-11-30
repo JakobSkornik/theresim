@@ -8,7 +8,7 @@ import ControlPanelProvider from '../context/controlPanel'
 import { ControlPanelContextType } from '../types'
 
 export default function App({ Component, pageProps, router }: AppProps) {
-  const [playback, togglePlayback] = useState(false)
+  const [playback, togglePlayback] = useState(true)
   const [showUI, toggleShowUI] = useState(true)
   const [info, toggleInfo] = useState(false)
   const [loading, toggleLoading] = useState(true)
