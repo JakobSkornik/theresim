@@ -261,7 +261,8 @@ export default class DemoCanvas implements P5Canvas {
       this.major = majorBtnPress
       const mode = this.major ? 'major' : 'minor'
       this.notes = [
-        ...Scale.get(`${this.selectedRoot}${this.referenceOctave} ${mode}`).notes,
+        ...Scale.get(`${this.selectedRoot}${this.referenceOctave} ${mode}`)
+          .notes,
         ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 1} ${mode}`)
           .notes,
         ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 2} ${mode}`)
@@ -276,7 +277,8 @@ export default class DemoCanvas implements P5Canvas {
       this.selectedRoot = pianoKeyPress
       const mode = this.major ? 'major' : 'minor'
       this.notes = [
-        ...Scale.get(`${this.selectedRoot}${this.referenceOctave} ${mode}`).notes,
+        ...Scale.get(`${this.selectedRoot}${this.referenceOctave} ${mode}`)
+          .notes,
         ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 1} ${mode}`)
           .notes,
         ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 2} ${mode}`)
@@ -383,6 +385,8 @@ export default class DemoCanvas implements P5Canvas {
 
   rightHandActive(hand: Landmark[]) {
     // return hand[4].x < hand[3].x (for thumb)
-    return hand[8].y > hand[6].y
+    // TODO: Add calibration thresholds to context and use it wherever needed!
+    const threshold = 0.1
+    return hand[8].y > hand[6].y - threshold
   }
 }
