@@ -1,5 +1,8 @@
 import p5Types from 'p5'
+import { HandsController } from '../../../mediapipe'
 import { Key, Scale } from 'tonal'
+import { Landmark } from '@mediapipe/hands'
+import { Player } from 'soundfont-player'
 
 import BackingTrackSelector from '../../components/BackingTrackSelector'
 import FPSCounter from '../../components/FPSCounter'
@@ -15,9 +18,6 @@ import Padboard from '../../components/Padboard'
 import { gray, hexToRgb, rightColor } from '../../../const'
 import { ControlPanelContextType, KeyLocation } from '../../../../types'
 import { BoxParams } from '../../components/Box'
-import { HandsController } from '../../../mediapipe'
-import { Landmark } from '@mediapipe/hands'
-import { Player } from 'soundfont-player'
 
 var Soundfont = require('soundfont-player')
 
