@@ -97,8 +97,8 @@ export default class Keyboard {
     major: boolean,
   ) {
     if (controls.rightActive) {
-      const x = controls.rightX! * p5.width
-      const y = controls.rightY! * p5.height
+      const x = this.x + controls.rightX! * this.w
+      const y = this.y + controls.rightY! * this.h
 
       let newSelected = -1
       for (let i = 0; i < this.keyLocations.length; i++) {

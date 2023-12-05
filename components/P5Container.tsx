@@ -16,6 +16,8 @@ const sx = {
   },
   playbackDiv: {
     position: 'fixed' as 'fixed',
+    left: '300px',
+    top: '280px',
     borderRadius: '2px',
     margin: '60px 0 10px 20px',
     transition: 'all 0.5s ease-in-out',
@@ -99,8 +101,8 @@ const P5Container = (props: P5ContainerProps) => {
       <div style={sx.playbackDiv}>
         {props.mediapipe && (
           <video
-            width={dims.width - 31}
-            height={dims.height - 80}
+            width={dims.width - 351}
+            height={dims.height - 370}
             style={{
               ...sx.playback,
               ...{

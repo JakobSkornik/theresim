@@ -9,6 +9,8 @@ import { ControlPanelContextType } from '../types'
 
 export default function App({ Component, pageProps, router }: AppProps) {
   const [playback, togglePlayback] = useState(true)
+  const [thumb, toggleThumb] = useState(true)
+  const [fullHand, toggleFullHand] = useState(true)
   const [showUI, toggleShowUI] = useState(true)
   const [info, toggleInfo] = useState(false)
   const [loading, toggleLoading] = useState(true)
@@ -20,6 +22,14 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
   const updatePlayback = () => {
     togglePlayback(!playback)
+  }
+
+  const updateThumb = () => {
+    toggleThumb(!thumb)
+  }
+
+  const updateFullHand= () => {
+    toggleFullHand(!fullHand)
   }
 
   const updateLoading = (load?: boolean) => {
@@ -49,6 +59,10 @@ export default function App({ Component, pageProps, router }: AppProps) {
   const controlPanelContext = {
     playback: playback,
     togglePlayback: updatePlayback,
+    thumbTriggerMode: thumb,
+    toggleThumbTriggerMode: updateThumb,
+    fullHandMode: fullHand,
+    toggleFullHandMode: updateFullHand,
     showUI: showUI,
     toggleShowUI: updateShowUI,
     info: info,

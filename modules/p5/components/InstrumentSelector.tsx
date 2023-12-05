@@ -12,6 +12,7 @@ export default class InstrumentSelector {
 
   cols: number = 5
   rows: number = 2
+  textHeight: number = 20
 
   keyLocations: KeyLocation[] = []
   instruments: string[] = [
@@ -38,7 +39,7 @@ export default class InstrumentSelector {
     const keyHeight = this.h / this.rows
 
     for (let row = 0; row < this.rows; row++) {
-      const y_offset = row * keyHeight + this.y
+      const y_offset = row * keyHeight + this.y + this.textHeight
 
       for (let col = 0; col < this.cols; col++) {
         const x_offset = col * keyWidth + this.x
@@ -55,11 +56,17 @@ export default class InstrumentSelector {
   }
 
   show(p5: p5Types) {
+    p5.noStroke()
+    p5.fill(hexToRgb(leftColor))
+    p5.textSize(13)
+    const title = 'Instruments'
+    p5.text(title, this.x, this.y + 8)
+
     const keyWidth = this.w / this.cols
     const keyHeight = this.h / this.rows
 
     for (let row = 0; row < this.rows; row++) {
-      const y_offset = row * keyHeight + this.y
+      const y_offset = row * keyHeight + this.y + this.textHeight
 
       for (let col = 0; col < this.cols; col++) {
         const x_offset = col * keyWidth + this.x

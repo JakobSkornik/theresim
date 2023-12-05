@@ -46,8 +46,18 @@ const sx = {
 }
 
 const ControlPanel = () => {
-  const { playback, togglePlayback, showUI, toggleShowUI, info, toggleInfo } =
-    useControlPanelContext()
+  const {
+    playback,
+    togglePlayback,
+    thumbTriggerMode,
+    toggleThumbTriggerMode,
+    fullHandMode,
+    toggleFullHandMode,
+    showUI,
+    toggleShowUI,
+    info,
+    toggleInfo,
+  } = useControlPanelContext()
 
   const [ctrlPanel, setCtrlPanel] = useState(true)
   useEffect(() => {
@@ -62,6 +72,14 @@ const ControlPanel = () => {
 
   const onTogglePlayback = () => {
     togglePlayback()
+  }
+
+  const onToggleThumbMode = () => {
+    toggleThumbTriggerMode()
+  }
+
+  const onToggleFullHandMode = () => {
+    toggleFullHandMode()
   }
 
   const onToggleInfo = () => {
@@ -102,6 +120,26 @@ const ControlPanel = () => {
         value="info"
         onClick={onToggleHideUI}
         icon="sunset.svg"
+        iconSize={50}
+        onMouseEnter={openCtrlPanel}
+        onMouseLeave={closeCtrlPanel}
+      />
+      <Button
+        style={!thumbTriggerMode ? { ...sx.btn, ...sx.btnActive } : sx.btn}
+        text=""
+        value="thumb"
+        onClick={onToggleThumbMode}
+        icon="crosshair.svg"
+        iconSize={50}
+        onMouseEnter={openCtrlPanel}
+        onMouseLeave={closeCtrlPanel}
+      />
+      <Button
+        style={!fullHandMode ? { ...sx.btn, ...sx.btnActive } : sx.btn}
+        text=""
+        value="fullhand"
+        onClick={onToggleFullHandMode}
+        icon="skeleton.svg"
         iconSize={50}
         onMouseEnter={openCtrlPanel}
         onMouseLeave={closeCtrlPanel}

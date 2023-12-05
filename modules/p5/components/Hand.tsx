@@ -21,7 +21,6 @@ export default class Hand {
   h: number
   size: number
   color: number[]
-  pointerStyle: boolean
 
   constructor(params: HandParams) {
     this.x = params.x
@@ -30,16 +29,15 @@ export default class Hand {
     this.h = params.h
     this.color = params.color
     this.size = params.size ?? 15
-    this.pointerStyle = params.pointerStyle ?? false
   }
 
-  show(p5: p5Types, hand: Landmark[], color?: number[]) {
+  show(p5: p5Types, hand: Landmark[], pointerStyle: boolean, color?: number[]) {
     if (!hand.length) {
       return
     }
     color = color ?? this.color
 
-    if (this.pointerStyle) {
+    if (pointerStyle) {
       this.drawPointer(p5, hand, color)
       return
     }

@@ -1,17 +1,19 @@
 import p5Types from 'p5'
 import { Key, Scale } from 'tonal'
 
+import BackingTrackSelector from '../../components/BackingTrackSelector'
 import FPSCounter from '../../components/FPSCounter'
 import Hand from '../../components/Hand'
 import HandLegend from '../../components/HandLegend'
 import InstrumentSelector from '../../components/InstrumentSelector'
 import Keyboard from '../../components/Keyboard'
 import KeySelector from '../../components/KeySelector'
+import MuteButton from '../../components/MuteButton'
 import NoHandsWarning from '../../components/NoHandsWarning'
 import P5Canvas from '../../components/P5Canvas'
 import Padboard from '../../components/Padboard'
 import { gray, hexToRgb, rightColor } from '../../../const'
-import { KeyLocation } from '../../../../types'
+import { ControlPanelContextType, KeyLocation } from '../../../../types'
 import { BoxParams } from '../../components/Box'
 import { HandsController } from '../../../mediapipe'
 import { Landmark } from '@mediapipe/hands'
@@ -30,6 +32,7 @@ export type Controls = {
 
 export default class DemoCanvas implements P5Canvas {
   major: boolean = true
+  mute: boolean = false
   referenceOctave: number = 3
   selectedRoot: string = 'C'
   notes: string[] = [
@@ -45,10 +48,11 @@ export default class DemoCanvas implements P5Canvas {
   legend!: HandLegend
   keyboard!: Keyboard
   padboard!: Padboard
+  muteButton!: MuteButton
   keySelector!: KeySelector
   instrumentSelector!: InstrumentSelector
+  backingTrackSelector!: BackingTrackSelector
   noHandsWarning!: NoHandsWarning
-  threshold: number = 0.54
   controls: Controls = {
     leftVisible: false,
     leftGesture: 0,
@@ -57,12 +61,17 @@ export default class DemoCanvas implements P5Canvas {
   }
   keyLocations: KeyLocation[] = []
   majorButtonLocation: KeyLocation | null = null
+  muteButtonLocation: KeyLocation | null = null
 
   player!: Player
   ac!: AudioContext
+  gainNode!: GainNode
 
   notePlaying: Player | null = null
   notePlayingName: string | null = null
+  backingTrackPlaying: string | null = null
+
+  backingTrackSource: AudioBufferSourceNode | null = null
 
   chordPlaying: Player[] = []
   chordPlayingName: string[] = []
@@ -91,27 +100,33 @@ export default class DemoCanvas implements P5Canvas {
     })
 
     this.rightHand = new Hand({
-      x: this.canvas.x,
-      y: this.canvas.y,
-      w: this.canvas.w,
-      h: this.canvas.h,
+      x: this.canvas.x + 300,
+      y: this.canvas.y + 280,
+      w: this.canvas.w - 320,
+      h: this.canvas.h - 290,
       color: hexToRgb(rightColor),
-      pointerStyle: true,
     })
 
     this.keyboard = new Keyboard({
       x: this.canvas.x + 300,
-      y: this.canvas.y + 180,
+      y: this.canvas.y + 280,
       w: this.canvas.w - 320,
-      h: this.canvas.h - 190,
+      h: this.canvas.h - 290,
       numOfKeys: 14,
     })
 
     this.padboard = new Padboard({
       x: this.canvas.x + 10,
-      y: this.canvas.y + 180,
+      y: this.canvas.y + 280,
       w: 250,
-      h: this.canvas.h - 190,
+      h: this.canvas.h - 290,
+    })
+
+    this.muteButton = new MuteButton({
+      x: this.canvas.x + 10,
+      y: this.canvas.y + 170,
+      w: 300,
+      h: 40,
     })
 
     this.keySelector = new KeySelector({
@@ -128,25 +143,37 @@ export default class DemoCanvas implements P5Canvas {
       h: 150,
     })
 
+    this.backingTrackSelector = new BackingTrackSelector({
+      x: this.canvas.x + 320,
+      y: this.canvas.y + 190,
+      w: this.w - 360,
+      h: 50,
+    })
+
     this.legend = new HandLegend({
       x: 25,
       y: this.h - 170,
     })
 
-    this.noHandsWarning = new NoHandsWarning({
-      x: 30,
-      y: 30,
-      w: this.w - 40,
-      h: this.h - 60,
-    })
+    // this.noHandsWarning = new NoHandsWarning({
+    //   x: 30,
+    //   y: 30,
+    //   w: this.w - 40,
+    //   h: this.h - 60,
+    // })
   }
 
-  show(p5: p5Types, hands: HandsController, assets: p5Types.Image[]): void {
+  show(
+    p5: p5Types,
+    hands: HandsController,
+    assets: p5Types.Image[],
+    context: ControlPanelContextType,
+  ): void {
     if (!hands) {
       return
     }
 
-    this.getControls(hands)
+    this.getControls(hands, context)
     const activeChord = this.padboard.getActive(this.controls)
     this.keyboard.getActive(p5, this.controls, activeChord, this.major)
 
@@ -155,12 +182,15 @@ export default class DemoCanvas implements P5Canvas {
     this.rightHand.show(
       p5,
       hands.rightHand,
+      context.fullHandMode,
       this.controls.rightActive ? hexToRgb(rightColor) : hexToRgb(gray),
     )
+    this.muteButton.show(p5)
     this.keySelector.show(p5)
+    this.backingTrackSelector.show(p5)
     this.instrumentSelector.show(p5)
     this.fpsCounter.show(p5)
-    this.noHandsWarning.show(p5, hands)
+    // this.noHandsWarning.show(p5, hands)
 
     this.playRighthandNote()
     this.playLefthandChord()
@@ -168,6 +198,8 @@ export default class DemoCanvas implements P5Canvas {
 
   async setup() {
     this.ac = new AudioContext()
+    this.gainNode = this.ac.createGain()
+
     this.player = await Soundfont.instrument(
       this.ac,
       this.instrumentSelector.selected,
@@ -178,6 +210,13 @@ export default class DemoCanvas implements P5Canvas {
       console.log(`Soundfont player initialized.`)
       return player
     })
+
+    this.player.connect(this.gainNode)
+    this.gainNode.gain.setValueAtTime(0.5, this.ac.currentTime)
+    this.gainNode.connect(this.ac.destination)
+
+    this.backingTrackSource = this.ac.createBufferSource()
+    this.backingTrackSource.connect(this.ac.destination)
   }
 
   resize(w: number, h: number) {
@@ -229,7 +268,7 @@ export default class DemoCanvas implements P5Canvas {
     this.triggerChordPressed(chordNotes)
   }
 
-  getControls(hands: HandsController) {
+  getControls(hands: HandsController, context: ControlPanelContextType) {
     if (!hands) {
       return
     }
@@ -245,7 +284,7 @@ export default class DemoCanvas implements P5Canvas {
       this.controls.rightVisible = true
       this.controls.rightX = hands.rightHand[8].x
       this.controls.rightY = hands.rightHand[8].y
-      this.controls.rightActive = this.rightHandActive(hands.rightHand)
+      this.controls.rightActive = this.rightHandActive(hands.rightHand, context)
     } else {
       this.controls.rightVisible = false
       this.controls.rightActive = false
@@ -301,6 +340,37 @@ export default class DemoCanvas implements P5Canvas {
         console.log(`Soundfont player initialized.`)
         return player
       })
+      this.player.connect(this.gainNode)
+    }
+
+    const backingTrackPress = this.backingTrackSelector.checkKeyPress(x, y)
+    if (backingTrackPress !== null) {
+      if (this.backingTrackPlaying) {
+        this.backingTrackSource!.stop()
+      }
+
+      if (this.backingTrackPlaying == this.backingTrackSelector.selected) {
+        this.backingTrackSelector.selected = null
+        this.backingTrackPlaying = null
+        return
+      }
+
+      const buffer = await fetch(`${this.backingTrackSelector.selected}.mp3`)
+        .then((res) => res.arrayBuffer())
+        .then((ArrayBuffer) => this.ac.decodeAudioData(ArrayBuffer))
+
+      this.backingTrackSource!.buffer = buffer
+      this.backingTrackSource!.start()
+      this.backingTrackPlaying = this.backingTrackSelector.selected
+    }
+
+    const muteKeyPress = this.muteButton.checkMuteBtnPress(x, y)
+    if (muteKeyPress !== null) {
+      if (muteKeyPress) {
+        this.gainNode.gain.setValueAtTime(-1.0, this.ac.currentTime)
+      } else {
+        this.gainNode.gain.setValueAtTime(0.5, this.ac.currentTime)
+      }
     }
   }
 
@@ -383,10 +453,13 @@ export default class DemoCanvas implements P5Canvas {
     return parseInt(bits.join(''), 2)
   }
 
-  rightHandActive(hand: Landmark[]) {
-    // return hand[4].x < hand[3].x (for thumb)
-    // TODO: Add calibration thresholds to context and use it wherever needed!
-    const threshold = 0.1
-    return hand[8].y > hand[6].y - threshold
+  rightHandActive(hand: Landmark[], context: ControlPanelContextType) {
+    if (context.thumbTriggerMode) {
+      return hand[4].x < hand[3].x
+    }
+
+    const detectionPercentage = 0.3
+    const height = hand[5].y - hand[0].y
+    return hand[8].y > hand[6].y + height * detectionPercentage
   }
 }
