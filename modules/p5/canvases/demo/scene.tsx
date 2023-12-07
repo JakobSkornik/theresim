@@ -2,7 +2,7 @@ import p5Types from 'p5'
 import { HandsController } from '../../../mediapipe'
 import { Key, Scale } from 'tonal'
 import { Landmark } from '@mediapipe/hands'
-import { Player } from 'soundfont-player'
+import { instrument, InstrumentName, Player } from 'soundfont-player'
 
 import BackingTrackSelector from '../../components/BackingTrackSelector'
 import FPSCounter from '../../components/FPSCounter'
@@ -15,11 +15,9 @@ import MuteButton from '../../components/MuteButton'
 import NoHandsWarning from '../../components/NoHandsWarning'
 import P5Canvas from '../../components/P5Canvas'
 import Padboard from '../../components/Padboard'
-import { gray, hexToRgb, rightColor } from '../../../const'
-import { ControlPanelContextType, KeyLocation } from '../../../../types'
 import { BoxParams } from '../../components/Box'
-
-var Soundfont = require('soundfont-player')
+import { ControlPanelContextType, KeyLocation } from '../../../../types'
+import { gray, hexToRgb, rightColor } from '../../../const'
 
 export type Controls = {
   leftVisible: boolean
@@ -33,6 +31,7 @@ export type Controls = {
 export default class DemoCanvas implements P5Canvas {
   major: boolean = true
   mute: boolean = false
+
   referenceOctave: number = 3
   selectedRoot: string = 'C'
   notes: string[] = [
@@ -41,7 +40,9 @@ export default class DemoCanvas implements P5Canvas {
     ...Scale.get(`C${this.referenceOctave + 2} major`).notes,
   ]
   chords: string[] = this.getChords(`C`)
-  chordOctave: number = 3
+
+  w: number
+  h: number
   canvas!: BoxParams
   fpsCounter!: FPSCounter
   rightHand!: Hand
@@ -53,15 +54,17 @@ export default class DemoCanvas implements P5Canvas {
   instrumentSelector!: InstrumentSelector
   backingTrackSelector!: BackingTrackSelector
   noHandsWarning!: NoHandsWarning
+
+  keyLocations: KeyLocation[] = []
+  majorButtonLocation: KeyLocation | null = null
+  muteButtonLocation: KeyLocation | null = null
+
   controls: Controls = {
     leftVisible: false,
     leftGesture: 0,
     rightVisible: false,
     rightActive: false,
   }
-  keyLocations: KeyLocation[] = []
-  majorButtonLocation: KeyLocation | null = null
-  muteButtonLocation: KeyLocation | null = null
 
   player!: Player
   ac!: AudioContext
@@ -69,15 +72,13 @@ export default class DemoCanvas implements P5Canvas {
 
   notePlaying: Player | null = null
   notePlayingName: string | null = null
+  notePlayingTime: number | null = null
   backingTrackPlaying: string | null = null
-
-  backingTrackSource: AudioBufferSourceNode | null = null
 
   chordPlaying: Player[] = []
   chordPlayingName: string[] = []
 
-  w: number
-  h: number
+  backingTrackSource: AudioBufferSourceNode | null = null
 
   constructor(w: number, h: number) {
     this.w = w
@@ -140,14 +141,14 @@ export default class DemoCanvas implements P5Canvas {
       x: this.canvas.x + 320,
       y: this.canvas.y + 10,
       w: this.w - 360,
-      h: 150,
+      h: 135,
     })
 
     this.backingTrackSelector = new BackingTrackSelector({
       x: this.canvas.x + 320,
-      y: this.canvas.y + 190,
+      y: this.canvas.y + 180,
       w: this.w - 360,
-      h: 50,
+      h: 65,
     })
 
     this.legend = new HandLegend({
@@ -200,9 +201,9 @@ export default class DemoCanvas implements P5Canvas {
     this.ac = new AudioContext()
     this.gainNode = this.ac.createGain()
 
-    this.player = await Soundfont.instrument(
+    this.player = await instrument(
       this.ac,
-      this.instrumentSelector.selected,
+      this.instrumentSelector.selected as InstrumentName,
       {
         soundfont: 'FluidR3_GM',
       },
@@ -212,11 +213,12 @@ export default class DemoCanvas implements P5Canvas {
     })
 
     this.player.connect(this.gainNode)
-    this.gainNode.gain.setValueAtTime(0.5, this.ac.currentTime)
-    this.gainNode.connect(this.ac.destination)
 
     this.backingTrackSource = this.ac.createBufferSource()
-    this.backingTrackSource.connect(this.ac.destination)
+    this.backingTrackSource.connect(this.gainNode)
+
+    this.gainNode.gain.setValueAtTime(0.5, this.ac.currentTime)
+    this.gainNode.connect(this.ac.destination)
   }
 
   resize(w: number, h: number) {
@@ -235,6 +237,9 @@ export default class DemoCanvas implements P5Canvas {
     const fullNote = this.notes[idx]
 
     if (this.notePlayingName == fullNote) {
+      if (this.noteHasBeenPlayingLongerThanDuration()) {
+        this.startNoteLoop(fullNote)
+      }
       return
     } else if (this.notePlaying == null) {
       this.triggerNotePressed(fullNote)
@@ -330,9 +335,9 @@ export default class DemoCanvas implements P5Canvas {
 
     const instrumentKeyPress = this.instrumentSelector.checkKeyPress(x, y)
     if (instrumentKeyPress !== null) {
-      this.player = await Soundfont.instrument(
+      this.player = await instrument(
         this.ac,
-        this.instrumentSelector.selected,
+        this.instrumentSelector.selected as InstrumentName,
         {
           soundfont: 'FluidR3_GM',
         },
@@ -347,6 +352,7 @@ export default class DemoCanvas implements P5Canvas {
     if (backingTrackPress !== null) {
       if (this.backingTrackPlaying) {
         this.backingTrackSource!.stop()
+        this.backingTrackSource = null
       }
 
       if (this.backingTrackPlaying == this.backingTrackSelector.selected) {
@@ -359,15 +365,18 @@ export default class DemoCanvas implements P5Canvas {
         .then((res) => res.arrayBuffer())
         .then((ArrayBuffer) => this.ac.decodeAudioData(ArrayBuffer))
 
-      this.backingTrackSource!.buffer = buffer
-      this.backingTrackSource!.start()
+      this.backingTrackSource = this.ac.createBufferSource()
+      this.backingTrackSource.buffer = buffer
+      this.backingTrackSource.connect(this.gainNode)
+      this.backingTrackSource.start()
+
       this.backingTrackPlaying = this.backingTrackSelector.selected
     }
 
     const muteKeyPress = this.muteButton.checkMuteBtnPress(x, y)
     if (muteKeyPress !== null) {
       if (muteKeyPress) {
-        this.gainNode.gain.setValueAtTime(-1.0, this.ac.currentTime)
+        this.gainNode.gain.setValueAtTime(-10.0, this.ac.currentTime)
       } else {
         this.gainNode.gain.setValueAtTime(0.5, this.ac.currentTime)
       }
@@ -392,15 +401,16 @@ export default class DemoCanvas implements P5Canvas {
   triggerNotePressed(note: string) {
     this.notePlayingName = note
     this.notePlaying = this.player.play(note, this.ac.currentTime, {
-      adsr: [0.3, 1.0, 0.8, 10.0],
+      adsr: [0.2, 0.5, 0.5, 1.0],
     })
+    this.notePlayingTime = this.ac.currentTime
   }
 
   triggerChordPressed(chordNotes: string[]) {
     for (let i = 0; i < chordNotes.length; i++) {
       this.chordPlaying.push(
         this.player.play(chordNotes[i], this.ac.currentTime, {
-          adsr: [0.3, 1.0, 0.5, 10.0],
+          adsr: [0.2, 0.5, 0.5, 1.0],
           loop: true,
         }),
       )
@@ -412,7 +422,20 @@ export default class DemoCanvas implements P5Canvas {
     if (this.notePlaying != null) {
       this.notePlaying.stop()
       this.notePlayingName = null
+      this.notePlayingTime = null
     }
+  }
+
+  noteHasBeenPlayingLongerThanDuration() {
+    const duration = 2.0
+    return this.ac.currentTime - this.notePlayingTime! > duration
+  }
+
+  startNoteLoop(note: string) {
+    this.notePlaying = this.player.play(note, this.ac.currentTime, {
+      adsr: [0.2, 0.5, 0.5, 1.0],
+    })
+    this.notePlayingTime = this.ac.currentTime
   }
 
   triggerChordRelease() {
