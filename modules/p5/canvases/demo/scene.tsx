@@ -78,11 +78,11 @@ export default class DemoCanvas implements P5Canvas {
   notePlaying: Player | null = null
   notePlayingName: string | null = null
   notePlayingTime: number | null = null
-  backingTrackPlaying: string | null = null
 
   chordPlaying: Player[] = []
   chordPlayingName: string[] = []
 
+  backingTrackPlaying: string | null = null
   backingTrackSource: AudioBufferSourceNode | null = null
 
   constructor(w: number, h: number) {
@@ -107,9 +107,9 @@ export default class DemoCanvas implements P5Canvas {
 
     this.rightHand = new Hand({
       x: this.canvas.x + 300,
-      y: this.canvas.y + 280,
+      y: this.canvas.y + 170,
       w: this.canvas.w - 320,
-      h: this.canvas.h - 290,
+      h: this.canvas.h - 180,
       color: hexToRgb(rightColor),
     })
 
@@ -118,7 +118,7 @@ export default class DemoCanvas implements P5Canvas {
       y: this.canvas.y + 170,
       w: this.canvas.w - 320,
       h: this.canvas.h - 180,
-      numOfKeys: 14,
+      numOfKeys: 15,
     })
 
     this.padboard = new Padboard({
