@@ -144,124 +144,6 @@ export const getNoteName = (idx: number, white: boolean) => {
   return notes[idx]
 }
 
-const calibrateDocs = () => {
-  return (
-    <p>
-      Please provide necessary permissions for the app to be able to use your
-      webcam.
-      <br />
-      <br />
-      Webcam image stream is processed by <i>Mediapipe</i>. <i>Mediapipe</i>{' '}
-      maps hand landmarks to a triple <i>(x, y, z)</i>. Tab <b>Coordinates</b>{' '}
-      provides more information.
-      <br />
-      <br />
-      3D coordinates are mapped to 2D via <i>p5.js</i>.
-      <br />
-      <br />
-      This tab provides panel that renders your hands via webcam. Try it out!
-    </p>
-  )
-}
-
-const coordinatesDocs = () => {
-  return (
-    <p>
-      This tab renders only your left hand.
-      <br />
-      <br />
-      On the right panel live data is fed to a bar chart. Each coordinate is
-      represented by a bar. Coordinates are constrained to interval{' '}
-      <i>[0, 1]</i>. To map them to canvas, one only needs to multiply the
-      number with desired number of pixels.
-      <br />
-      <br />
-      Coordinate <i>z</i> should theoretically move with the distance of your
-      hand from the camera. But observe rather, what happens when you tilt your
-      hand forward or backward.
-    </p>
-  )
-}
-
-const detectionDocs = () => {
-  return (
-    <p>
-      Following the discovery from the previous tab, let's try to implement a
-      simple detection based on a threshold for the <i>z</i> coordinate. Tilting
-      your hands forwards should be detected.
-      <br />
-      <br />
-      When the <i>z</i> is higher than the specified threshold your hands and
-      bars in the chart become colored.
-      <br />
-      <br />
-      The instrument is meant to be played with only your index finger extended,
-      the detection also works best this way.
-    </p>
-  )
-}
-
-const controlDocs = () => {
-  return (
-    <p>
-      This panel shows how <i>Mediapipe</i> information is deconstructed and how
-      each dimension serves its own purpose.
-      <br />
-      <br />
-      The <i>x</i> coordinate will serve to determine the frequency or note that
-      is played.
-      <br />
-      <br />
-      The <i>y</i> coordinate will serve to determine the amplitude or volume of
-      the note or chord played.
-      <br />
-      <br />
-      The <i>z</i> coordinate will serve to determine when to play a note or a
-      chord with the current <i>[x, y]</i> location.
-    </p>
-  )
-}
-
-const keyboardDocs = () => {
-  return (
-    <p>
-      This tab is meant to reinforce my choice of the instrument design.
-      <br />
-      <br />
-      The first obvious detriment to the piano layout is the overlap in <i>
-        x
-      </i>{' '}
-      coordinates. This means that at a single <i>x</i> location two options are
-      available.
-      <br />
-      <br />
-      Secondly, we want to be able to play simple chords with the left hand.
-      Chords are derived from the scale that we choose to use.
-      <br />
-      <br />
-      Try clicking on notes, toggling major/minor scale and chord display. See
-      how shapes of chords change due to piano keyboard layout.
-      <br />
-      <br />
-      Next tab will show the simplified keyboard and it's advantages.
-    </p>
-  )
-}
-
-const instrumentDocs = () => {
-  return (
-    <p>
-      This is the proposed layout for my instrument. Instead of displaying all
-      12 notes, we select a scale. This reduces the number of possible notes and
-      chords to a much more manageable number.
-      <br />
-      <br />
-      Observe how changes to scale do not affect chord shapes and how each
-      possible chord uses the same shape.
-    </p>
-  )
-}
-
 const demoDocs = () => {
   return (
     <p>
@@ -286,18 +168,6 @@ const demoDocs = () => {
 
 export const getInformationText = (route: string) => {
   switch (route) {
-    case '/calibrate':
-      return calibrateDocs()
-    case '/coordinates':
-      return coordinatesDocs()
-    case '/detection':
-      return detectionDocs()
-    case '/control':
-      return controlDocs()
-    case '/keyboard':
-      return keyboardDocs()
-    case '/instrument':
-      return instrumentDocs()
     case '/demo':
       return demoDocs()
     default:
@@ -306,5 +176,45 @@ export const getInformationText = (route: string) => {
           I just display information about each page. Current page is ${route}
         </p>
       )
+  }
+}
+
+export type Chord = {
+  chord: number
+  duration: number
+}
+
+export type BackingTrack = {
+  key: string
+  major: boolean
+  bpm: number
+  chords: Chord[]
+}
+
+export const backingTrackInformation = (track: string) => {
+  switch (track) {
+    case 'comfortably_numb':
+      return {
+        key: 'B',
+        major: false,
+        bpm: 64,
+        chords: [
+          {
+            chord: 1,
+            duration: 4,
+          } as Chord,
+        ],
+      } as BackingTrack
+    case 'shine_on':
+      return {
+        key: 'G',
+        major: false,
+        bpm: 60,
+        chords: [
+          {
+            chord: 1,
+          } as Chord,
+        ],
+      } as BackingTrack
   }
 }

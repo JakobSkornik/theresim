@@ -10,8 +10,8 @@ export default class BackingTrackSelector {
   w: number
   h: number
 
-  cols: number = 5
-  rows: number = 1
+  cols: number = 2
+  rows: number = 2
   textHeight: number = 20
 
   keyLocations: KeyLocation[] = []
@@ -53,7 +53,7 @@ export default class BackingTrackSelector {
   show(p5: p5Types) {
     p5.noStroke()
     p5.fill(hexToRgb(leftColor))
-    p5.textSize(13)
+    p5.textSize(12)
     const title = 'Backing Tracks'
     p5.text(title, this.x, this.y + 8)
 
@@ -61,7 +61,7 @@ export default class BackingTrackSelector {
     const keyHeight = this.h / this.rows
 
     for (let row = 0; row < this.rows; row++) {
-      const y_offset = row * keyHeight + this.y + this.textHeight
+      const y_offset = row * keyHeight + this.y + this.textHeight - 4
 
       for (let col = 0; col < this.cols; col++) {
         const x_offset = col * keyWidth + this.x
@@ -74,7 +74,7 @@ export default class BackingTrackSelector {
         p5.stroke(BLACK())
         p5.strokeWeight(2)
         p5.fill(color)
-        p5.rect(x_offset, y_offset, keyWidth - 4, keyHeight - 4, 10)
+        p5.rect(x_offset, y_offset, keyWidth - 4, keyHeight - 3, 10)
 
         p5.noStroke()
         p5.fill(hexToRgb(leftColor))

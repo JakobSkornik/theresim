@@ -184,4 +184,9 @@ export default class KeySelector {
     }
     return null
   }
+
+  setKey = (key: string, major: boolean) => {
+    this.selectedRoot = key
+    this.major = major
+  }
 }

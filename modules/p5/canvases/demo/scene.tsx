@@ -17,7 +17,12 @@ import P5Canvas from '../../components/P5Canvas'
 import Padboard from '../../components/Padboard'
 import { BoxParams } from '../../components/Box'
 import { ControlPanelContextType, KeyLocation } from '../../../../types'
-import { gray, hexToRgb, rightColor } from '../../../const'
+import {
+  backingTrackInformation,
+  gray,
+  hexToRgb,
+  rightColor,
+} from '../../../const'
 
 export type Controls = {
   leftVisible: boolean
@@ -97,7 +102,7 @@ export default class DemoCanvas implements P5Canvas {
 
     this.fpsCounter = new FPSCounter({
       x: this.w - 105,
-      y: this.h - 70,
+      y: this.canvas.y + 120,
     })
 
     this.rightHand = new Hand({
@@ -110,22 +115,22 @@ export default class DemoCanvas implements P5Canvas {
 
     this.keyboard = new Keyboard({
       x: this.canvas.x + 300,
-      y: this.canvas.y + 280,
+      y: this.canvas.y + 170,
       w: this.canvas.w - 320,
-      h: this.canvas.h - 290,
+      h: this.canvas.h - 180,
       numOfKeys: 14,
     })
 
     this.padboard = new Padboard({
       x: this.canvas.x + 10,
-      y: this.canvas.y + 280,
+      y: this.canvas.y + 170,
       w: 250,
-      h: this.canvas.h - 290,
+      h: this.canvas.h - 180,
     })
 
     this.muteButton = new MuteButton({
-      x: this.canvas.x + 10,
-      y: this.canvas.y + 170,
+      x: this.canvas.x + 320,
+      y: this.canvas.y + 120,
       w: 300,
       h: 40,
     })
@@ -140,15 +145,15 @@ export default class DemoCanvas implements P5Canvas {
     this.instrumentSelector = new InstrumentSelector({
       x: this.canvas.x + 320,
       y: this.canvas.y + 10,
-      w: this.w - 360,
-      h: 135,
+      w: this.w - 660,
+      h: 90,
     })
 
     this.backingTrackSelector = new BackingTrackSelector({
-      x: this.canvas.x + 320,
-      y: this.canvas.y + 180,
-      w: this.w - 360,
-      h: 65,
+      x: this.canvas.w - 285,
+      y: this.canvas.y + 10,
+      w: 300,
+      h: 90,
     })
 
     this.legend = new HandLegend({
@@ -250,6 +255,10 @@ export default class DemoCanvas implements P5Canvas {
   }
 
   playLefthandChord() {
+    if (this.backingTrackPlaying) {
+      return
+    }
+
     if (this.padboard.activeChord < 0) {
       this.triggerChordRelease()
       return
@@ -348,35 +357,65 @@ export default class DemoCanvas implements P5Canvas {
       this.player.connect(this.gainNode)
     }
 
-    const backingTrackPress = this.backingTrackSelector.checkKeyPress(x, y)
-    if (backingTrackPress !== null) {
-      if (this.backingTrackPlaying) {
-        this.backingTrackSource!.stop()
-        this.backingTrackSource = null
+    if (!this.mute) {
+      const backingTrackPress = this.backingTrackSelector.checkKeyPress(x, y)
+      if (backingTrackPress !== null) {
+        if (this.backingTrackPlaying) {
+          this.backingTrackSource!.stop()
+          this.backingTrackSource = null
+        }
+
+        if (this.backingTrackPlaying == this.backingTrackSelector.selected) {
+          this.backingTrackSelector.selected = null
+          this.backingTrackPlaying = null
+          return
+        }
+
+        const backingTrack = backingTrackInformation(
+          this.backingTrackSelector.selected!,
+        )
+        this.selectedRoot = backingTrack!.key
+        this.keySelector.setKey(backingTrack!.key, backingTrack!.major)
+        this.major = backingTrack!.major
+
+        const mode = this.major ? 'major' : 'minor'
+        this.notes = [
+          ...Scale.get(`${this.selectedRoot}${this.referenceOctave} ${mode}`)
+            .notes,
+          ...Scale.get(
+            `${this.selectedRoot}${this.referenceOctave + 1} ${mode}`,
+          ).notes,
+          ...Scale.get(
+            `${this.selectedRoot}${this.referenceOctave + 2} ${mode}`,
+          ).notes,
+        ]
+        this.chords = this.getChords(this.selectedRoot)
+
+        const buffer = await fetch(`${this.backingTrackSelector.selected}.mp3`)
+          .then((res) => res.arrayBuffer())
+          .then((ArrayBuffer) => this.ac.decodeAudioData(ArrayBuffer))
+
+        this.backingTrackSource = this.ac.createBufferSource()
+        this.backingTrackSource.buffer = buffer
+        this.backingTrackSource.connect(this.gainNode)
+        this.backingTrackSource.start()
+
+        this.backingTrackPlaying = this.backingTrackSelector.selected
       }
-
-      if (this.backingTrackPlaying == this.backingTrackSelector.selected) {
-        this.backingTrackSelector.selected = null
-        this.backingTrackPlaying = null
-        return
-      }
-
-      const buffer = await fetch(`${this.backingTrackSelector.selected}.mp3`)
-        .then((res) => res.arrayBuffer())
-        .then((ArrayBuffer) => this.ac.decodeAudioData(ArrayBuffer))
-
-      this.backingTrackSource = this.ac.createBufferSource()
-      this.backingTrackSource.buffer = buffer
-      this.backingTrackSource.connect(this.gainNode)
-      this.backingTrackSource.start()
-
-      this.backingTrackPlaying = this.backingTrackSelector.selected
     }
 
     const muteKeyPress = this.muteButton.checkMuteBtnPress(x, y)
     if (muteKeyPress !== null) {
+      this.mute = muteKeyPress
       if (muteKeyPress) {
-        this.gainNode.gain.setValueAtTime(-10.0, this.ac.currentTime)
+        this.gainNode.gain.setValueAtTime(-1.0, this.ac.currentTime)
+
+        if (this.backingTrackPlaying) {
+          this.backingTrackSource!.stop()
+          this.backingTrackSource = null
+          this.backingTrackPlaying = null
+          this.backingTrackSelector.selected = null
+        }
       } else {
         this.gainNode.gain.setValueAtTime(0.5, this.ac.currentTime)
       }

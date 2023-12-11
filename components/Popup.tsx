@@ -38,6 +38,8 @@ const sx = {
   },
   titleText: {
     marginLeft: '10px',
+    marginTop: '0',
+
   },
   text: {
     fontSize: '18px',
