@@ -4,7 +4,7 @@ import { ControlPanelContextType, ControlPanelProps } from '../types'
 export const ControlPanelContext = createContext<ControlPanelContextType>({
     playback: true,
     togglePlayback: () => {},
-    thumbTriggerMode: false,
+    thumbTriggerMode: true,
     toggleThumbTriggerMode: () => {},
     fullHandMode: true,
     toggleFullHandMode: () => {},
