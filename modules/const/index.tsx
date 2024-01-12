@@ -184,10 +184,23 @@ export type Chord = {
   duration: number
 }
 
+export type Note = {
+  note: number
+  duration: number
+}
+
+export type SimpleSong = {
+  key: string
+  major: boolean
+  bpm: number
+  notes: Note[]
+}
+
 export type BackingTrack = {
   key: string
   major: boolean
   bpm: number
+  initialDelay: number
   chords: Chord[]
 }
 
@@ -198,9 +211,26 @@ export const backingTrackInformation = (track: string) => {
         key: 'B',
         major: false,
         bpm: 64,
+        initialDelay: 2,
         chords: [
           {
-            chord: 1,
+            chord: 0,
+            duration: 4,
+          } as Chord,
+          {
+            chord: 5,
+            duration: 4,
+          } as Chord,
+          {
+            chord: 4,
+            duration: 2,
+          } as Chord,
+          {
+            chord: 2,
+            duration: 2,
+          } as Chord,
+          {
+            chord: 0,
             duration: 4,
           } as Chord,
         ],
@@ -209,12 +239,99 @@ export const backingTrackInformation = (track: string) => {
       return {
         key: 'G',
         major: false,
-        bpm: 60,
+        bpm: 80,
+        initialDelay: 0,
         chords: [
           {
-            chord: 1,
+            chord: 0,
+            duration: 16,
+          } as Chord,
+          {
+            chord: 3,
+            duration: 16,
+          } as Chord,
+          {
+            chord: 2,
+            duration: 16,
+          } as Chord,
+          {
+            chord: 0,
+            duration: 16,
           } as Chord,
         ],
       } as BackingTrack
+  }
+}
+
+export const simpleSongInformation = (track: string) => {
+  switch (track) {
+    case 'kuža_pazi':
+      return {
+        key: 'C',
+        major: true,
+        bpm: 60,
+        notes: [
+          {
+            note: 0,
+            duration: 1,
+          } as Note,
+          {
+            note: 0,
+            duration: 1,
+          } as Note,
+          {
+            note: 0,
+            duration: 1,
+          } as Note,
+          {
+            note: 0,
+            duration: 1,
+          } as Note,
+          {
+            note: 1,
+            duration: 1,
+          } as Note,
+          {
+            note: 1,
+            duration: 1,
+          } as Note,
+          {
+            note: 1,
+            duration: 1,
+          } as Note,
+          {
+            note: 1,
+            duration: 1,
+          } as Note,
+          {
+            note: 2,
+            duration: 1,
+          } as Note,
+          {
+            note: 2,
+            duration: 1,
+          } as Note,
+          {
+            note: 1,
+            duration: 1,
+          } as Note,
+          {
+            note: 1,
+            duration: 1,
+          } as Note,
+          {
+            note: 0,
+            duration: 1,
+          } as Note,
+          {
+            note: 0,
+            duration: 1,
+          } as Note,
+          {
+            note: 0,
+            duration: 2,
+          } as Note,
+        ],
+      } as SimpleSong
   }
 }

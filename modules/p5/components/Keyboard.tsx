@@ -1,7 +1,7 @@
 import p5Types from 'p5'
 import { KeyLocation } from '../../../types'
 import { BLACK, hexToRgb, leftColor, rightColor, shadow } from '../../const'
-import { Controls } from '../canvases/demo/scene'
+import { Controls } from '../../../types'
 import { BoxParams } from './Box'
 
 export type KeyboardParams = BoxParams & {
@@ -39,7 +39,7 @@ export default class Keyboard {
     }
   }
 
-  show(p5: p5Types, notes: string[]) {
+  show(p5: p5Types, notes: string[], activeNote: number) {
     for (let i = 0; i < this.numOfKeys; i++) {
       const x_offset = i * this.keyWidth + this.x
       const tlBorder = i == 0 ? 10 : 0
@@ -62,7 +62,7 @@ export default class Keyboard {
       if (this.activeChord.includes(i)) {
         color = leftColor
       }
-      if (this.activeNote == i) {
+      if (activeNote == i) {
         color = rightColor
       }
 
@@ -95,7 +95,7 @@ export default class Keyboard {
     controls: Controls,
     activeChord: number,
     major: boolean,
-  ) {
+  ): number {
     if (controls.rightActive) {
       const x = this.x + controls.rightX! * this.w
       const y = this.y + controls.rightY! * this.h
@@ -116,7 +116,7 @@ export default class Keyboard {
     }
 
     if (activeChord >= 0) {
-      let offsets = [0, 2, 4, 7, 9, 11, 14, 16, 18]
+      let offsets = [0, 2, 4, 7, 9, 11, 14]
       let chordNotes = []
 
       let offset = 0
@@ -125,11 +125,12 @@ export default class Keyboard {
       }
 
       for (let i = 0; i < offsets.length; i++) {
-        chordNotes.push((offsets[i] + activeChord + offset) % this.numOfKeys)
+        chordNotes.push((offsets[i] + activeChord + offset) % (this.numOfKeys + 1))
       }
       this.activeChord = chordNotes
     } else {
       this.activeChord = []
     }
+    return this.activeNote
   }
 }

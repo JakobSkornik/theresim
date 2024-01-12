@@ -1,39 +1,38 @@
 import p5Types from 'p5'
 import { HandsController } from '../../../mediapipe'
 import { Key, Scale } from 'tonal'
-import { Landmark } from '@mediapipe/hands'
-import { instrument, InstrumentName, Player } from 'soundfont-player'
 
 import BackingTrackSelector from '../../components/BackingTrackSelector'
 import FPSCounter from '../../components/FPSCounter'
 import Hand from '../../components/Hand'
+import HandDetector from '../../../../components/HandDetector'
 import HandLegend from '../../components/HandLegend'
 import InstrumentSelector from '../../components/InstrumentSelector'
 import Keyboard from '../../components/Keyboard'
 import KeySelector from '../../components/KeySelector'
+import MusicPlayer from '../../../../components/MusicPlayer'
 import MuteButton from '../../components/MuteButton'
 import NoHandsWarning from '../../components/NoHandsWarning'
 import P5Canvas from '../../components/P5Canvas'
 import Padboard from '../../components/Padboard'
+import SongSelector from '../../components/SongSelector'
 import { BoxParams } from '../../components/Box'
-import { ControlPanelContextType, KeyLocation } from '../../../../types'
+import {
+  ControlPanelContextType,
+  KeyLocation,
+} from '../../../../types'
 import {
   backingTrackInformation,
   gray,
   hexToRgb,
   rightColor,
+  simpleSongInformation,
 } from '../../../const'
 
-export type Controls = {
-  leftVisible: boolean
-  leftGesture: number
-  rightVisible: boolean
-  rightActive: boolean
-  rightX?: number
-  rightY?: number
-}
-
 export default class DemoCanvas implements P5Canvas {
+  musicPlayer: MusicPlayer = new MusicPlayer()
+  handDetector: HandDetector = new HandDetector()
+
   major: boolean = true
   mute: boolean = false
 
@@ -58,32 +57,15 @@ export default class DemoCanvas implements P5Canvas {
   keySelector!: KeySelector
   instrumentSelector!: InstrumentSelector
   backingTrackSelector!: BackingTrackSelector
+  songSelector!: SongSelector
   noHandsWarning!: NoHandsWarning
 
   keyLocations: KeyLocation[] = []
   majorButtonLocation: KeyLocation | null = null
   muteButtonLocation: KeyLocation | null = null
 
-  controls: Controls = {
-    leftVisible: false,
-    leftGesture: 0,
-    rightVisible: false,
-    rightActive: false,
-  }
-
-  player!: Player
-  ac!: AudioContext
-  gainNode!: GainNode
-
-  notePlaying: Player | null = null
-  notePlayingName: string | null = null
-  notePlayingTime: number | null = null
-
-  chordPlaying: Player[] = []
-  chordPlayingName: string[] = []
-
   backingTrackPlaying: string | null = null
-  backingTrackSource: AudioBufferSourceNode | null = null
+  songPlaying: string | null = null
 
   constructor(w: number, h: number) {
     this.w = w
@@ -156,6 +138,13 @@ export default class DemoCanvas implements P5Canvas {
       h: 90,
     })
 
+    this.songSelector = new SongSelector({
+      x: 540,
+      y: this.canvas.y + 120,
+      w: this.w - 660,
+      h: 30,
+    })
+
     this.legend = new HandLegend({
       x: 25,
       y: this.h - 170,
@@ -179,51 +168,56 @@ export default class DemoCanvas implements P5Canvas {
       return
     }
 
-    this.getControls(hands, context)
-    const activeChord = this.padboard.getActive(this.controls)
-    this.keyboard.getActive(p5, this.controls, activeChord, this.major)
+    this.handDetector.getControls(hands, context)
 
-    this.keyboard.show(p5, this.notes)
-    this.padboard.show(p5, this.chords, assets)
+    let activeChord = -1
+    if (this.backingTrackPlaying) {
+      activeChord = this.musicPlayer.getActiveChord()
+    } else {
+      activeChord = this.handDetector.getActiveChord()
+    }
+
+    let activeNote = -1
+    if (this.songPlaying) {
+      activeNote = this.musicPlayer.getActiveNote()
+    } else {
+      activeNote = this.keyboard.getActive(
+        p5,
+        this.handDetector.controls,
+        activeChord,
+        this.major,
+      )
+    }
+
+    this.keyboard.show(p5, this.notes, activeNote)
+    this.padboard.show(p5, this.chords, activeChord, assets)
     this.rightHand.show(
       p5,
       hands.rightHand,
       context.fullHandMode,
-      this.controls.rightActive ? hexToRgb(rightColor) : hexToRgb(gray),
+      this.handDetector.controls.rightActive
+        ? hexToRgb(rightColor)
+        : hexToRgb(gray),
     )
     this.muteButton.show(p5)
     this.keySelector.show(p5)
     this.backingTrackSelector.show(p5)
+    this.songSelector.show(p5)
     this.instrumentSelector.show(p5)
     this.fpsCounter.show(p5)
     // this.noHandsWarning.show(p5, hands)
 
-    this.playRighthandNote()
-    this.playLefthandChord()
+    this.musicPlayer.playRighthandNote(activeNote, this.notes)
+    if (!this.backingTrackPlaying)
+      this.musicPlayer.playLefthandChord(activeChord, this.notes, this.major)
   }
 
   async setup() {
-    this.ac = new AudioContext()
-    this.gainNode = this.ac.createGain()
-
-    this.player = await instrument(
-      this.ac,
-      this.instrumentSelector.selected as InstrumentName,
-      {
-        soundfont: 'FluidR3_GM',
-      },
-    ).then((player: Player) => {
-      console.log(`Soundfont player initialized.`)
-      return player
-    })
-
-    this.player.connect(this.gainNode)
-
-    this.backingTrackSource = this.ac.createBufferSource()
-    this.backingTrackSource.connect(this.gainNode)
-
-    this.gainNode.gain.setValueAtTime(0.5, this.ac.currentTime)
-    this.gainNode.connect(this.ac.destination)
+    await this.musicPlayer.setup(
+      this.backingTrackSelector,
+      this.songSelector,
+      this.instrumentSelector.selected,
+    )
   }
 
   resize(w: number, h: number) {
@@ -232,192 +226,41 @@ export default class DemoCanvas implements P5Canvas {
     this.placeElements()
   }
 
-  playRighthandNote() {
-    if (this.keyboard.activeNote < 0) {
-      this.triggerNoteRelease()
-      return
-    }
-
-    const idx = this.keyboard.activeNote
-    const fullNote = this.notes[idx]
-
-    if (this.notePlayingName == fullNote) {
-      if (this.noteHasBeenPlayingLongerThanDuration()) {
-        this.startNoteLoop(fullNote)
-      }
-      return
-    } else if (this.notePlaying == null) {
-      this.triggerNotePressed(fullNote)
-    } else {
-      this.triggerNoteRelease()
-      this.triggerNotePressed(fullNote)
-    }
-  }
-
-  playLefthandChord() {
-    if (this.backingTrackPlaying) {
-      return
-    }
-
-    if (this.padboard.activeChord < 0) {
-      this.triggerChordRelease()
-      return
-    }
-
-    const idx = this.padboard.activeChord
-    const chordNotes = [
-      this.notes[idx % 7],
-      this.notes[(idx + 2) % 7],
-      this.notes[(idx + 4) % 7],
-    ]
-
-    if (this.chordPlayingName[0] == chordNotes[0]) {
-      return
-    }
-
-    if (this.chordPlaying.length) {
-      this.triggerChordRelease()
-    }
-
-    this.triggerChordPressed(chordNotes)
-  }
-
-  getControls(hands: HandsController, context: ControlPanelContextType) {
-    if (!hands) {
-      return
-    }
-
-    if (hands && hands.leftHand.length) {
-      this.controls.leftVisible = true
-      this.controls.leftGesture = this.leftHandGesture(hands.leftHand)
-    } else {
-      this.controls.leftVisible = false
-    }
-
-    if (hands.rightHand.length) {
-      this.controls.rightVisible = true
-      this.controls.rightX = hands.rightHand[8].x
-      this.controls.rightY = hands.rightHand[8].y
-      this.controls.rightActive = this.rightHandActive(hands.rightHand, context)
-    } else {
-      this.controls.rightVisible = false
-      this.controls.rightActive = false
-    }
-  }
-
   async onClick(p5: p5Types) {
     const x = p5.mouseX
     const y = p5.mouseY
 
     const majorBtnPress = this.keySelector.checkMajorBtnPress(x, y)
     if (majorBtnPress !== null) {
-      this.major = majorBtnPress
-      const mode = this.major ? 'major' : 'minor'
-      this.notes = [
-        ...Scale.get(`${this.selectedRoot}${this.referenceOctave} ${mode}`)
-          .notes,
-        ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 1} ${mode}`)
-          .notes,
-        ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 2} ${mode}`)
-          .notes,
-      ]
-      this.chords = this.getChords(this.selectedRoot)
-      return
-    }
-
-    const pianoKeyPress = this.keySelector.checkPianoKeyPress(x, y)
-    if (pianoKeyPress !== null) {
-      this.selectedRoot = pianoKeyPress
-      const mode = this.major ? 'major' : 'minor'
-      this.notes = [
-        ...Scale.get(`${this.selectedRoot}${this.referenceOctave} ${mode}`)
-          .notes,
-        ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 1} ${mode}`)
-          .notes,
-        ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 2} ${mode}`)
-          .notes,
-      ]
-
-      this.chords = this.getChords(this.selectedRoot)
-      return
-    }
-
-    const instrumentKeyPress = this.instrumentSelector.checkKeyPress(x, y)
-    if (instrumentKeyPress !== null) {
-      this.player = await instrument(
-        this.ac,
-        this.instrumentSelector.selected as InstrumentName,
-        {
-          soundfont: 'FluidR3_GM',
-        },
-      ).then((player: Player) => {
-        console.log(`Soundfont player initialized.`)
-        return player
-      })
-      this.player.connect(this.gainNode)
-    }
-
-    if (!this.mute) {
-      const backingTrackPress = this.backingTrackSelector.checkKeyPress(x, y)
-      if (backingTrackPress !== null) {
-        if (this.backingTrackPlaying) {
-          this.backingTrackSource!.stop()
-          this.backingTrackSource = null
-        }
-
-        if (this.backingTrackPlaying == this.backingTrackSelector.selected) {
-          this.backingTrackSelector.selected = null
-          this.backingTrackPlaying = null
-          return
-        }
-
-        const backingTrack = backingTrackInformation(
-          this.backingTrackSelector.selected!,
-        )
-        this.selectedRoot = backingTrack!.key
-        this.keySelector.setKey(backingTrack!.key, backingTrack!.major)
-        this.major = backingTrack!.major
-
-        const mode = this.major ? 'major' : 'minor'
-        this.notes = [
-          ...Scale.get(`${this.selectedRoot}${this.referenceOctave} ${mode}`)
-            .notes,
-          ...Scale.get(
-            `${this.selectedRoot}${this.referenceOctave + 1} ${mode}`,
-          ).notes,
-          ...Scale.get(
-            `${this.selectedRoot}${this.referenceOctave + 2} ${mode}`,
-          ).notes,
-        ]
-        this.chords = this.getChords(this.selectedRoot)
-
-        const buffer = await fetch(`${this.backingTrackSelector.selected}.mp3`)
-          .then((res) => res.arrayBuffer())
-          .then((ArrayBuffer) => this.ac.decodeAudioData(ArrayBuffer))
-
-        this.backingTrackSource = this.ac.createBufferSource()
-        this.backingTrackSource.buffer = buffer
-        this.backingTrackSource.connect(this.gainNode)
-        this.backingTrackSource.start()
-
-        this.backingTrackPlaying = this.backingTrackSelector.selected
-      }
+      return this.processMajorBtnPress(majorBtnPress)
     }
 
     const muteKeyPress = this.muteButton.checkMuteBtnPress(x, y)
     if (muteKeyPress !== null) {
-      this.mute = muteKeyPress
-      if (muteKeyPress) {
-        this.gainNode.gain.setValueAtTime(-1.0, this.ac.currentTime)
+      return this.processMuteBtnPress(muteKeyPress)
+    }
 
-        if (this.backingTrackPlaying) {
-          this.backingTrackSource!.stop()
-          this.backingTrackSource = null
-          this.backingTrackPlaying = null
-          this.backingTrackSelector.selected = null
-        }
-      } else {
-        this.gainNode.gain.setValueAtTime(0.5, this.ac.currentTime)
+    const pianoKeyPress = this.keySelector.checkPianoKeyPress(x, y)
+    if (pianoKeyPress !== null) {
+      return this.processPianoBtnPress(pianoKeyPress)
+    }
+
+    const instrumentKeyPress = this.instrumentSelector.checkKeyPress(x, y)
+    if (instrumentKeyPress !== null) {
+      await this.musicPlayer.setInstrument(instrumentKeyPress)
+    }
+
+    if (!this.mute && !this.songPlaying) {
+      const backingTrackPress = this.backingTrackSelector.checkKeyPress(x, y)
+      if (backingTrackPress !== null) {
+        return await this.processBackingTrackBtnPress()
+      }
+    }
+
+    if (!this.mute && !this.backingTrackPlaying) {
+      const songPress = this.songSelector.checkKeyPress(x, y)
+      if (songPress !== null) {
+        return await this.processSongBtnPress()
       }
     }
   }
@@ -425,103 +268,120 @@ export default class DemoCanvas implements P5Canvas {
   getChords(scaleName: string) {
     let chords
     if (this.major) {
-      chords = [...Key.majorKey(scaleName).chords]
+      chords = [...Key.majorKey(scaleName).triads]
     } else {
-      chords = [...Key.minorKey(scaleName).natural.chords]
+      chords = [...Key.minorKey(scaleName).natural.triads]
       chords.splice(1, 1)
-    }
-
-    for (let i = 0; i < 6; i++) {
-      chords[i] = chords[i].slice(0, -1)
     }
     return chords
   }
 
-  triggerNotePressed(note: string) {
-    this.notePlayingName = note
-    this.notePlaying = this.player.play(note, this.ac.currentTime, {
-      adsr: [0.2, 0.5, 0.5, 1.0],
-    })
-    this.notePlayingTime = this.ac.currentTime
+  processMajorBtnPress(target: boolean) {
+    this.major = target
+    const mode = this.major ? 'major' : 'minor'
+    this.notes = [
+      ...Scale.get(`${this.selectedRoot}${this.referenceOctave} ${mode}`).notes,
+      ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 1} ${mode}`)
+        .notes,
+      ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 2} ${mode}`)
+        .notes,
+    ]
+    this.chords = this.getChords(this.selectedRoot)
+    return
   }
 
-  triggerChordPressed(chordNotes: string[]) {
-    for (let i = 0; i < chordNotes.length; i++) {
-      this.chordPlaying.push(
-        this.player.play(chordNotes[i], this.ac.currentTime, {
-          adsr: [0.2, 0.5, 0.5, 1.0],
-          loop: true,
-        }),
-      )
-    }
-    this.chordPlayingName = chordNotes
-  }
+  processMuteBtnPress(target: boolean) {
+    this.mute = target
+    if (target) {
+      this.musicPlayer.mute()
 
-  triggerNoteRelease() {
-    if (this.notePlaying != null) {
-      this.notePlaying.stop()
-      this.notePlayingName = null
-      this.notePlayingTime = null
-    }
-  }
-
-  noteHasBeenPlayingLongerThanDuration() {
-    const duration = 2.0
-    return this.ac.currentTime - this.notePlayingTime! > duration
-  }
-
-  startNoteLoop(note: string) {
-    this.notePlaying = this.player.play(note, this.ac.currentTime, {
-      adsr: [0.2, 0.5, 0.5, 1.0],
-    })
-    this.notePlayingTime = this.ac.currentTime
-  }
-
-  triggerChordRelease() {
-    if (this.chordPlaying.length) {
-      for (let i = 0; i < this.chordPlaying.length; i++) {
-        if (this.chordPlaying[i]) {
-          this.chordPlaying[i].stop()
-        }
+      if (this.backingTrackPlaying) {
+        this.musicPlayer.stopBackingTrack()
+        this.backingTrackPlaying = null
+        this.backingTrackSelector.selected = null
       }
+    } else {
+      this.musicPlayer.unmute()
     }
-    this.chordPlaying = []
-    this.chordPlayingName = []
   }
 
-  leftHandGesture(hand: Landmark[]) {
-    let bits = ['0', '0', '0', '0', '0']
+  processPianoBtnPress(target: string) {
+    this.selectedRoot = target
+    const mode = this.major ? 'major' : 'minor'
+    this.notes = [
+      ...Scale.get(`${this.selectedRoot}${this.referenceOctave} ${mode}`).notes,
+      ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 1} ${mode}`)
+        .notes,
+      ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 2} ${mode}`)
+        .notes,
+    ]
 
-    if (hand[4].x > hand[3].x) {
-      bits[4] = '1'
-    }
-
-    if (hand[8].y < hand[6].y) {
-      bits[3] = '1'
-    }
-
-    if (hand[12].y < hand[10].y) {
-      bits[2] = '1'
-    }
-
-    if (hand[16].y < hand[14].y) {
-      bits[1] = '1'
-    }
-
-    if (hand[20].y < hand[18].y) {
-      bits[0] = '1'
-    }
-
-    return parseInt(bits.join(''), 2)
+    this.chords = this.getChords(this.selectedRoot)
+    return
   }
 
-  rightHandActive(hand: Landmark[], context: ControlPanelContextType) {
-    if (context.thumbTriggerMode) {
-      return hand[4].x < hand[3].x
+  async processBackingTrackBtnPress() {
+    if (this.backingTrackPlaying) {
+      this.musicPlayer.stopBackingTrack()
     }
 
-    const detectionPercentage = 0.3
-    const height = hand[5].y - hand[0].y
-    return hand[8].y > hand[6].y + height * detectionPercentage
+    if (this.backingTrackPlaying == this.backingTrackSelector.selected) {
+      this.backingTrackSelector.selected = null
+      this.backingTrackPlaying = null
+      return
+    }
+
+    const backingTrack = backingTrackInformation(
+      this.backingTrackSelector.selected!,
+    )
+    this.selectedRoot = backingTrack!.key
+    this.keySelector.setKey(backingTrack!.key, backingTrack!.major)
+    this.major = backingTrack!.major
+
+    const mode = this.major ? 'major' : 'minor'
+    this.notes = [
+      ...Scale.get(`${this.selectedRoot}${this.referenceOctave} ${mode}`).notes,
+      ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 1} ${mode}`)
+        .notes,
+      ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 2} ${mode}`)
+        .notes,
+    ]
+    this.chords = this.getChords(this.selectedRoot)
+
+    await this.musicPlayer.playBackingTrack(
+      this.backingTrackSelector.selected!,
+      backingTrack!,
+    )
+    this.backingTrackPlaying = this.backingTrackSelector.selected
+  }
+
+  async processSongBtnPress() {
+    if (this.songPlaying) {
+      this.musicPlayer.stopSong()
+    }
+
+    if (this.songPlaying == this.songSelector.selected) {
+      this.songSelector.selected = null
+      this.songPlaying = null
+      return
+    }
+
+    const song = simpleSongInformation(this.songSelector.selected!)
+    this.selectedRoot = song!.key
+    this.keySelector.setKey(song!.key, song!.major)
+    this.major = song!.major
+
+    const mode = this.major ? 'major' : 'minor'
+    this.notes = [
+      ...Scale.get(`${this.selectedRoot}${this.referenceOctave} ${mode}`).notes,
+      ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 1} ${mode}`)
+        .notes,
+      ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 2} ${mode}`)
+        .notes,
+    ]
+    this.chords = this.getChords(this.selectedRoot)
+
+    this.musicPlayer.playSong(song!)
+    this.songPlaying = this.songSelector.selected
   }
 }

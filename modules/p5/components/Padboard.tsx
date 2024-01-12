@@ -1,25 +1,14 @@
 import p5Types from 'p5'
 import { KeyLocation } from '../../../types'
 import { BLACK, hexToRgb, leftColor, shadow } from '../../const'
-import { Controls } from '../canvases/demo/scene'
 
 import { BoxParams } from './Box'
-
-const chords: { [code: number]: number } = {
-  1: 0,
-  2: 1,
-  3: 2,
-  6: 3,
-  30: 4,
-  31: 5,
-}
 
 export default class Padboard {
   x: number
   y: number
   w: number
   h: number
-  activeChord: number = -1
   numOfKeys: number = 6
   keyHeight: number
   keyLocations: KeyLocation[] = []
@@ -43,7 +32,12 @@ export default class Padboard {
     }
   }
 
-  show(p5: p5Types, chords: string[], assets: p5Types.Image[]) {
+  show(
+    p5: p5Types,
+    chords: string[],
+    activeChord: number,
+    assets: p5Types.Image[],
+  ) {
     for (let i = 0; i < this.numOfKeys; i++) {
       const y_offset = i * this.keyHeight + this.y
       const tBorder = i == 0 ? 10 : 0
@@ -63,7 +57,7 @@ export default class Padboard {
       )
 
       let color = '#FFFFFF'
-      if (this.activeChord == i) {
+      if (activeChord == i) {
         color = leftColor
       }
       p5.stroke(BLACK())
@@ -93,17 +87,8 @@ export default class Padboard {
         this.x,
         y_offset,
         this.keyHeight * 0.8,
-        this.keyHeight * 0.8
+        this.keyHeight * 0.8,
       )
     }
-  }
-
-  getActive(controls: Controls) {
-    if (controls.leftVisible) {
-      this.activeChord = chords[controls.leftGesture]
-    } else {
-      this.activeChord = -1
-    }
-    return this.activeChord
   }
 }
