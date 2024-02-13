@@ -1,5 +1,4 @@
 import P5Container from '../components/P5Container'
-import { useControlPanelContext } from '../context'
 import Custom404Scene from '../modules/p5/canvases/404/404'
 
 const sx = {

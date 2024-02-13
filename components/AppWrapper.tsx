@@ -5,7 +5,6 @@ import Background from './Background'
 import ControlPanel from './ControlPanel'
 import Loader from './Loader'
 import Message from './Message'
-import Popup from './Popup'
 import { getInformationText } from '../modules/const'
 import { Props } from '../types/Props'
 import { useControlPanelContext } from '../context'
@@ -25,9 +24,8 @@ const sx = {
 }
 
 const AppWrapper = (props: Props) => {
-  const router = useRouter()
   const [msgOpen, setMsg] = useState(true)
-  const { info, toggleInfo, loading } = useControlPanelContext()
+  const { loading } = useControlPanelContext()
 
   const msgText =
     'You can find more information in the control panel. If the instrument is not loading, it is likely that the music library is downloading instruments. Wait for 2 minutes and then refresh.'
@@ -42,10 +40,6 @@ const AppWrapper = (props: Props) => {
     }
   }, [])
 
-  const closeInfo = () => {
-    toggleInfo(false)
-  }
-
   return (
     <div style={sx.appWrapper}>
       <Background />
@@ -53,16 +47,10 @@ const AppWrapper = (props: Props) => {
       <Loader style={{ opacity: loading ? '1' : '0' }} />
       <ControlPanel />
       <Message
-        style={{ opacity: msgOpen && !info ? '1' : '0' }}
+        style={{ opacity: msgOpen ? '1' : '0' }}
         text={msgText}
         icon="arrow.svg"
         iconSize={50}
-      />
-      <Popup
-        style={{ opacity: info ? '1' : '0' }}
-        text={getInformationText(router.route)}
-        icon="close.svg"
-        togglePopup={closeInfo}
       />
     </div>
   )

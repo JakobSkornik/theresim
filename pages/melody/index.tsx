@@ -1,4 +1,4 @@
-import DemoCanvas from '../../modules/p5/canvases/demo/scene'
+import MelodyCanvas from '../../modules/p5/canvases/melody/scene'
 import P5Container from '../../components/P5Container'
 
 import { useControlPanelContext } from '../../context'
@@ -14,7 +14,7 @@ const sx = {
   },
 }
 
-const Demo = () => {
+const Melody = () => {
   const {showUI} = useControlPanelContext()
 
   return showUI && (
@@ -22,10 +22,12 @@ const Demo = () => {
       style={sx.container}
       title={'THERESIM'}
       mediapipe={true}
-      scene={DemoCanvas}
+      playbackOffset={[10, 70]}
+      playbackSize={[50, 160]}
+      scene={MelodyCanvas}
       icon="controller.svg"
     />
   )
 }
 
-export default Demo
+export default Melody

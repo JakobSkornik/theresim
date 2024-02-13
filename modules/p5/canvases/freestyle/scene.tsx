@@ -17,10 +17,7 @@ import P5Canvas from '../../components/P5Canvas'
 import Padboard from '../../components/Padboard'
 import SongSelector from '../../components/SongSelector'
 import { BoxParams } from '../../components/Box'
-import {
-  ControlPanelContextType,
-  KeyLocation,
-} from '../../../../types'
+import { ControlPanelContextType, KeyLocation } from '../../../../types'
 import {
   backingTrackInformation,
   gray,
@@ -29,7 +26,7 @@ import {
   simpleSongInformation,
 } from '../../../const'
 
-export default class DemoCanvas implements P5Canvas {
+export default class FreestyleCanvas implements P5Canvas {
   musicPlayer: MusicPlayer = new MusicPlayer()
   handDetector: HandDetector = new HandDetector()
 
@@ -141,21 +138,9 @@ export default class DemoCanvas implements P5Canvas {
     this.songSelector = new SongSelector({
       x: 540,
       y: this.canvas.y + 120,
-      w: this.w - 660,
-      h: 30,
+      w: 0,
+      h: 0,
     })
-
-    this.legend = new HandLegend({
-      x: 25,
-      y: this.h - 170,
-    })
-
-    // this.noHandsWarning = new NoHandsWarning({
-    //   x: 30,
-    //   y: 30,
-    //   w: this.w - 40,
-    //   h: this.h - 60,
-    // })
   }
 
   show(
@@ -202,10 +187,9 @@ export default class DemoCanvas implements P5Canvas {
     this.muteButton.show(p5)
     this.keySelector.show(p5)
     this.backingTrackSelector.show(p5)
-    this.songSelector.show(p5)
+    // this.songSelector.show(p5)
     this.instrumentSelector.show(p5)
     this.fpsCounter.show(p5)
-    // this.noHandsWarning.show(p5, hands)
 
     this.musicPlayer.playRighthandNote(activeNote, this.notes)
     if (!this.backingTrackPlaying)
@@ -230,38 +214,18 @@ export default class DemoCanvas implements P5Canvas {
     const x = p5.mouseX
     const y = p5.mouseY
 
-    const majorBtnPress = this.keySelector.checkMajorBtnPress(x, y)
-    if (majorBtnPress !== null) {
-      return this.processMajorBtnPress(majorBtnPress)
-    }
+    if (this.processMajorBtnPress(x, y)) return
+    if (this.processMuteBtnPress(x, y)) return
+    if (this.processPianoBtnPress(x, y)) return
 
-    const muteKeyPress = this.muteButton.checkMuteBtnPress(x, y)
-    if (muteKeyPress !== null) {
-      return this.processMuteBtnPress(muteKeyPress)
-    }
-
-    const pianoKeyPress = this.keySelector.checkPianoKeyPress(x, y)
-    if (pianoKeyPress !== null) {
-      return this.processPianoBtnPress(pianoKeyPress)
-    }
-
-    const instrumentKeyPress = this.instrumentSelector.checkKeyPress(x, y)
-    if (instrumentKeyPress !== null) {
-      await this.musicPlayer.setInstrument(instrumentKeyPress)
-    }
+    if (await this.processInstrumentBtnPress(x, y)) return
 
     if (!this.mute && !this.songPlaying) {
-      const backingTrackPress = this.backingTrackSelector.checkKeyPress(x, y)
-      if (backingTrackPress !== null) {
-        return await this.processBackingTrackBtnPress()
-      }
+      if (await this.processBackingTrackBtnPress(x, y)) return
     }
 
     if (!this.mute && !this.backingTrackPlaying) {
-      const songPress = this.songSelector.checkKeyPress(x, y)
-      if (songPress !== null) {
-        return await this.processSongBtnPress()
-      }
+      if (await this.processSongBtnPress(x, y)) return
     }
   }
 
@@ -276,8 +240,11 @@ export default class DemoCanvas implements P5Canvas {
     return chords
   }
 
-  processMajorBtnPress(target: boolean) {
-    this.major = target
+  processMajorBtnPress(x: number, y: number): boolean {
+    const majorBtnPress = this.keySelector.checkMajorBtnPress(x, y)
+    if (majorBtnPress == null) return false
+
+    this.major = majorBtnPress
     const mode = this.major ? 'major' : 'minor'
     this.notes = [
       ...Scale.get(`${this.selectedRoot}${this.referenceOctave} ${mode}`).notes,
@@ -287,12 +254,15 @@ export default class DemoCanvas implements P5Canvas {
         .notes,
     ]
     this.chords = this.getChords(this.selectedRoot)
-    return
+    return true
   }
 
-  processMuteBtnPress(target: boolean) {
-    this.mute = target
-    if (target) {
+  processMuteBtnPress(x: number, y: number): boolean {
+    const muteKeyPress = this.muteButton.checkMuteBtnPress(x, y)
+    if (muteKeyPress == null) return false
+
+    this.mute = muteKeyPress
+    if (this.mute) {
       this.musicPlayer.mute()
 
       if (this.backingTrackPlaying) {
@@ -303,10 +273,14 @@ export default class DemoCanvas implements P5Canvas {
     } else {
       this.musicPlayer.unmute()
     }
+    return true
   }
 
-  processPianoBtnPress(target: string) {
-    this.selectedRoot = target
+  processPianoBtnPress(x: number, y: number): boolean {
+    const pianoKeyPress = this.keySelector.checkPianoKeyPress(x, y)
+    if (!pianoKeyPress) return false
+
+    this.selectedRoot = pianoKeyPress
     const mode = this.major ? 'major' : 'minor'
     this.notes = [
       ...Scale.get(`${this.selectedRoot}${this.referenceOctave} ${mode}`).notes,
@@ -317,10 +291,21 @@ export default class DemoCanvas implements P5Canvas {
     ]
 
     this.chords = this.getChords(this.selectedRoot)
-    return
+    return true
   }
 
-  async processBackingTrackBtnPress() {
+  async processInstrumentBtnPress(x: number, y: number): Promise<boolean> {
+    const instrumentKeyPress = this.instrumentSelector.checkKeyPress(x, y)
+    if (!instrumentKeyPress) return false
+
+    await this.musicPlayer.setInstrument(instrumentKeyPress)
+    return true
+  }
+
+  async processBackingTrackBtnPress(x: number, y: number): Promise<boolean> {
+    const backingTrackPress = this.backingTrackSelector.checkKeyPress(x, y)
+    if (!backingTrackPress) return false
+
     if (this.backingTrackPlaying) {
       this.musicPlayer.stopBackingTrack()
     }
@@ -328,7 +313,7 @@ export default class DemoCanvas implements P5Canvas {
     if (this.backingTrackPlaying == this.backingTrackSelector.selected) {
       this.backingTrackSelector.selected = null
       this.backingTrackPlaying = null
-      return
+      return true
     }
 
     const backingTrack = backingTrackInformation(
@@ -353,9 +338,13 @@ export default class DemoCanvas implements P5Canvas {
       backingTrack!,
     )
     this.backingTrackPlaying = this.backingTrackSelector.selected
+    return true
   }
 
-  async processSongBtnPress() {
+  async processSongBtnPress(x: number, y: number): Promise<boolean> {
+    const songPress = this.songSelector.checkKeyPress(x, y)
+    if (!songPress) return false
+
     if (this.songPlaying) {
       this.musicPlayer.stopSong()
     }
@@ -363,7 +352,7 @@ export default class DemoCanvas implements P5Canvas {
     if (this.songPlaying == this.songSelector.selected) {
       this.songSelector.selected = null
       this.songPlaying = null
-      return
+      return true
     }
 
     const song = simpleSongInformation(this.songSelector.selected!)
@@ -383,5 +372,6 @@ export default class DemoCanvas implements P5Canvas {
 
     this.musicPlayer.playSong(song!)
     this.songPlaying = this.songSelector.selected
+    return true
   }
 }

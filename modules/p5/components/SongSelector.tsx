@@ -17,7 +17,7 @@ export default class SongSelector {
   keyLocations: KeyLocation[] = []
   songs: string[] = [
     'kuža_pazi',
-    'song_2',
+    'twinkle',
     'song_3'
   ]
   selected: string | null = null

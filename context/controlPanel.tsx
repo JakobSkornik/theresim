@@ -10,8 +10,6 @@ export const ControlPanelContext = createContext<ControlPanelContextType>({
     toggleFullHandMode: () => {},
     showUI: false,
     toggleShowUI: () => {},
-    info: false,
-    toggleInfo: () => {},
     loading: true,
     toggleLoading: () => {}
 })

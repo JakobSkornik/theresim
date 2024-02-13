@@ -98,11 +98,11 @@ const P5Container = (props: P5ContainerProps) => {
       ref={parentRef}
       style={{ ...sx.canvasDiv, ...props.style }}
     >
-      <div style={sx.playbackDiv}>
+      <div style={{...sx.playbackDiv, ...{left: props.playbackOffset[0], top: props.playbackOffset[1]}}}>
         {props.mediapipe && (
           <video
-            width={dims.width - 351}
-            height={dims.height - 260}
+            width={dims.width - props.playbackSize[0]}
+            height={dims.height - props.playbackSize[1]}
             style={{
               ...sx.playback,
               ...{

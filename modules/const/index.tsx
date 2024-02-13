@@ -191,6 +191,7 @@ export type Note = {
 
 export type SimpleSong = {
   key: string
+  title: string
   major: boolean
   bpm: number
   notes: Note[]
@@ -268,70 +269,136 @@ export const simpleSongInformation = (track: string) => {
     case 'kuža_pazi':
       return {
         key: 'C',
+        title: 'kuža_pazi',
         major: true,
         bpm: 60,
         notes: [
           {
-            note: 0,
+            note: 7,
             duration: 1,
           } as Note,
           {
-            note: 0,
+            note: 7,
             duration: 1,
           } as Note,
           {
-            note: 0,
+            note: 7,
             duration: 1,
           } as Note,
           {
-            note: 0,
+            note: 7,
             duration: 1,
           } as Note,
           {
-            note: 1,
+            note: 8,
             duration: 1,
           } as Note,
           {
-            note: 1,
+            note: 8,
             duration: 1,
           } as Note,
           {
-            note: 1,
+            note: 8,
             duration: 1,
           } as Note,
           {
-            note: 1,
+            note: 8,
             duration: 1,
           } as Note,
           {
-            note: 2,
+            note: 9,
             duration: 1,
           } as Note,
           {
-            note: 2,
+            note: 9,
             duration: 1,
           } as Note,
           {
-            note: 1,
+            note: 8,
             duration: 1,
           } as Note,
           {
-            note: 1,
+            note: 8,
             duration: 1,
           } as Note,
           {
-            note: 0,
+            note: 7,
             duration: 1,
           } as Note,
           {
-            note: 0,
+            note: 7,
             duration: 1,
           } as Note,
           {
-            note: 0,
+            note: 7,
             duration: 2,
           } as Note,
         ],
       } as SimpleSong
+      case 'twinkle':
+        return {
+          key: 'C',
+          title: 'twinkle',
+          major: true,
+          bpm: 120,
+          notes: [
+            {
+              note: 4,
+              duration: 1,
+            } as Note,
+            {
+              note: 4,
+              duration: 2,
+            } as Note,
+            {
+              note: 8,
+              duration: 1,
+            } as Note,
+            {
+              note: 8,
+              duration: 2,
+            } as Note,
+            {
+              note: 9,
+              duration: 1,
+            } as Note,
+            {
+              note: 9,
+              duration: 2,
+            } as Note,
+            {
+              note: 8,
+              duration: 4,
+            } as Note,
+            {
+              note: 7,
+              duration: 1,
+            } as Note,
+            {
+              note: 7,
+              duration: 2,
+            } as Note,
+            {
+              note: 6,
+              duration: 1,
+            } as Note,
+            {
+              note: 6,
+              duration: 2,
+            } as Note,
+            {
+              note: 5,
+              duration: 1,
+            } as Note,
+            {
+              note: 5,
+              duration: 2,
+            } as Note,
+            {
+              note: 4,
+              duration: 4,
+            } as Note,
+          ],
+        } as SimpleSong
   }
 }

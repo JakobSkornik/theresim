@@ -5,15 +5,18 @@ import type { AppProps } from 'next/app'
 
 import AppWrapper from '../components/AppWrapper'
 import ControlPanelProvider from '../context/controlPanel'
-import { ControlPanelContextType } from '../types'
+import { ControlPanelContextType, TutorialContextType } from '../types'
+import TutorialProvider from '../context/tutorial'
 
 export default function App({ Component, pageProps, router }: AppProps) {
   const [playback, togglePlayback] = useState(true)
-  const [thumb, toggleThumb] = useState(true)
-  const [fullHand, toggleFullHand] = useState(true)
+  const [thumb, toggleThumb] = useState(false)
+  const [fullHand, toggleFullHand] = useState(false)
   const [showUI, toggleShowUI] = useState(true)
   const [info, toggleInfo] = useState(false)
   const [loading, toggleLoading] = useState(true)
+
+  const [tutorialStage, setTutorialStage] = useState(0)
 
   // Disable the alert function for the app
   useEffect(() => {
@@ -28,7 +31,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
     toggleThumb(!thumb)
   }
 
-  const updateFullHand= () => {
+  const updateFullHand = () => {
     toggleFullHand(!fullHand)
   }
 
@@ -71,13 +74,24 @@ export default function App({ Component, pageProps, router }: AppProps) {
     toggleLoading: updateLoading,
   } as ControlPanelContextType
 
+  const setStage = (stage: number) => {
+    setTutorialStage(stage)
+  }
+
+  const tutorialContext = {
+    stage: tutorialStage,
+    setStage: setStage,
+  } as TutorialContextType
+
   return (
     <ControlPanelProvider value={controlPanelContext}>
-      <AppWrapper>
-        <AnimatePresence mode="wait">
-          <Component {...pageProps} key={router.pathname} />
-        </AnimatePresence>
-      </AppWrapper>
+      <TutorialProvider value={tutorialContext}>
+        <AppWrapper>
+          <AnimatePresence mode="wait">
+            <Component {...pageProps} key={router.pathname} />
+          </AnimatePresence>
+        </AppWrapper>
+      </TutorialProvider>
     </ControlPanelProvider>
   )
 }

@@ -90,6 +90,74 @@ export default class Keyboard {
     }
   }
 
+  showMelody(p5: p5Types, notes: string[], activeNote: number, share: number) {
+    for (let i = 0; i < this.numOfKeys; i++) {
+      const x_offset = i * this.keyWidth + this.x
+      const tlBorder = i == 0 ? 10 : 0
+      const trBorder = i == this.numOfKeys - 1 ? 10 : 0
+
+      p5.noStroke()
+      p5.fill([...hexToRgb(shadow), ...[20]])
+      p5.rect(
+        x_offset + 4,
+        this.y + 4,
+        this.keyWidth,
+        this.h,
+        tlBorder,
+        trBorder,
+        10,
+        10,
+      )
+
+      let color = '#FFFFFF'
+      if (this.activeChord.includes(i)) {
+        color = leftColor
+      }
+      if (activeNote == i) {
+        color = rightColor
+      }
+
+      p5.stroke(BLACK())
+      p5.strokeWeight(2)
+      p5.fill([...hexToRgb(color), ...[90]])
+      p5.rect(
+        x_offset,
+        this.y,
+        this.keyWidth,
+        this.h,
+        tlBorder,
+        trBorder,
+        10,
+        10,
+      )
+
+      if (activeNote == i) {
+        const fillHeight = this.h * share
+        const startY = this.y + (this.h - fillHeight)
+        p5.noStroke()
+        p5.fill([...hexToRgb(color), ...[120]])
+        p5.rect(
+          x_offset,
+          startY,
+          this.keyWidth,
+          fillHeight,
+          tlBorder,
+          trBorder,
+          10,
+          10,
+        )
+      }
+
+      p5.noStroke()
+      p5.fill(leftColor)
+      p5.text(
+        notes[i],
+        x_offset + (this.keyWidth - p5.textWidth(notes[i])) / 2,
+        this.y + this.h - 30,
+      )
+    }
+  }
+
   getActive(
     p5: p5Types,
     controls: Controls,
@@ -125,7 +193,9 @@ export default class Keyboard {
       }
 
       for (let i = 0; i < offsets.length; i++) {
-        chordNotes.push((offsets[i] + activeChord + offset) % (this.numOfKeys + 1))
+        chordNotes.push(
+          (offsets[i] + activeChord + offset) % (this.numOfKeys + 1),
+        )
       }
       this.activeChord = chordNotes
     } else {
