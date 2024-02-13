@@ -15,6 +15,8 @@ const Custom404 = () => {
     <P5Container
       style={sx.container}
       title={'404'}
+      playbackOffset={[0,0]}
+      playbackSize={[0,0]}
       mediapipe={false}
       scene={Custom404Scene}
     />
