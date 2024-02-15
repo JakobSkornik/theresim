@@ -52,7 +52,7 @@ export default class SongSelector {
     p5.noStroke()
     p5.fill(hexToRgb(leftColor))
     p5.textSize(12)
-    const title = 'Melody Examples'
+    const title = 'Melodies'
     p5.text(title, this.x, this.y + 8)
 
     const keyWidth = this.w / this.cols

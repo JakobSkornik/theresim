@@ -1,11 +1,6 @@
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-
 import Background from './Background'
 import ControlPanel from './ControlPanel'
 import Loader from './Loader'
-import Message from './Message'
-import { getInformationText } from '../modules/const'
 import { Props } from '../types/Props'
 import { useControlPanelContext } from '../context'
 
@@ -24,21 +19,7 @@ const sx = {
 }
 
 const AppWrapper = (props: Props) => {
-  const [msgOpen, setMsg] = useState(true)
   const { loading } = useControlPanelContext()
-
-  const msgText =
-    'You can find more information in the control panel. If the instrument is not loading, it is likely that the music library is downloading instruments. Wait for 2 minutes and then refresh.'
-
-  useEffect(() => {
-    const timeId = setTimeout(() => {
-      setMsg(false)
-    }, 10000)
-
-    return () => {
-      clearTimeout(timeId)
-    }
-  }, [])
 
   return (
     <div style={sx.appWrapper}>
@@ -46,12 +27,6 @@ const AppWrapper = (props: Props) => {
       {props.children}
       <Loader style={{ opacity: loading ? '1' : '0' }} />
       <ControlPanel />
-      <Message
-        style={{ opacity: msgOpen ? '1' : '0' }}
-        text={msgText}
-        icon="arrow.svg"
-        iconSize={50}
-      />
     </div>
   )
 }

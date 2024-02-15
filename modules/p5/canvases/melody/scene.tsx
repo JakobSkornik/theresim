@@ -11,7 +11,7 @@ import MusicPlayer from '../../../../components/MusicPlayer'
 import P5Canvas from '../../components/P5Canvas'
 import SongSelector from '../../components/SongSelector'
 import { BoxParams } from '../../components/Box'
-import { ControlPanelContextType, KeyLocation } from '../../../../types'
+import { ControlPanelContextType } from '../../../../types'
 import {
   SimpleSong,
   gray,
@@ -68,40 +68,40 @@ export default class MelodyCanvas implements P5Canvas {
 
     this.rightHand = new Hand({
       x: this.canvas.x + 10,
-      y: this.canvas.y + 70,
+      y: this.canvas.y + 100,
       w: this.canvas.w - 20,
-      h: this.canvas.h - 80,
+      h: this.canvas.h - 110,
       color: hexToRgb(rightColor),
     })
 
     this.keyboard = new Keyboard({
       x: this.canvas.x + 10,
-      y: this.canvas.y + 70,
+      y: this.canvas.y + 100,
       w: this.canvas.w - 20,
-      h: this.canvas.h - 80,
+      h: this.canvas.h - 110,
       numOfKeys: 15,
     })
 
     this.instrumentSelector = new InstrumentSelector({
-      x: this.canvas.x + 320,
-      y: this.canvas.y + 10,
-      w: this.w - 660,
-      h: 90,
+      x: 0,
+      y: 0,
+      w: 0,
+      h: 0,
     })
     this.instrumentSelector.selected = this.instrumentSelector.instruments[4]
 
     this.backingTrackSelector = new BackingTrackSelector({
-      x: this.canvas.w - 285,
-      y: this.canvas.y + 10,
-      w: 300,
-      h: 90,
+      x: 0,
+      y: 0,
+      w: 0,
+      h: 0,
     })
 
     this.songSelector = new SongSelector({
       x: this.canvas.x + 10,
       y: this.canvas.y + 10,
       w: this.canvas.w - 20,
-      h: 30,
+      h: 60,
     })
   }
 
@@ -135,7 +135,7 @@ export default class MelodyCanvas implements P5Canvas {
     )
     this.songSelector.show(p5)
 
-    this.musicPlayer.playRighthandNote(handNote, this.notes)
+    this.musicPlayer.playSongNote(this.activeNote, handNote, this.notes)
     this.prevHandNote = handNote
   }
 
@@ -193,7 +193,7 @@ export default class MelodyCanvas implements P5Canvas {
       this.share = 0.0
     }
 
-    if (this.share >= 1.0 && handNote == -1) {
+    if (this.share >= 0.8 && handNote == -1) {
       this.activeNoteIdx++
       this.share = 0.0
       this.currentTime = now
@@ -201,6 +201,8 @@ export default class MelodyCanvas implements P5Canvas {
       if (this.activeNoteIdx >= this.songPlaying.notes.length) {
         this.songSelector.selected = null
         this.songPlaying = undefined
+        this.activeNote = -1
+        this.activeNoteIdx = 0
         return
       }
     }

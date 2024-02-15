@@ -132,10 +132,13 @@ export default class Keyboard {
       )
 
       if (activeNote == i) {
+        if (share > 0.8) {
+          color = shadow
+        }
         const fillHeight = this.h * share
         const startY = this.y + (this.h - fillHeight)
         p5.noStroke()
-        p5.fill([...hexToRgb(color), ...[120]])
+        p5.fill([...hexToRgb(color), ...[255]])
         p5.rect(
           x_offset,
           startY,

@@ -18,6 +18,7 @@ export default class MusicPlayer {
 
   chordPlaying: Player[] = []
   chordPlayingName: string[] = []
+  chordPlayingTime: number | null = null
 
   backingTrackPlaying: string | null = null
   backingTrackSource: AudioBufferSourceNode | null = null
@@ -75,6 +76,27 @@ export default class MusicPlayer {
     }
   }
 
+  playSongNote(activeNote: number, handNote: number, notes: string[]) {
+    if (activeNote < 0 || handNote != activeNote) {
+      this.triggerNoteRelease()
+      return
+    }
+
+    const idx = activeNote
+    const fullNote = notes[idx]
+
+    if (this.notePlayingName == fullNote) {
+      if (this.noteHasBeenPlayingLongerThanDuration()) {
+        this.startNoteLoop(fullNote)
+      }
+    } else if (this.notePlaying == null) {
+      this.triggerNotePressed(fullNote)
+    } else {
+      this.triggerNoteRelease()
+      this.triggerNotePressed(fullNote)
+    }
+  }
+
   playLefthandChord(activeChord: number, notes: string[], majorScale: boolean) {
     if (this.backingTrackPlaying) {
       return
@@ -94,14 +116,15 @@ export default class MusicPlayer {
     ]
 
     if (this.chordPlayingName[0] == chordNotes[0]) {
-      return
-    }
-
-    if (this.chordPlaying.length) {
+      if (this.chordHasBeenPlayingLongerThanDuration()) {
+        this.startChordLoop(chordNotes)
+      }
+    } else if (!this.chordPlaying.length) {
+      this.triggerChordPressed(chordNotes)
+    } else {
       this.triggerChordRelease()
+      this.triggerChordPressed(chordNotes)
     }
-
-    this.triggerChordPressed(chordNotes)
   }
 
   async playBackingTrack(backingTrack: string, backingTrackInfo: BackingTrack) {
@@ -226,7 +249,6 @@ export default class MusicPlayer {
     }
 
     this.activeChord = -1
-
     this.playbackTimeouts.forEach((timeoutId) => clearTimeout(timeoutId))
     this.playbackTimeouts = []
   }
@@ -240,7 +262,7 @@ export default class MusicPlayer {
   triggerNotePressed(note: string) {
     this.notePlayingName = note
     this.notePlaying = this.player.play(note, this.ac.currentTime, {
-      adsr: [0.2, 0.5, 0.5, 1.0],
+      adsr: [0.1, 0.3, 0.8, 0.1],
     })
     this.notePlayingTime = this.ac.currentTime
   }
@@ -249,12 +271,14 @@ export default class MusicPlayer {
     for (let i = 0; i < chordNotes.length; i++) {
       this.chordPlaying.push(
         this.player.play(chordNotes[i], this.ac.currentTime, {
-          adsr: [0.2, 0.5, 0.5, 1.0],
-          loop: true,
+          gain: 0.2,
+          adsr: [0.1, 0.3, 0.8, 0.1],
         }),
       )
     }
+
     this.chordPlayingName = chordNotes
+    this.chordPlayingTime = this.ac.currentTime
   }
 
   triggerNoteRelease() {
@@ -263,18 +287,6 @@ export default class MusicPlayer {
       this.notePlayingName = null
       this.notePlayingTime = null
     }
-  }
-
-  noteHasBeenPlayingLongerThanDuration() {
-    const duration = 2.0
-    return this.ac.currentTime - this.notePlayingTime! > duration
-  }
-
-  startNoteLoop(note: string) {
-    this.notePlaying = this.player.play(note, this.ac.currentTime, {
-      adsr: [0.2, 0.5, 0.5, 1.0],
-    })
-    this.notePlayingTime = this.ac.currentTime
   }
 
   triggerChordRelease() {
@@ -287,5 +299,35 @@ export default class MusicPlayer {
     }
     this.chordPlaying = []
     this.chordPlayingName = []
+    this.chordPlayingTime = null
+  }
+
+  noteHasBeenPlayingLongerThanDuration() {
+    const duration = 2.0
+    return this.ac.currentTime - this.notePlayingTime! > duration
+  }
+
+  chordHasBeenPlayingLongerThanDuration() {
+    const duration = 2.0
+    return this.ac.currentTime - this.chordPlayingTime! > duration
+  }
+
+  startNoteLoop(note: string) {
+    this.notePlaying = this.player.play(note, this.ac.currentTime, {
+      adsr: [1.0, 0.0, 1.0, 1.0],
+    })
+    this.notePlayingTime = this.ac.currentTime
+  }
+
+  startChordLoop(chordNotes: string[]) {
+    for (let i = 0; i < chordNotes.length; i++) {
+      this.chordPlaying.push(
+        this.player.play(chordNotes[i], this.ac.currentTime, {
+          gain: 0.2,
+          adsr: [1.0, 0.0, 1.0, 1.0],
+        }),
+      )
+    }
+    this.chordPlayingTime = this.ac.currentTime
   }
 }

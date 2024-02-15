@@ -5,15 +5,14 @@ import type { AppProps } from 'next/app'
 
 import AppWrapper from '../components/AppWrapper'
 import ControlPanelProvider from '../context/controlPanel'
-import { ControlPanelContextType, TutorialContextType } from '../types'
 import TutorialProvider from '../context/tutorial'
+import { ControlPanelContextType, TutorialContextType } from '../types'
 
 export default function App({ Component, pageProps, router }: AppProps) {
   const [playback, togglePlayback] = useState(true)
   const [thumb, toggleThumb] = useState(false)
   const [fullHand, toggleFullHand] = useState(false)
   const [showUI, toggleShowUI] = useState(true)
-  const [info, toggleInfo] = useState(false)
   const [loading, toggleLoading] = useState(true)
 
   const [tutorialStage, setTutorialStage] = useState(0)
@@ -51,14 +50,6 @@ export default function App({ Component, pageProps, router }: AppProps) {
     }
   }
 
-  const updateInfo = (open?: boolean) => {
-    if (open != null) {
-      toggleInfo(open)
-    } else {
-      toggleInfo(!info)
-    }
-  }
-
   const controlPanelContext = {
     playback: playback,
     togglePlayback: updatePlayback,
@@ -68,8 +59,6 @@ export default function App({ Component, pageProps, router }: AppProps) {
     toggleFullHandMode: updateFullHand,
     showUI: showUI,
     toggleShowUI: updateShowUI,
-    info: info,
-    toggleInfo: updateInfo,
     loading: loading,
     toggleLoading: updateLoading,
   } as ControlPanelContextType

@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react'
 import Link from 'next/link' // Import Link from next/link
+
+import { primary } from '../../modules/const'
 import { useControlPanelContext } from '../../context'
 
 const sx = {
@@ -11,15 +13,17 @@ const sx = {
     width: '100vw',
   },
   link: {
-    margin: '0 20px',
+    margin: '55vh 20px 0 0',
     padding: '20px 40px',
     fontSize: '1.5rem',
     cursor: 'pointer',
-    textDecoration: 'none', // Remove underline from links
-    color: 'black', // Style as needed
-    backgroundColor: 'lightgray', // Style as needed
+    textDecoration: 'none',
+    color: 'white',
+    backgroundColor: primary + '90',
+    backdropFilter: 'blur(3px)',
     border: 'none',
     borderRadius: '5px',
+    boxShadow: `0 0 30px 1px rgba(200, 200, 200, 0.2), 0 0 40px 10px ${primary}`,
   },
 }
 

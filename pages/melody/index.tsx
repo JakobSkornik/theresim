@@ -22,8 +22,8 @@ const Melody = () => {
       style={sx.container}
       title={'THERESIM'}
       mediapipe={true}
-      playbackOffset={[10, 70]}
-      playbackSize={[50, 160]}
+      playbackOffset={[10, 100]}
+      playbackSize={[50, 190]}
       scene={MelodyCanvas}
       icon="controller.svg"
     />

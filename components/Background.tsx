@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { shadow } from '../modules/const'
+import Image from 'next/image'
+import { primary, shadow } from '../modules/const'
 
 const sx = {
   title: {
@@ -57,11 +58,29 @@ const sx = {
     '--triangle-offset': '20vw',
     '--triangle-tilt': '14deg',
   },
+  logoDiv: {
+    position: 'absolute' as 'absolute',
+    left: 'calc(100vw - 220px)',
+    top: 'calc(100vh - 80px)',
+    backgroundColor: primary + '90',
+    backdropFilter: 'blur(3px)',
+    border: 'none',
+    borderRadius: '5px',
+    boxShadow: `0 0 30px 1px rgba(200, 200, 200, 0.2), 0 0 40px 10px ${primary}`,
+  },
 }
 
 const Background = () => {
   return (
     <div className="background">
+      <div style={sx.logoDiv}>
+        <Image
+          src="/icons/fri_logo.png"
+          width="200"
+          height="60"
+          alt="logo"
+        ></Image>
+      </div>
       <div className="grid" style={sx.grid} />
       <div className="horizontal-line" />
       <div className="rectangle" style={sx.rectangle1} />
