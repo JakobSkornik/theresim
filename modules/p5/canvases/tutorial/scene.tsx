@@ -133,11 +133,8 @@ export default class TutorialCanvas implements P5Canvas {
         : hexToRgb(gray),
     )
 
-    if (tutorial.stage > 1) {
+    if (tutorial.stage > 4) {
       this.musicPlayer.playRighthandNote(activeNote, this.notes)
-    }
-
-    if (tutorial.stage > 2) {
       this.musicPlayer.playLefthandChord(activeChord, this.notes, this.major)
     }
   }

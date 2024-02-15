@@ -33,13 +33,13 @@ const sx = {
     width: '100%',
   },
   nextBtn: {
-    width: '60px',
+    width: '90px',
     height: '60px',
     padding: '0',
     margin: '6px',
     color: primary + 'EF',
     borderColor: 'rgba(0, 0, 0, 1)',
-    backgroundColor: "#44F89F",
+    backgroundColor: '#44F89F',
     pointerEvents: 'auto' as 'auto',
   },
 }
@@ -52,7 +52,17 @@ const TutorialPopup = () => {
     <div style={sx.container}>
       <TutorialFactory stage={stage}></TutorialFactory>
       <div style={sx.btnWrapper}>
-        {stage < 15 && (
+        {stage > 0 && (
+          <Button
+            style={sx.nextBtn}
+            text="Back"
+            value="prevStage"
+            onClick={() => {
+              setStage(stage - 1)
+            }}
+          />
+        )}
+        {stage < 8 && (
           <Button
             style={sx.nextBtn}
             text="Next"
@@ -62,13 +72,33 @@ const TutorialPopup = () => {
             }}
           />
         )}
-        {stage == 15 && (
+        {stage == 8 && (
           <Button
             style={sx.nextBtn}
             text="Home"
             value="home"
             onClick={() => {
               router.push('/home')
+            }}
+          />
+        )}
+        {stage == 8 && (
+          <Button
+            style={sx.nextBtn}
+            text="Melodies"
+            value="melodies"
+            onClick={() => {
+              router.push('/melody')
+            }}
+          />
+        )}
+        {stage == 8 && (
+          <Button
+            style={sx.nextBtn}
+            text="Freestyle"
+            value="freestyle"
+            onClick={() => {
+              router.push('/freestyle')
             }}
           />
         )}

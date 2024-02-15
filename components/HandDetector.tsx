@@ -33,16 +33,16 @@ export default class HandDetector {
 
     if (hands.rightHand.length) {
       this.controls.rightVisible = true
-      this.controls.rightX =
-        (hands.rightHand[8].x +
-          (this.controls.rightX ?? hands.rightHand[8].x)) /
-        2
-      this.controls.rightY =
-        (hands.rightHand[8].y +
-          (this.controls.rightY ?? hands.rightHand[8].y)) /
-        2
-      // this.controls.rightX = hands.rightHand[8].x
-      // this.controls.rightY = hands.rightHand[8].y
+      // this.controls.rightX =
+      //   (hands.rightHand[8].x +
+      //     (this.controls.rightX ?? hands.rightHand[8].x)) /
+      //   2
+      // this.controls.rightY =
+      //   (hands.rightHand[8].y +
+      //     (this.controls.rightY ?? hands.rightHand[8].y)) /
+      //   2
+      this.controls.rightX = hands.rightHand[8].x
+      this.controls.rightY = hands.rightHand[8].y
       this.controls.rightActive = this.rightHandActive(hands.rightHand, context)
     } else {
       this.controls.rightVisible = false

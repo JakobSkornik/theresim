@@ -1,6 +1,6 @@
 import p5Types from 'p5'
 import { KeyLocation } from '../../../types'
-import { BLACK, hexToRgb, leftColor, rightColor, shadow } from '../../const'
+import { BLACK, gray, hexToRgb, leftColor, rightColor, shadow } from '../../const'
 import { Controls } from '../../../types'
 import { BoxParams } from './Box'
 
@@ -90,7 +90,13 @@ export default class Keyboard {
     }
   }
 
-  showMelody(p5: p5Types, notes: string[], activeNote: number, share: number) {
+  showMelody(
+    p5: p5Types,
+    notes: string[],
+    activeNote: number,
+    nextNote: number | undefined,
+    share: number,
+  ) {
     for (let i = 0; i < this.numOfKeys; i++) {
       const x_offset = i * this.keyWidth + this.x
       const tlBorder = i == 0 ? 10 : 0
@@ -139,6 +145,29 @@ export default class Keyboard {
         const startY = this.y + (this.h - fillHeight)
         p5.noStroke()
         p5.fill([...hexToRgb(color), ...[255]])
+        p5.rect(
+          x_offset,
+          startY,
+          this.keyWidth,
+          fillHeight,
+          tlBorder,
+          trBorder,
+          10,
+          10,
+        )
+      }
+
+      if (nextNote == i) {
+        let fillHeight = this.h * 1.0
+        let startY = this.y
+        color = gray
+
+        if (nextNote == activeNote) {
+          fillHeight = this.h * 0.7
+          startY = this.y + (this.h - fillHeight)
+        }
+        p5.noStroke()
+        p5.fill([...hexToRgb(color), ...[90]])
         p5.rect(
           x_offset,
           startY,

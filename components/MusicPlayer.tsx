@@ -76,8 +76,8 @@ export default class MusicPlayer {
     }
   }
 
-  playSongNote(activeNote: number, handNote: number, notes: string[]) {
-    if (activeNote < 0 || handNote != activeNote) {
+  playSongNote(activeNote: number, handNote: number, share: number, notes: string[]) {
+    if (activeNote < 0 || handNote != activeNote || share >= 1.0) {
       this.triggerNoteRelease()
       return
     }
@@ -142,44 +142,7 @@ export default class MusicPlayer {
     }, ((backingTrackInfo.initialDelay * 60.0) / backingTrackInfo.bpm) * 1000)
   }
 
-  playSong(song: SimpleSong) {
-    // Calculate the time of one beat
-    const beatTime = 60.0 / song.bpm
-
-    // Calculate total duration of the chord sequence
-    let totalDuration = 0
-    song.notes.forEach((noteInfo) => {
-      // Add duration of the note plus 100ms pause
-      totalDuration += noteInfo.duration * beatTime + 0.1
-    })
-
-    // Function to schedule a chord change
-    let currentTime = 0
-    const scheduleNote = (note: number, durationInSeconds: number) => {
-      const timeoutId = window.setTimeout(() => {
-        this.activeNote = note
-        // Schedule the note stop 100ms before the next note starts
-        window.setTimeout(() => {
-          this.activeNote = -1
-        }, durationInSeconds * 1000 - 100)
-      }, currentTime)
-
-      this.playbackTimeouts.push(timeoutId)
-      // Add the duration of the note plus a 100ms delay
-      currentTime += durationInSeconds * 1000 + 100
-    }
-
-    song.notes.forEach((noteInfo) => {
-      scheduleNote(noteInfo.note, noteInfo.duration * beatTime)
-    })
-
-    setTimeout(() => {
-      this.stopSong()
-    }, totalDuration * 1000)
-  }
-
   scheduleChordChanges(backingTrackInfo: BackingTrack) {
-    // Calculate the time of one beat
     const beatTime = 60.0 / backingTrackInfo.bpm
 
     // Calculate total duration of the chord sequence
