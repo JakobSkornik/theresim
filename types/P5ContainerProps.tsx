@@ -6,4 +6,6 @@ export type P5ContainerProps = {
   scene: typeof P5Canvas
   icon?: string
   style?: { [Key: string]: string }
+  playbackOffset: [number, number]
+  playbackSize: [number, number]
 }

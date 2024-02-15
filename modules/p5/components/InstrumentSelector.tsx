@@ -10,31 +10,21 @@ export default class InstrumentSelector {
   w: number
   h: number
 
-  cols: number = 5
-  rows: number = 4
+  cols: number = 3
+  rows: number = 3
+  textHeight: number = 20
 
   keyLocations: KeyLocation[] = []
   instruments: string[] = [
-    'acoustic_grand_piano',
     'harpsichord',
-    'clavinet',
-    'drawbar_organ',
     'rock_organ',
-    'tango_accordion',
     'distortion_guitar',
     'violin',
-    'cello',
     'string_ensemble_2',
     'choir_aahs',
     'synth_brass_2',
-    'soprano_sax',
-    'bassoon',
     'pad_3_polysynth',
     'fx_1_rain',
-    'fx_7_echoes',
-    'sitar',
-    'fiddle',
-    'shanai',
   ]
   selected: string = this.instruments[0]
 
@@ -48,7 +38,7 @@ export default class InstrumentSelector {
     const keyHeight = this.h / this.rows
 
     for (let row = 0; row < this.rows; row++) {
-      const y_offset = row * keyHeight + this.y
+      const y_offset = row * keyHeight + this.y + this.textHeight
 
       for (let col = 0; col < this.cols; col++) {
         const x_offset = col * keyWidth + this.x
@@ -65,11 +55,17 @@ export default class InstrumentSelector {
   }
 
   show(p5: p5Types) {
+    p5.noStroke()
+    p5.fill(hexToRgb(leftColor))
+    p5.textSize(12)
+    const title = 'Instruments'
+    p5.text(title, this.x, this.y + 8)
+
     const keyWidth = this.w / this.cols
     const keyHeight = this.h / this.rows
 
     for (let row = 0; row < this.rows; row++) {
-      const y_offset = row * keyHeight + this.y
+      const y_offset = row * keyHeight + this.y + this.textHeight - 4
 
       for (let col = 0; col < this.cols; col++) {
         const x_offset = col * keyWidth + this.x
@@ -82,7 +78,7 @@ export default class InstrumentSelector {
         p5.stroke(BLACK())
         p5.strokeWeight(2)
         p5.fill(color)
-        p5.rect(x_offset, y_offset, keyWidth - 4, keyHeight - 4, 10)
+        p5.rect(x_offset, y_offset, keyWidth - 4, keyHeight - 3, 10)
 
         p5.noStroke()
         p5.fill(hexToRgb(leftColor))

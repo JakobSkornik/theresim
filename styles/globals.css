@@ -13,6 +13,8 @@
 
 html,
 body {
+  min-height: 560px !important;
+  min-width: 960px !important;
   height: 100vh;
   width: 100vw;
   padding: 0;
@@ -90,6 +92,8 @@ a {
 }
 
 .background {
+  min-height: 560px !important;
+  min-width: 960px !important;
   width: 100vw;
   height: 100vh;
   position: fixed;
@@ -115,7 +119,7 @@ a {
   border-radius: 20vh;
   position: relative;
   overflow: hidden;
-  top: calc(30vh);
+  top: calc(35% + 10vh);
   left: calc(50vw - 20vh);
 }
 .sun:before {
@@ -143,6 +147,8 @@ a {
   margin-left: -50%;
   width: 200%;
   height: 100%;
+  min-height: 560px !important;
+  min-width: 960px !important;
   background-position-y: 0px;
   background-image: repeating-linear-gradient(
       90deg,
@@ -174,18 +180,44 @@ a {
   );
 }
 
-.mountain {
+.triangle {
   position: absolute;
   content: '';
-  bottom: 35%;
-  left: calc(50% + var(--mountain-offset, 0px));
-  border-left: calc(var(--mountain-base) / 2) solid transparent;
-  border-bottom: var(--mountain-height, 100px) solid
-    var(--mountain-color1, white);
+  bottom: var(--triangle-offsetY, 0px);
+  left: calc(var(--triangle-height, 0) + var(--triangle-offset, 0px));
+  border-left: calc(var(--triangle-base) / 2) solid transparent;
+  border-bottom: var(--triangle-height, 100px) solid
+    var(--triangle-color1, white);
   border-top: 0px solid transparent;
-  border-right: calc(var(--mountain-base, 100px) / 2) solid transparent;
+  border-right: calc(var(--triangle-base, 100px) / 2) solid transparent;
   transform-origin: bottom;
-  transform: skewX(var(--mountain-tilt, 0deg));
+  transform: skewX(var(--triangle-tilt, 0deg));
+  -webkit-filter: blur(2px);
+  filter: blur(2px);
+}
+
+.rectangle {
+  position: absolute;
+  content: '';
+  bottom: var(--rectangle-offsetY, 0px);
+  left: var(--rectangle-offset, 0px);
+  width: var(--rectangle-width, 0px);
+  height: var(--rectangle-height, 0px);
+  background-color: var(--rectangle-color, white);
+  -webkit-filter: blur(2px);
+  filter: blur(2px);
+}
+
+.curved-top {
+  position: absolute;
+  content: '';
+  bottom: calc(var(--rectangle-offsetY, 0px) + var(--rectangle-height, 0px));
+  left: var(--rectangle-offset, 0px);
+  width: var(--rectangle-width, 0px);
+  height: 5vh;
+  background: var(--rectangle-color, white);
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
   -webkit-filter: blur(2px);
   filter: blur(2px);
 }

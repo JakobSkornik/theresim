@@ -52,18 +52,18 @@ export default class NoHandsWarning {
     const w = 500
     const h = 180
 
-    let maxX = this.x + this.w - w
-    let maxY = this.y + this.h - h
+    // let maxX = this.x + this.w - w
+    // let maxY = this.y + this.h - h
 
-    if (this.lastX == 0 && this.lastY == 0) {
-      this.lastX = getRandomInt(maxX - 1)
-      this.lastY = getRandomInt(maxY - 1)
-    }
+    // if (this.lastX == 0 && this.lastY == 0) {
+    //   this.lastX = getRandomInt(maxX - 1)
+    //   this.lastY = getRandomInt(maxY - 1)
+    // }
 
-    if (this.lastX <= this.y) this.x_dir = true
-    if (this.lastX >= maxX) this.x_dir = false
-    if (this.lastY <= this.x) this.y_dir = true
-    if (this.lastY >= maxY) this.y_dir = false
+    // if (this.lastX <= this.y) this.x_dir = true
+    // if (this.lastX >= maxX) this.x_dir = false
+    // if (this.lastY <= this.x) this.y_dir = true
+    // if (this.lastY >= maxY) this.y_dir = false
 
     const x = this.x_dir ? this.lastX + 1 : this.lastX - 1
     const y = this.y_dir ? this.lastY + 1 : this.lastY - 1

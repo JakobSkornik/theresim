@@ -1,11 +1,12 @@
 // @ts-nocheck
-import { shadow } from '../modules/const'
+import Image from 'next/image'
+import { primary, shadow } from '../modules/const'
 
 const sx = {
   title: {
     position: 'fixed' as 'fixed',
     left: 'calc(50vw - 20vh - 50px)',
-    top: '35vh',
+    top: '0vh',
     fontFamily: 'Outrun',
     fontSize: '80px',
     background: '-webkit-linear-gradient(#170328, #f54171)',
@@ -19,85 +20,74 @@ const sx = {
     '--grid-size': '30px',
     '--grid-blur': '2px',
   },
-  mountain1: {
-    '--mountain-base': '10vw',
-    '--mountain-height': '5vw',
-    '--mountain-color1': '#25277447',
-    '--mountain-color2': '#9729AB',
-    '--mountain-offset': '40vw',
-    '--mountain-tilt': '-20deg',
+  rectangle1: {
+    '--rectangle-offsetY': '35%',
+    '--rectangle-offset': '20vw',
+    '--rectangle-height': '30vh',
+    '--rectangle-width': '30vh',
+    '--rectangle-color': '#10106047',
   },
-  mountain2: {
-    '--mountain-base': '7vw',
-    '--mountain-height': '3vw',
-    '--mountain-color1': '#2b116570',
-    '--mountain-color2': '#9729AB',
-    '--mountain-offset': '-20vw',
-    '--mountain-tilt': '10deg',
+  rectangle2: {
+    '--rectangle-offsetY': '35%',
+    '--rectangle-offset': '60vw',
+    '--rectangle-height': '20vh',
+    '--rectangle-width': '40vh',
+    '--rectangle-color': '#10106047',
   },
-  mountain3: {
-    '--mountain-base': '24vw',
-    '--mountain-height': '15vw',
-    '--mountain-color1': '#583593',
-    '--mountain-color2': '#9729AB',
-    '--mountain-offset': '17vw',
-    '--mountain-tilt': '10deg',
+  rectangle3: {
+    '--rectangle-offsetY': 'calc(35% + 10vh)',
+    '--rectangle-offset': 'calc(35vh + 20vw)',
+    '--rectangle-height': '5vh',
+    '--rectangle-width': 'calc(40vw - 35vh)',
+    '--rectangle-color': '#06062047',
   },
-  mountain4: {
-    '--mountain-base': '23vw',
-    '--mountain-height': '10vw',
-    '--mountain-color1': '#9729AB',
-    '--mountain-color2': '#583593',
-    '--mountain-offset': '-50vw',
-    '--mountain-tilt': '-2deg',
+  curvedTop: {
+    '--rectangle-offsetY': '35%',
+    '--rectangle-offset': '60vw',
+    '--rectangle-height': '20vh',
+    '--rectangle-width': '40vh',
+    '--rectangle-color': '#10106047',
   },
-  leftLight: {
-    position: 'fixed' as 'fixed',
-    bottom: '0',
-    height: '40vh',
-    width: '40vw',
-    left: '10vw',
-    transform: 'rotate(-10deg)',
-    filter: 'blur(3px)',
+  rectangle1Edge: {
+    '--triangle-offsetY': '35%',
+    '--triangle-base': '15vh',
+    '--triangle-height': '30vh',
+    '--rectangle-width': '30vh',
+    '--triangle-color1': '#06062047',
+    '--triangle-color2': '#9729AB',
+    '--triangle-offset': '20vw',
+    '--triangle-tilt': '14deg',
   },
-  rightLight: {
-    position: 'fixed' as 'fixed',
-    bottom: '0',
-    height: '40vh',
-    width: '40vw',
-    left: '50vw',
-    transform: 'rotate(10deg)',
-    filter: 'blur(3px)',
-  },
-  road: {
-    position: 'fixed' as 'fixed',
-    bottom: '0',
-    height: '35vh',
-    width: '100vw',
-    left: '0',
-    filter: 'blur(3px)',
+  logoDiv: {
+    position: 'absolute' as 'absolute',
+    left: 'calc(100vw - 220px)',
+    top: 'calc(100vh - 80px)',
+    backgroundColor: primary + '90',
+    backdropFilter: 'blur(3px)',
+    border: 'none',
+    borderRadius: '5px',
+    boxShadow: `0 0 30px 1px rgba(200, 200, 200, 0.2), 0 0 40px 10px ${primary}`,
   },
 }
 
 const Background = () => {
   return (
     <div className="background">
+      <div style={sx.logoDiv}>
+        <Image
+          src="/icons/fri_logo.png"
+          width="200"
+          height="60"
+          alt="logo"
+        ></Image>
+      </div>
       <div className="grid" style={sx.grid} />
       <div className="horizontal-line" />
-      <div className="mountain" style={sx.mountain1} />
-      <div className="mountain" style={sx.mountain2} />
-      <div className="mountain" style={sx.mountain3} />
-      <div className="mountain" style={sx.mountain4} />
-      <div className="sun" />
-      <div style={sx.road}>
-        <img src="/icons/road.svg" alt="road" />
-      </div>
-      <div style={sx.leftLight}>
-        <img src="/icons/headlight.svg" alt="Left Headlight" />
-      </div>
-      <div style={sx.rightLight}>
-        <img src="/icons/headlight.svg" alt="Right Headlight" />
-      </div>
+      <div className="rectangle" style={sx.rectangle1} />
+      <div className="rectangle" style={sx.rectangle2} />
+      <div className="rectangle" style={sx.rectangle3} />
+      <div className="triangle" style={sx.rectangle1Edge} />
+      <div className="curved-top" style={sx.curvedTop} />
       <span style={sx.title}>Theresim</span>
     </div>
   )

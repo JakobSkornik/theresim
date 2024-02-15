@@ -1,5 +1,3 @@
-import { ScaleKeys } from '../../types/ScaleKeys'
-
 export const handRanges = [
   [0, 1],
   [1, 5],
@@ -138,78 +136,6 @@ export const CURACAO = (alpha = 255) => [61, 193, 211, alpha]
 export const BISCAY = (alpha = 255) => [48, 57, 82, alpha]
 export const CYAN = (alpha = 255) => [170, 216, 233, alpha]
 
-const scale = [
-  {
-    key: 'C',
-    color: 'white',
-    idx: 0,
-  },
-  {
-    key: 'C#',
-    color: 'black',
-    idx: 0,
-  },
-  {
-    key: 'D',
-    color: 'white',
-    idx: 1,
-  },
-  {
-    key: 'D#',
-    color: 'black',
-    idx: 1,
-  },
-  {
-    key: 'E',
-    color: 'white',
-    idx: 2,
-  },
-  {
-    key: 'F',
-    color: 'white',
-    idx: 3,
-  },
-  {
-    key: 'F#',
-    color: 'black',
-    idx: 2,
-  },
-  {
-    key: 'G',
-    color: 'white',
-    idx: 4,
-  },
-  {
-    key: 'G#',
-    color: 'black',
-    idx: 3,
-  },
-  {
-    key: 'A',
-    color: 'white',
-    idx: 5,
-  },
-  {
-    key: 'A#',
-    color: 'black',
-    idx: 4,
-  },
-  {
-    key: 'B',
-    color: 'white',
-    idx: 6,
-  },
-]
-
-export const getChromaticIdx = (idx: number, white: boolean) => {
-  const wKeys = [0, 2, 4, 5, 7, 9, 11]
-  const bKeys = [1, 3, 6, 8, 10]
-  return {
-    idx: white ? wKeys[idx] : bKeys[idx],
-    name: white ? scale[wKeys[idx]].key : scale[bKeys[idx]].key,
-  }
-}
-
 export const getNoteName = (idx: number, white: boolean) => {
   let notes = ['C#', 'D#', 'F#', 'G#', 'A#']
   if (white) {
@@ -218,267 +144,21 @@ export const getNoteName = (idx: number, white: boolean) => {
   return notes[idx]
 }
 
-export const getNotesInChord = (chord: number, type: string) => {
-  let third = 4
-  let fifth = 7
-  if (type !== 'maj') third = 3
-  if (type == 'dim') fifth = 6
-  let offsets = [chord, (chord + third) % 12, (chord + fifth) % 12]
-  let wKeys = []
-  let bKeys = []
-  for (let i = 0; i < 3; i++) {
-    let current = offsets[i] % 12
-    if (scale[current].color == 'white') {
-      wKeys.push(scale[current].idx)
-    } else {
-      bKeys.push(scale[current].idx)
-    }
-  }
-  return {
-    wKeys: wKeys,
-    bKeys: bKeys,
-  } as ScaleKeys
-}
-
-export const getOrderedChordsInScale = (start: number, major: boolean) => {
-  const offsets = major ? [2, 2, 1, 2, 2, 2, 1] : [2, 1, 2, 2, 1, 2, 2]
-  const result = []
-  let current = start
-  for (let i = 0; i < offsets.length; i++) {
-    result.push(scale[current].key)
-    current = (current + offsets[i]) % scale.length
-  }
-  return processScale(result, major)
-}
-
-export const processScale = (scale: string[], major: boolean) => {
-  scale = [...scale]
-  while (!allUnique(scale)) {
-    if (major && scale[0].charAt(1) == '#') {
-      const lastKey = scale[0].charAt(0)
-      scale[0] = getNextChar(scale[0].charAt(0)) + 'b'
-      scale[scale.length - 1] = lastKey
-    }
-    for (let i = scale.length - 1; i >= 0; i--) {
-      if (duplicate(scale[i].charAt(0), scale)) {
-        scale[i] = getNextChar(scale[i].charAt(0)) + 'b'
-      }
-    }
-  }
-  const minorChords = major ? [1, 2, 5] : [0, 3, 4]
-  const dimChord = major ? 6 : 1
-  scale[dimChord] = scale[dimChord] + 'dim'
-  for (let i = 0; i < 3; i++) {
-    scale[minorChords[i]] = scale[minorChords[i]] + 'm'
-  }
-  return scale
-}
-
-export const processNotes = (scale: string[]) => {
-  scale = [...scale]
-  while (!allUnique(scale)) {
-    if (scale[0].charAt(1) == '#') {
-      const lastKey = scale[0].charAt(0)
-      scale[0] = getNextChar(scale[0].charAt(0)) + 'b'
-      scale[scale.length - 1] = lastKey
-    }
-    for (let i = scale.length - 1; i >= 0; i--) {
-      if (duplicate(scale[i].charAt(0), scale)) {
-        scale[i] = getNextChar(scale[i].charAt(0)) + 'b'
-      }
-    }
-  }
-  return scale
-}
-
-const allUnique = (scale: string[]) => {
-  for (let i = 0; i < scale.length; i++) {
-    if (duplicate(scale[i].charAt(0), scale)) {
-      return false
-    }
-  }
-  return true
-}
-
-const duplicate = (key: string, str: string[]) => {
-  let cnt = 0
-  for (let i = 0; i < str.length; i++) {
-    if (key == str[i].charAt(0)) {
-      cnt++
-    }
-  }
-  if (cnt > 1) return true
-  return false
-}
-
-const getNextChar = (char: string) => {
-  if (char == 'G') return 'A'
-  return String.fromCharCode(char.charCodeAt(0) + 1)
-}
-
-export const getSimpleNotes = (start: number) => {
-  const offsets = [2, 2, 1, 2, 2, 2, 1]
-  let result = []
-  let current = start
-  for (let i = 0; i < offsets.length; i++) {
-    result.push(scale[current].key)
-    current = (current + offsets[i]) % scale.length
-  }
-  return processNotes(result)
-}
-
-export const getNotesInScale = (start: number, major: boolean) => {
-  const offsets = major ? [2, 2, 1, 2, 2, 2, 1] : [2, 1, 2, 2, 1, 2, 2]
-  let wKeys = []
-  let bKeys = []
-  let current = start
-  for (let i = 0; i < offsets.length; i++) {
-    if (scale[current].color == 'white') {
-      wKeys.push(scale[current].idx)
-    } else {
-      bKeys.push(scale[current].idx)
-    }
-    current = (current + offsets[i]) % scale.length
-  }
-
-  return {
-    wKeys: wKeys,
-    bKeys: bKeys,
-  } as ScaleKeys
-}
-
-const calibrateDocs = () => {
-  return (
-    <p>
-      Please provide necessary permissions for the app to be able to use your
-      webcam.
-      <br />
-      <br />
-      Webcam image stream is processed by <i>Mediapipe</i>. <i>Mediapipe</i>{' '}
-      maps hand landmarks to a triple <i>(x, y, z)</i>. Tab <b>Coordinates</b>{' '}
-      provides more information.
-      <br />
-      <br />
-      3D coordinates are mapped to 2D via <i>p5.js</i>.
-      <br />
-      <br />
-      This tab provides panel that renders your hands via webcam. Try it out!
-    </p>
-  )
-}
-
-const coordinatesDocs = () => {
-  return (
-    <p>
-      This tab renders only your left hand.
-      <br />
-      <br />
-      On the right panel live data is fed to a bar chart. Each coordinate is
-      represented by a bar. Coordinates are constrained to interval{' '}
-      <i>[0, 1]</i>. To map them to canvas, one only needs to multiply the
-      number with desired number of pixels.
-      <br />
-      <br />
-      Coordinate <i>z</i> should theoretically move with the distance of your
-      hand from the camera. But observe rather, what happens when you tilt your
-      hand forward or backward.
-    </p>
-  )
-}
-
-const detectionDocs = () => {
-  return (
-    <p>
-      Following the discovery from the previous tab, let's try to implement a
-      simple detection based on a threshold for the <i>z</i> coordinate. Tilting
-      your hands forwards should be detected.
-      <br />
-      <br />
-      When the <i>z</i> is higher than the specified threshold your hands and
-      bars in the chart become colored.
-      <br />
-      <br />
-      The instrument is meant to be played with only your index finger extended,
-      the detection also works best this way.
-    </p>
-  )
-}
-
-const controlDocs = () => {
-  return (
-    <p>
-      This panel shows how <i>Mediapipe</i> information is deconstructed and how
-      each dimension serves its own purpose.
-      <br />
-      <br />
-      The <i>x</i> coordinate will serve to determine the frequency or note that
-      is played.
-      <br />
-      <br />
-      The <i>y</i> coordinate will serve to determine the amplitude or volume of
-      the note or chord played.
-      <br />
-      <br />
-      The <i>z</i> coordinate will serve to determine when to play a note or a
-      chord with the current <i>[x, y]</i> location.
-    </p>
-  )
-}
-
-const keyboardDocs = () => {
-  return (
-    <p>
-      This tab is meant to reinforce my choice of the instrument design.
-      <br />
-      <br />
-      The first obvious detriment to the piano layout is the overlap in <i>
-        x
-      </i>{' '}
-      coordinates. This means that at a single <i>x</i> location two options are
-      available.
-      <br />
-      <br />
-      Secondly, we want to be able to play simple chords with the left hand.
-      Chords are derived from the scale that we choose to use.
-      <br />
-      <br />
-      Try clicking on notes, toggling major/minor scale and chord display. See
-      how shapes of chords change due to piano keyboard layout.
-      <br />
-      <br />
-      Next tab will show the simplified keyboard and it's advantages.
-    </p>
-  )
-}
-
-const instrumentDocs = () => {
-  return (
-    <p>
-      This is the proposed layout for my instrument. Instead of displaying all
-      12 notes, we select a scale. This reduces the number of possible notes and
-      chords to a much more manageable number.
-      <br />
-      <br />
-      Observe how changes to scale do not affect chord shapes and how each
-      possible chord uses the same shape.
-    </p>
-  )
-}
-
 const demoDocs = () => {
   return (
     <p>
-      To play the instrument enable the webcam. To ensure you are visible by the webcam,
-      enable webcam feedback by clicking the webcam icon in the control panel.
+      To play the instrument enable the webcam. To ensure you are visible by the
+      webcam, enable webcam feedback by clicking the webcam icon in the control
+      panel.
       <br />
       <br />
-      You play chords with your left hand. Simply gesture the chord with appropriate
-      hand gesture displayed next to the chord.
+      You play chords with your left hand. Simply gesture the chord with
+      appropriate hand gesture displayed next to the chord.
       <br />
       <br />
-      You play notes with your right hand. Extend your index finger, the tip of the 
-      finger selects the note. Extend your thumb to trigger note, retract your thumb to 
-      stop playing.
+      You play notes with your right hand. Extend your index finger, the tip of
+      the finger selects the note. Extend your thumb to trigger note, retract
+      your thumb to stop playing.
       <br />
       <br />
       Above the playing area is the scale selector and instrument selector.
@@ -488,18 +168,6 @@ const demoDocs = () => {
 
 export const getInformationText = (route: string) => {
   switch (route) {
-    case '/calibrate':
-      return calibrateDocs()
-    case '/coordinates':
-      return coordinatesDocs()
-    case '/detection':
-      return detectionDocs()
-    case '/control':
-      return controlDocs()
-    case '/keyboard':
-      return keyboardDocs()
-    case '/instrument':
-      return instrumentDocs()
     case '/demo':
       return demoDocs()
     default:
@@ -508,5 +176,229 @@ export const getInformationText = (route: string) => {
           I just display information about each page. Current page is ${route}
         </p>
       )
+  }
+}
+
+export type Chord = {
+  chord: number
+  duration: number
+}
+
+export type Note = {
+  note: number
+  duration: number
+}
+
+export type SimpleSong = {
+  key: string
+  title: string
+  major: boolean
+  bpm: number
+  notes: Note[]
+}
+
+export type BackingTrack = {
+  key: string
+  major: boolean
+  bpm: number
+  initialDelay: number
+  chords: Chord[]
+}
+
+export const backingTrackInformation = (track: string) => {
+  switch (track) {
+    case 'comfortably_numb':
+      return {
+        key: 'B',
+        major: false,
+        bpm: 64,
+        initialDelay: 2,
+        chords: [
+          {
+            chord: 0,
+            duration: 4,
+          } as Chord,
+          {
+            chord: 5,
+            duration: 4,
+          } as Chord,
+          {
+            chord: 4,
+            duration: 2,
+          } as Chord,
+          {
+            chord: 2,
+            duration: 2,
+          } as Chord,
+          {
+            chord: 0,
+            duration: 4,
+          } as Chord,
+        ],
+      } as BackingTrack
+    case 'shine_on':
+      return {
+        key: 'G',
+        major: false,
+        bpm: 80,
+        initialDelay: 0,
+        chords: [
+          {
+            chord: 0,
+            duration: 16,
+          } as Chord,
+          {
+            chord: 3,
+            duration: 16,
+          } as Chord,
+          {
+            chord: 2,
+            duration: 16,
+          } as Chord,
+          {
+            chord: 0,
+            duration: 16,
+          } as Chord,
+        ],
+      } as BackingTrack
+  }
+}
+
+export const simpleSongInformation = (track: string) => {
+  switch (track) {
+    case 'kuža_pazi':
+      return {
+        key: 'C',
+        title: 'kuža_pazi',
+        major: true,
+        bpm: 60,
+        notes: [
+          {
+            note: 7,
+            duration: 1,
+          } as Note,
+          {
+            note: 7,
+            duration: 1,
+          } as Note,
+          {
+            note: 7,
+            duration: 1,
+          } as Note,
+          {
+            note: 7,
+            duration: 1,
+          } as Note,
+          {
+            note: 8,
+            duration: 1,
+          } as Note,
+          {
+            note: 8,
+            duration: 1,
+          } as Note,
+          {
+            note: 8,
+            duration: 1,
+          } as Note,
+          {
+            note: 8,
+            duration: 1,
+          } as Note,
+          {
+            note: 9,
+            duration: 1,
+          } as Note,
+          {
+            note: 9,
+            duration: 1,
+          } as Note,
+          {
+            note: 8,
+            duration: 1,
+          } as Note,
+          {
+            note: 8,
+            duration: 1,
+          } as Note,
+          {
+            note: 7,
+            duration: 1,
+          } as Note,
+          {
+            note: 7,
+            duration: 1,
+          } as Note,
+          {
+            note: 7,
+            duration: 2,
+          } as Note,
+        ],
+      } as SimpleSong
+      case 'twinkle':
+        return {
+          key: 'C',
+          title: 'twinkle',
+          major: true,
+          bpm: 120,
+          notes: [
+            {
+              note: 4,
+              duration: 1,
+            } as Note,
+            {
+              note: 4,
+              duration: 2,
+            } as Note,
+            {
+              note: 8,
+              duration: 1,
+            } as Note,
+            {
+              note: 8,
+              duration: 2,
+            } as Note,
+            {
+              note: 9,
+              duration: 1,
+            } as Note,
+            {
+              note: 9,
+              duration: 2,
+            } as Note,
+            {
+              note: 8,
+              duration: 4,
+            } as Note,
+            {
+              note: 7,
+              duration: 1,
+            } as Note,
+            {
+              note: 7,
+              duration: 2,
+            } as Note,
+            {
+              note: 6,
+              duration: 1,
+            } as Note,
+            {
+              note: 6,
+              duration: 2,
+            } as Note,
+            {
+              note: 5,
+              duration: 1,
+            } as Note,
+            {
+              note: 5,
+              duration: 2,
+            } as Note,
+            {
+              note: 4,
+              duration: 4,
+            } as Note,
+          ],
+        } as SimpleSong
   }
 }

@@ -48,7 +48,7 @@ export default class Box extends P5Element {
       if (this.roundingCorners.length) {
         p5.rect(
           this.x + 4,
-          this.y + 4,
+          this.y + 2,
           this.w,
           this.h,
           this.roundingCorners[0],

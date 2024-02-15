@@ -18,6 +18,9 @@ export default class KeySelector {
   w: number
   h: number
 
+  switchY: number
+  switchSize: number
+
   major: boolean = true
   selectedRoot: string = 'C'
   keyBtnLocation: KeyLocation | null = null
@@ -54,6 +57,17 @@ export default class KeySelector {
         y1: this.y,
         y2: this.y + (2 * this.h) / 3,
       })
+    }
+
+    this.switchY = this.y + this.h + 10
+    this.switchSize = 40
+
+    this.keyBtnLocation = {
+      idx: 0,
+      x1: this.x,
+      x2: this.x + this.switchSize + 4,
+      y1: this.switchY,
+      y2: this.switchY + this.switchSize + 4,
     }
   }
 
@@ -97,56 +111,45 @@ export default class KeySelector {
         x_offset + (wWidth - p5.textWidth(note)) / 2,
         this.y + this.h - 10,
       )
+    }
 
-      const offsets = [1, 2, 4, 5, 6]
-      for (let i = 0; i < 5; i++) {
-        const x_offset = offsets[i] * wWidth + this.x - bWidth / 2
-        const height = (2 * this.h) / 3
-        const note = getNoteName(i, false)
+    const offsets = [1, 2, 4, 5, 6]
+    for (let i = 0; i < 5; i++) {
+      const x_offset = offsets[i] * wWidth + this.x - bWidth / 2
+      const height = (2 * this.h) / 3
+      const note = getNoteName(i, false)
 
-        p5.noStroke()
-        p5.fill(PENCIL())
-        p5.rect(x_offset + 4, this.y, bWidth, height + 4, 0, 0, 10, 10)
+      p5.noStroke()
+      p5.fill(PENCIL())
+      p5.rect(x_offset + 4, this.y, bWidth, height + 4, 0, 0, 10, 10)
 
-        p5.stroke(BLACK())
-        p5.strokeWeight(2)
-        p5.fill(BLACK())
+      p5.stroke(BLACK())
+      p5.strokeWeight(2)
+      p5.fill(BLACK())
+      p5.rect(x_offset, this.y, bWidth, height, 0, 0, 10, 10)
+      if (this.selectedRoot == note) {
+        p5.fill(hexToRgb(rightColor))
         p5.rect(x_offset, this.y, bWidth, height, 0, 0, 10, 10)
-        if (this.selectedRoot == note) {
-          p5.fill(hexToRgb(rightColor))
-          p5.rect(x_offset, this.y, bWidth, height, 0, 0, 10, 10)
-        }
       }
+    }
 
-      const switchY = this.y + this.h + 10
-      const switchSize = 40
+    p5.noStroke()
+    p5.fill(WHITE())
+    p5.rect(this.x, this.switchY, this.switchSize, this.switchSize, 10)
 
+    p5.textSize(30)
+    p5.noStroke()
+    p5.fill(hexToRgb(shadow))
+    p5.text('Major Scale', this.x + 60, this.switchY + 30)
+
+    if (this.major) {
       p5.noStroke()
-      p5.fill(WHITE())
-      p5.rect(this.x, switchY, switchSize, switchSize, 10)
-
-      p5.textSize(30)
-      p5.noStroke()
-      p5.fill(hexToRgb(shadow))
-      p5.text('Major Scale', this.x + 60, switchY + 30)
-
-      if (this.major) {
-        p5.noStroke()
-        p5.fill([...hexToRgb(tertiary), 90])
-        p5.rect(this.x + 9, switchY + 9, 30, 30, 10)
-        p5.fill(hexToRgb(tertiary))
-        p5.rect(this.x + 5, switchY + 5, 30, 30, 10)
-        p5.fill([...hexToRgb(tertiary), 30])
-        p5.rect(this.x + 1, switchY + 1, 30, 30, 10)
-      }
-
-      this.keyBtnLocation = {
-        idx: 0,
-        x1: this.x,
-        x2: this.x + switchSize + 4,
-        y1: switchY,
-        y2: switchY + switchSize + 4,
-      }
+      p5.fill([...hexToRgb(tertiary), 90])
+      p5.rect(this.x + 9, this.switchY + 9, 30, 30, 10)
+      p5.fill(hexToRgb(tertiary))
+      p5.rect(this.x + 5, this.switchY + 5, 30, 30, 10)
+      p5.fill([...hexToRgb(tertiary), 30])
+      p5.rect(this.x + 1, this.switchY + 1, 30, 30, 10)
     }
   }
 
@@ -180,5 +183,10 @@ export default class KeySelector {
       return newSelected
     }
     return null
+  }
+
+  setKey = (key: string, major: boolean) => {
+    this.selectedRoot = key
+    this.major = major
   }
 }

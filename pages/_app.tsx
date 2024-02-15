@@ -5,26 +5,33 @@ import type { AppProps } from 'next/app'
 
 import AppWrapper from '../components/AppWrapper'
 import ControlPanelProvider from '../context/controlPanel'
-import { ControlPanelContextType } from '../types'
+import TutorialProvider from '../context/tutorial'
+import { ControlPanelContextType, TutorialContextType } from '../types'
 
 export default function App({ Component, pageProps, router }: AppProps) {
-  const [fullscreen, toggleFullscreen] = useState(false)
-  const [playback, togglePlayback] = useState(false)
+  const [playback, togglePlayback] = useState(true)
+  const [thumb, toggleThumb] = useState(false)
+  const [fullHand, toggleFullHand] = useState(false)
   const [showUI, toggleShowUI] = useState(true)
-  const [info, toggleInfo] = useState(false)
   const [loading, toggleLoading] = useState(true)
+
+  const [tutorialStage, setTutorialStage] = useState(0)
 
   // Disable the alert function for the app
   useEffect(() => {
     window.alert = () => {}
   }, [])
 
-  const updateFullscreen = () => {
-    toggleFullscreen(!fullscreen)
-  }
-
   const updatePlayback = () => {
     togglePlayback(!playback)
+  }
+
+  const updateThumb = () => {
+    toggleThumb(!thumb)
+  }
+
+  const updateFullHand = () => {
+    toggleFullHand(!fullHand)
   }
 
   const updateLoading = (load?: boolean) => {
@@ -43,34 +50,37 @@ export default function App({ Component, pageProps, router }: AppProps) {
     }
   }
 
-  const updateInfo = (open?: boolean) => {
-    if (open != null) {
-      toggleInfo(open)
-    } else {
-      toggleInfo(!info)
-    }
-  }
-
   const controlPanelContext = {
-    fullscreen: fullscreen,
-    toggleFullscreen: updateFullscreen,
     playback: playback,
     togglePlayback: updatePlayback,
+    thumbTriggerMode: thumb,
+    toggleThumbTriggerMode: updateThumb,
+    fullHandMode: fullHand,
+    toggleFullHandMode: updateFullHand,
     showUI: showUI,
     toggleShowUI: updateShowUI,
-    info: info,
-    toggleInfo: updateInfo,
     loading: loading,
     toggleLoading: updateLoading,
   } as ControlPanelContextType
 
+  const setStage = (stage: number) => {
+    setTutorialStage(stage)
+  }
+
+  const tutorialContext = {
+    stage: tutorialStage,
+    setStage: setStage,
+  } as TutorialContextType
+
   return (
     <ControlPanelProvider value={controlPanelContext}>
-      <AppWrapper>
-        <AnimatePresence mode="wait">
-          <Component {...pageProps} key={router.pathname} />
-        </AnimatePresence>
-      </AppWrapper>
+      <TutorialProvider value={tutorialContext}>
+        <AppWrapper>
+          <AnimatePresence mode="wait">
+            <Component {...pageProps} key={router.pathname} />
+          </AnimatePresence>
+        </AppWrapper>
+      </TutorialProvider>
     </ControlPanelProvider>
   )
 }

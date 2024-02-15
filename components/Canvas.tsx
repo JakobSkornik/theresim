@@ -21,8 +21,12 @@ const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
 import Container from '../modules/p5/components/Container'
 import P5Canvas from '../modules/p5/components/P5Canvas'
 import { CanvasProps } from '../types'
+import { useControlPanelContext, useTutorialContext } from '../context'
 
 const Canvas = (props: CanvasProps) => {
+  const controlPanel = useControlPanelContext()
+  const tutorial = useTutorialContext()
+
   const [font, setFont] = useState<p5Types.Font>()
   const [scene, setScene] = useState<P5Canvas>()
   const [assets, setAssets] = useState<p5Types.Image[]>([])
@@ -51,7 +55,7 @@ const Canvas = (props: CanvasProps) => {
   const draw = (p5: p5Types) => {
     p5.clear()
     drawContainer(p5)
-    scene.show(p5, props.hands, assets)
+    scene.show(p5, props.hands, assets, controlPanel, tutorial)
   }
 
   const onResize = async (p5: p5Types) => {

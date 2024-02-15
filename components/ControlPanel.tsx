@@ -1,16 +1,17 @@
-import Button from './Button'
-
-import { useEffect, useState } from 'react'
 import { useControlPanelContext } from '../context'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+
+import Button from './Button'
 import { primary } from '../modules/const'
 
 const sx = {
   ctrlPanel: {
     position: 'fixed' as 'fixed',
-    left: 'calc(50vw - 180px)',
+    left: 'calc(50vw - 200px)',
     height: '80px',
-    width: '360px',
-    padding: '10px',
+    width: '400px',
+    padding: '15px',
     backgroundColor: primary + '90',
     backdropFilter: 'blur(3px)',
     borderRadius: '20px',
@@ -46,15 +47,16 @@ const sx = {
 }
 
 const ControlPanel = () => {
+  const router = useRouter()
   const {
-    fullscreen,
-    toggleFullscreen,
     playback,
     togglePlayback,
+    thumbTriggerMode,
+    toggleThumbTriggerMode,
+    fullHandMode,
+    toggleFullHandMode,
     showUI,
     toggleShowUI,
-    info,
-    toggleInfo,
   } = useControlPanelContext()
 
   const [ctrlPanel, setCtrlPanel] = useState(true)
@@ -68,17 +70,20 @@ const ControlPanel = () => {
     }
   }, [])
 
-  const onToggleFullscreen = () => {
-    toggleShowUI(true)
-    toggleFullscreen()
+  const goHome = () => {
+    router.push('/home')
   }
 
   const onTogglePlayback = () => {
     togglePlayback()
   }
 
-  const onToggleInfo = () => {
-    toggleInfo()
+  const onToggleThumbMode = () => {
+    toggleThumbTriggerMode()
+  }
+
+  const onToggleFullHandMode = () => {
+    toggleFullHandMode()
   }
 
   const onToggleHideUI = () => {
@@ -110,11 +115,11 @@ const ControlPanel = () => {
         onMouseLeave={closeCtrlPanel}
       ></div>
       <Button
-        style={fullscreen ? { ...sx.btn, ...sx.btnActive } : sx.btn}
+        style={sx.btn}
         text=""
-        value="fullscreen"
-        onClick={onToggleFullscreen}
-        icon={'expand.svg'}
+        value="home"
+        onClick={goHome}
+        icon="home.svg"
         iconSize={50}
         onMouseEnter={openCtrlPanel}
         onMouseLeave={closeCtrlPanel}
@@ -130,21 +135,31 @@ const ControlPanel = () => {
         onMouseLeave={closeCtrlPanel}
       />
       <Button
-        style={playback ? { ...sx.btn, ...sx.btnActive } : sx.btn}
+        style={!thumbTriggerMode ? { ...sx.btn, ...sx.btnActive } : sx.btn}
         text=""
-        value="playback"
-        onClick={onTogglePlayback}
-        icon="webcam.svg"
+        value="thumb"
+        onClick={onToggleThumbMode}
+        icon="crosshair.svg"
         iconSize={50}
         onMouseEnter={openCtrlPanel}
         onMouseLeave={closeCtrlPanel}
       />
       <Button
-        style={info ? { ...sx.btn, ...sx.btnActive } : sx.btn}
+        style={!fullHandMode ? { ...sx.btn, ...sx.btnActive } : sx.btn}
         text=""
-        value="info"
-        onClick={onToggleInfo}
-        icon="info.svg"
+        value="fullhand"
+        onClick={onToggleFullHandMode}
+        icon="skeleton.svg"
+        iconSize={50}
+        onMouseEnter={openCtrlPanel}
+        onMouseLeave={closeCtrlPanel}
+      />
+      <Button
+        style={playback ? { ...sx.btn, ...sx.btnActive } : sx.btn}
+        text=""
+        value="playback"
+        onClick={onTogglePlayback}
+        icon="webcam.svg"
         iconSize={50}
         onMouseEnter={openCtrlPanel}
         onMouseLeave={closeCtrlPanel}

@@ -39,7 +39,7 @@ export default class Container {
       x: this.x,
       y: this.y,
       w: this.w,
-      h: 50,
+      h: 47,
       color: this.titleColor,
       roundingCorners: [2, 2, 0, 0],
       shade: false,
