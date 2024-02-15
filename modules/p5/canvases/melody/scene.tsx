@@ -47,8 +47,10 @@ export default class MelodyCanvas implements P5Canvas {
 
   activeNote = -1
   activeNoteIdx = 0
-  share = 0.0
+  nextActiveNote: number | undefined = undefined
   prevHandNote = -1
+
+  share = 0.0
   currentTime = 0.0
 
   constructor(w: number, h: number) {
@@ -114,7 +116,6 @@ export default class MelodyCanvas implements P5Canvas {
     if (!hands) {
       return
     }
-
     this.handDetector.getControls(hands, context)
     const handNote = this.keyboard.getActive(
       p5,
@@ -124,7 +125,7 @@ export default class MelodyCanvas implements P5Canvas {
     )
 
     this.updateNoteAndShare(handNote)
-    this.keyboard.showMelody(p5, this.notes, this.activeNote, this.share)
+    this.keyboard.showMelody(p5, this.notes, this.activeNote, this.nextActiveNote, this.share)
     this.rightHand.show(
       p5,
       hands.rightHand,
@@ -135,7 +136,12 @@ export default class MelodyCanvas implements P5Canvas {
     )
     this.songSelector.show(p5)
 
-    this.musicPlayer.playSongNote(this.activeNote, handNote, this.notes)
+    this.musicPlayer.playSongNote(
+      this.activeNote,
+      handNote,
+      this.share,
+      this.notes,
+    )
     this.prevHandNote = handNote
   }
 
@@ -184,7 +190,6 @@ export default class MelodyCanvas implements P5Canvas {
     }
 
     const elapsedTime = (now - this.currentTime) / 1000
-    console.log(this.share, this.activeNoteIdx)
 
     if (handNote === currentNote.note) {
       this.share = elapsedTime / durationInSeconds
@@ -209,6 +214,7 @@ export default class MelodyCanvas implements P5Canvas {
 
     if (this.activeNoteIdx < this.songPlaying.notes.length) {
       this.activeNote = this.songPlaying.notes[this.activeNoteIdx].note
+      this.nextActiveNote = this.songPlaying.notes[this.activeNoteIdx + 1]?.note
     }
   }
 

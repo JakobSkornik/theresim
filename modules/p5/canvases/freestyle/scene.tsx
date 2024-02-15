@@ -223,10 +223,6 @@ export default class FreestyleCanvas implements P5Canvas {
     if (!this.mute && !this.songPlaying) {
       if (await this.processBackingTrackBtnPress(x, y)) return
     }
-
-    if (!this.mute && !this.backingTrackPlaying) {
-      if (await this.processSongBtnPress(x, y)) return
-    }
   }
 
   getChords(scaleName: string) {
@@ -338,40 +334,6 @@ export default class FreestyleCanvas implements P5Canvas {
       backingTrack!,
     )
     this.backingTrackPlaying = this.backingTrackSelector.selected
-    return true
-  }
-
-  async processSongBtnPress(x: number, y: number): Promise<boolean> {
-    const songPress = this.songSelector.checkKeyPress(x, y)
-    if (!songPress) return false
-
-    if (this.songPlaying) {
-      this.musicPlayer.stopSong()
-    }
-
-    if (this.songPlaying == this.songSelector.selected) {
-      this.songSelector.selected = null
-      this.songPlaying = null
-      return true
-    }
-
-    const song = simpleSongInformation(this.songSelector.selected!)
-    this.selectedRoot = song!.key
-    this.keySelector.setKey(song!.key, song!.major)
-    this.major = song!.major
-
-    const mode = this.major ? 'major' : 'minor'
-    this.notes = [
-      ...Scale.get(`${this.selectedRoot}${this.referenceOctave} ${mode}`).notes,
-      ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 1} ${mode}`)
-        .notes,
-      ...Scale.get(`${this.selectedRoot}${this.referenceOctave + 2} ${mode}`)
-        .notes,
-    ]
-    this.chords = this.getChords(this.selectedRoot)
-
-    this.musicPlayer.playSong(song!)
-    this.songPlaying = this.songSelector.selected
     return true
   }
 }

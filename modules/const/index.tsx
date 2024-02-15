@@ -271,7 +271,7 @@ export const simpleSongInformation = (track: string) => {
         key: 'C',
         title: 'kuža_pazi',
         major: true,
-        bpm: 60,
+        bpm: 90,
         notes: [
           {
             note: 7,
@@ -340,7 +340,7 @@ export const simpleSongInformation = (track: string) => {
           key: 'C',
           title: 'twinkle',
           major: true,
-          bpm: 120,
+          bpm: 160,
           notes: [
             {
               note: 4,
