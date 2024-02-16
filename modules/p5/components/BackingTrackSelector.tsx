@@ -18,8 +18,8 @@ export default class BackingTrackSelector {
   backingTracks: string[] = [
     'comfortably_numb',
     'shine_on',
-    'song_3',
-    'song_4',
+    'planet_caravan',
+    'rock_ballad',
     'song_5',
   ]
   selected: string | null = null

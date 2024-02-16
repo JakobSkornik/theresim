@@ -261,6 +261,45 @@ export const backingTrackInformation = (track: string) => {
           } as Chord,
         ],
       } as BackingTrack
+    case 'planet_caravan':
+      return {
+        key: 'E',
+        major: false,
+        bpm: 90,
+        initialDelay: 0,
+        chords: [
+          {
+            chord: 0,
+            duration: 4,
+          } as Chord,
+          {
+            chord: 5,
+            duration: 4,
+          } as Chord,
+        ],
+      } as BackingTrack
+
+    case 'rock_ballad':
+      return {
+        key: 'B',
+        major: false,
+        bpm: 113,
+        initialDelay: 2,
+        chords: [
+          {
+            chord: 4,
+            duration: 4,
+          } as Chord,
+          {
+            chord: 5,
+            duration: 4,
+          } as Chord,
+          {
+            chord: 0,
+            duration: 8,
+          } as Chord,
+        ],
+      } as BackingTrack
   }
 }
 
@@ -335,70 +374,255 @@ export const simpleSongInformation = (track: string) => {
           } as Note,
         ],
       } as SimpleSong
-      case 'twinkle':
-        return {
-          key: 'C',
-          title: 'twinkle',
-          major: true,
-          bpm: 160,
-          notes: [
-            {
-              note: 4,
-              duration: 1,
-            } as Note,
-            {
-              note: 4,
-              duration: 2,
-            } as Note,
-            {
-              note: 8,
-              duration: 1,
-            } as Note,
-            {
-              note: 8,
-              duration: 2,
-            } as Note,
-            {
-              note: 9,
-              duration: 1,
-            } as Note,
-            {
-              note: 9,
-              duration: 2,
-            } as Note,
-            {
-              note: 8,
-              duration: 4,
-            } as Note,
-            {
-              note: 7,
-              duration: 1,
-            } as Note,
-            {
-              note: 7,
-              duration: 2,
-            } as Note,
-            {
-              note: 6,
-              duration: 1,
-            } as Note,
-            {
-              note: 6,
-              duration: 2,
-            } as Note,
-            {
-              note: 5,
-              duration: 1,
-            } as Note,
-            {
-              note: 5,
-              duration: 2,
-            } as Note,
-            {
-              note: 4,
-              duration: 4,
-            } as Note,
-          ],
-        } as SimpleSong
+    case 'twinkle':
+      return {
+        key: 'C',
+        title: 'twinkle',
+        major: true,
+        bpm: 160,
+        notes: [
+          {
+            note: 4,
+            duration: 1,
+          } as Note,
+          {
+            note: 4,
+            duration: 2,
+          } as Note,
+          {
+            note: 8,
+            duration: 1,
+          } as Note,
+          {
+            note: 8,
+            duration: 2,
+          } as Note,
+          {
+            note: 9,
+            duration: 1,
+          } as Note,
+          {
+            note: 9,
+            duration: 2,
+          } as Note,
+          {
+            note: 8,
+            duration: 4,
+          } as Note,
+          {
+            note: 7,
+            duration: 1,
+          } as Note,
+          {
+            note: 7,
+            duration: 2,
+          } as Note,
+          {
+            note: 6,
+            duration: 1,
+          } as Note,
+          {
+            note: 6,
+            duration: 2,
+          } as Note,
+          {
+            note: 5,
+            duration: 1,
+          } as Note,
+          {
+            note: 5,
+            duration: 2,
+          } as Note,
+          {
+            note: 4,
+            duration: 4,
+          } as Note,
+        ],
+      } as SimpleSong
+    case 'happy_birthday':
+      return {
+        key: 'C',
+        title: 'happy_birthday',
+        major: true,
+        bpm: 160,
+        notes: [
+          {
+            note: 4,
+            duration: 2,
+          } as Note,
+          {
+            note: 4,
+            duration: 2,
+          } as Note,
+          {
+            note: 5,
+            duration: 2,
+          } as Note,
+          {
+            note: 4,
+            duration: 2,
+          } as Note,
+          {
+            note: 7,
+            duration: 2,
+          } as Note,
+          {
+            note: 6,
+            duration: 4,
+          } as Note,
+          //
+          {
+            note: 4,
+            duration: 2,
+          } as Note,
+          {
+            note: 4,
+            duration: 2,
+          } as Note,
+          {
+            note: 5,
+            duration: 2,
+          } as Note,
+          {
+            note: 4,
+            duration: 2,
+          } as Note,
+          {
+            note: 8,
+            duration: 2,
+          } as Note,
+          {
+            note: 7,
+            duration: 4,
+          } as Note,
+          //
+          {
+            note: 4,
+            duration: 2,
+          } as Note,
+          {
+            note: 4,
+            duration: 2,
+          } as Note,
+          {
+            note: 11,
+            duration: 2,
+          } as Note,
+          {
+            note: 9,
+            duration: 2,
+          } as Note,
+          {
+            note: 7,
+            duration: 1,
+          } as Note,
+          {
+            note: 7,
+            duration: 1,
+          } as Note,
+          {
+            note: 6,
+            duration: 2,
+          } as Note,
+          {
+            note: 5,
+            duration: 4,
+          } as Note,
+          //
+          {
+            note: 10,
+            duration: 2,
+          } as Note,
+          {
+            note: 10,
+            duration: 2,
+          } as Note,
+          {
+            note: 9,
+            duration: 2,
+          } as Note,
+          {
+            note: 7,
+            duration: 2,
+          } as Note,
+          {
+            note: 8,
+            duration: 2,
+          } as Note,
+          {
+            note: 7,
+            duration: 4,
+          } as Note,
+        ],
+      } as SimpleSong
+    case 'ode_to_joy':
+      return {
+        key: 'C',
+        title: 'ode_to_joy',
+        major: true,
+        bpm: 160,
+        notes: [
+          {
+            note: 9,
+            duration: 2,
+          } as Note,
+          {
+            note: 9,
+            duration: 2,
+          } as Note,
+          {
+            note: 10,
+            duration: 2,
+          } as Note,
+          {
+            note: 11,
+            duration: 2,
+          } as Note,
+          {
+            note: 11,
+            duration: 2,
+          } as Note,
+          {
+            note: 10,
+            duration: 2,
+          } as Note,
+          {
+            note: 9,
+            duration: 2,
+          } as Note,
+          {
+            note: 8,
+            duration: 2,
+          } as Note,
+          {
+            note: 7,
+            duration: 2,
+          } as Note,
+          {
+            note: 7,
+            duration: 2,
+          } as Note,
+          {
+            note: 8,
+            duration: 2,
+          } as Note,
+          {
+            note: 9,
+            duration: 2,
+          } as Note,
+          {
+            note: 9,
+            duration: 2,
+          } as Note,
+          {
+            note: 8,
+            duration: 2,
+          } as Note,
+          {
+            note: 8,
+            duration: 2,
+          } as Note,
+        ],
+      } as SimpleSong
   }
 }

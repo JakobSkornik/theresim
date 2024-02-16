@@ -10,7 +10,7 @@ export default class SongSelector {
   w: number
   h: number
 
-  cols: number = 3
+  cols: number = 4
   rows: number = 1
   textHeight: number = 20
 
@@ -18,7 +18,8 @@ export default class SongSelector {
   songs: string[] = [
     'kuža_pazi',
     'twinkle',
-    'song_3'
+    'happy_birthday',
+    'ode_to_joy'
   ]
   selected: string | null = null
 

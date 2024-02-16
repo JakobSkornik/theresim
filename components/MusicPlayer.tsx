@@ -234,7 +234,7 @@ export default class MusicPlayer {
     for (let i = 0; i < chordNotes.length; i++) {
       this.chordPlaying.push(
         this.player.play(chordNotes[i], this.ac.currentTime, {
-          gain: 0.2,
+          gain: 0.4,
           adsr: [0.1, 0.3, 0.8, 0.1],
         }),
       )
@@ -286,7 +286,7 @@ export default class MusicPlayer {
     for (let i = 0; i < chordNotes.length; i++) {
       this.chordPlaying.push(
         this.player.play(chordNotes[i], this.ac.currentTime, {
-          gain: 0.2,
+          gain: 0.4,
           adsr: [1.0, 0.0, 1.0, 1.0],
         }),
       )

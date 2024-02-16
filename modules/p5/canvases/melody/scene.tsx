@@ -194,7 +194,7 @@ export default class MelodyCanvas implements P5Canvas {
     if (handNote === currentNote.note) {
       this.share = elapsedTime / durationInSeconds
       this.share = Math.min(this.share, 1.0)
-    } else if (handNote !== -1) {
+    } else if (handNote !== -1 && this.share < 0.8) {
       this.share = 0.0
     }
 

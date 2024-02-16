@@ -66,7 +66,22 @@ const sx = {
     backdropFilter: 'blur(3px)',
     border: 'none',
     borderRadius: '5px',
+    width: '210px',
+    padding: '5px',
     boxShadow: `0 0 30px 1px rgba(200, 200, 200, 0.2), 0 0 40px 10px ${primary}`,
+  },
+  road: {
+    position: 'fixed' as 'fixed',
+    bottom: '0',
+    left: 'calc(50vw - 100px)',
+    backdropFilter: 'blur(3px)',
+    boxShadow: `inset 0 0 30px 1px rgba(200, 200, 200, 0.2), 0 0 40px 10px #11333380`,
+    width: '200px',
+    height: '38vh',
+    background: '#11222290',
+    transform: 'perspective(10px) rotateX(1deg)',
+    margin: '0',
+    filter: 'blur(2px)'
   },
 }
 
@@ -88,6 +103,7 @@ const Background = () => {
       <div className="rectangle" style={sx.rectangle3} />
       <div className="triangle" style={sx.rectangle1Edge} />
       <div className="curved-top" style={sx.curvedTop} />
+      <div className="road" style={sx.road} />
       <span style={sx.title}>Theresim</span>
     </div>
   )
