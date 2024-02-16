@@ -26,7 +26,7 @@ export default class InstrumentSelector {
     'pad_3_polysynth',
     'fx_1_rain',
   ]
-  selected: string = this.instruments[0]
+  selected: string = this.instruments[4]
 
   constructor(params: BoxParams) {
     this.x = params.x

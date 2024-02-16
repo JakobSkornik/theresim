@@ -125,7 +125,13 @@ export default class MelodyCanvas implements P5Canvas {
     )
 
     this.updateNoteAndShare(handNote)
-    this.keyboard.showMelody(p5, this.notes, this.activeNote, this.nextActiveNote, this.share)
+    this.keyboard.showMelody(
+      p5,
+      this.notes,
+      this.activeNote,
+      this.nextActiveNote,
+      this.share,
+    )
     this.rightHand.show(
       p5,
       hands.rightHand,
@@ -136,12 +142,7 @@ export default class MelodyCanvas implements P5Canvas {
     )
     this.songSelector.show(p5)
 
-    this.musicPlayer.playSongNote(
-      this.activeNote,
-      handNote,
-      this.share,
-      this.notes,
-    )
+    this.musicPlayer.playSongNote(this.activeNote, handNote, this.notes)
     this.prevHandNote = handNote
   }
 

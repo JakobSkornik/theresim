@@ -23,7 +23,6 @@ import {
   gray,
   hexToRgb,
   rightColor,
-  simpleSongInformation,
 } from '../../../const'
 
 export default class FreestyleCanvas implements P5Canvas {
@@ -187,7 +186,6 @@ export default class FreestyleCanvas implements P5Canvas {
     this.muteButton.show(p5)
     this.keySelector.show(p5)
     this.backingTrackSelector.show(p5)
-    // this.songSelector.show(p5)
     this.instrumentSelector.show(p5)
     this.fpsCounter.show(p5)
 

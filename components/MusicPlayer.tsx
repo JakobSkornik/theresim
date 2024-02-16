@@ -76,8 +76,8 @@ export default class MusicPlayer {
     }
   }
 
-  playSongNote(activeNote: number, handNote: number, share: number, notes: string[]) {
-    if (activeNote < 0 || handNote != activeNote || share >= 1.0) {
+  playSongNote(activeNote: number, handNote: number, notes: string[]) {
+    if (activeNote < 0 || handNote != activeNote) {
       this.triggerNoteRelease()
       return
     }

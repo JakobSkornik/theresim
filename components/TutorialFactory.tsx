@@ -58,7 +58,7 @@ const sx = {
     height: 'calc(100vh - 90px)',
     width: '500px',
     zIndex: '-1',
-    backgroundColor: '#700000' + '30',
+    backgroundColor: '#700000' + '70',
     border: 'red 2px',
     borderRadius: '100px',
     boxShadow: `0 0 30px 1px rgba(200, 200, 200, 0.2), 0 0 40px 10px #700000`,
@@ -82,6 +82,9 @@ const TutorialFactory = ({ stage }: { stage: number }) => {
               <br />
               <br />
               Try waving your RIGHT hand in front of the camera!
+              <br />
+              <br />
+              Can you see the skeleton of your hand?
             </span>
           </div>
         </>
@@ -114,6 +117,10 @@ const TutorialFactory = ({ stage }: { stage: number }) => {
             <span>
               With your RIGHT hand you play individual notes. When a note is
               played it is shown with purple color.
+              <br />
+              <br />
+              Try to press a key with the index finger of your right hand.
+              Just like you would with a piano!
             </span>
           </div>
         </>
@@ -232,7 +239,7 @@ const TutorialFactory = ({ stage }: { stage: number }) => {
           </div>
           <div style={sx.text}>
             <span>
-              Your right hand feedback can be toggled with
+              Your right hand feedback can be toggled with{' '}
               <Image
                 src="/icons/skeleton.svg"
                 width={30}

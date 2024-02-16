@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import Link from 'next/link' // Import Link from next/link
 
-import { primary } from '../../modules/const'
+import { primary, shadow } from '../../modules/const'
 import { useControlPanelContext } from '../../context'
 
 const sx = {
@@ -18,7 +18,7 @@ const sx = {
     fontSize: '1.5rem',
     cursor: 'pointer',
     textDecoration: 'none',
-    color: 'white',
+    color: shadow,
     backgroundColor: primary + '90',
     backdropFilter: 'blur(3px)',
     border: 'none',
@@ -40,7 +40,7 @@ const Home = () => {
         Tutorial
       </Link>
       <Link href="/melody" style={sx.link}>
-        Melody
+        Melodies
       </Link>
       <Link href="/freestyle" style={sx.link}>
         Freestyle
